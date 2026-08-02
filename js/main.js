@@ -2144,7 +2144,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
     var menuItems = [];
     var isDbSource = false;
 
-    // 1. Read localStorage for instant admin edits
+    // 1. Read localStorage for instant 0ms render
     var localItems = [];
     try {
         var stored = localStorage.getItem('favcafe_menu');
@@ -2156,7 +2156,12 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         }
     } catch(e) {}
 
-    // 2. Query live Database API (with cache buster and no-store)
+    // Render localItems immediately (0ms latency, zero flicker!)
+    if (localItems.length > 0) {
+        renderCustomerMenuItems(localItems);
+    }
+
+    // 2. Query live Database API (with cache buster and no-store in background)
     try {
         var res = await fetch('api/menu.php?action=get&t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
@@ -2168,7 +2173,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         }
     } catch (e) {}
 
-    // 3. Overlay local admin edits if DB or file fallback loaded
+    // 3. Overlay local admin edits if DB loaded
     if (localItems.length > 0) {
         if (menuItems.length === 0) {
             menuItems = localItems;
@@ -2209,7 +2214,13 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         ];
     }
 
-    // Filter available items
+    renderCustomerMenuItems(menuItems);
+}
+
+function renderCustomerMenuItems(menuItems) {
+    var menuGrid = document.getElementById('mgrid');
+    if (!menuGrid || !Array.isArray(menuItems)) return;
+
     var available = menuItems.filter(function(i) { return parseInt(i.is_available) === 1 || i.is_available === true; });
     if (available.length === 0) return;
 
@@ -2276,6 +2287,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
             }
         });
     });
+}
 
     // Re-apply currently active filter if present
     var activeBtn = document.querySelector('#categoryFilterBar .filtbtn.active');
