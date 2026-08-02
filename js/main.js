@@ -2215,6 +2215,46 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
     }
 
     renderCustomerMenuItems(menuItems);
+
+    // Re-apply currently active filter if present
+    var activeBtn = document.querySelector('#categoryFilterBar .filtbtn.active');
+    if (activeBtn) {
+        var activeFilter = activeBtn.getAttribute('data-f');
+        if (activeFilter && activeFilter !== 'all') {
+            filterMenu(activeFilter);
+        }
+    }
+
+    // Update live loading status bar & toast notifications
+    var statusEl = document.getElementById('menuLoadingStatus');
+    var availCount = menuItems.filter(function(i) { return parseInt(i.is_available) === 1 || i.is_available === true; }).length;
+    if (statusEl) {
+        if (isDbSource) {
+            statusEl.innerHTML = `
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm" style="background:#e8f5e9; border:1px solid #a5d6a7; font-size:0.83rem; color:#1b5e20;">
+                    <i class="fas fa-database text-success me-1"></i>
+                    <span>Live Database Menu Loaded (${availCount} items)</span>
+                    <button type="button" class="btn btn-sm btn-light border py-0 px-2 ms-2" onclick="loadDynamicCustomerMenu(true)" title="Refresh Menu Now" style="font-size:0.75rem; border-radius:12px;">
+                        <i class="fas fa-sync-alt text-muted me-1"></i>Refresh
+                    </button>
+                </div>
+            `;
+        } else {
+            statusEl.innerHTML = `
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm" style="background:#e3f2fd; border:1px solid #90caf9; font-size:0.83rem; color:#0d47a1;">
+                    <i class="fas fa-check-circle text-primary me-1"></i>
+                    <span>Favorite Cafe Standard Menu Loaded (${availCount} items)</span>
+                    <button type="button" class="btn btn-sm btn-light border py-0 px-2 ms-2" onclick="loadDynamicCustomerMenu(true)" title="Refresh Menu Now" style="font-size:0.75rem; border-radius:12px;">
+                        <i class="fas fa-sync-alt text-primary me-1"></i>Refresh
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    if (isManualRefresh && typeof showToast === 'function') {
+        showToast('Menu data refreshed live! (' + availCount + ' items updated)', 'success', 'Menu Refreshed');
+    }
 }
 
 function renderCustomerMenuItems(menuItems) {
@@ -2287,45 +2327,6 @@ function renderCustomerMenuItems(menuItems) {
             }
         });
     });
-}
-
-    // Re-apply currently active filter if present
-    var activeBtn = document.querySelector('#categoryFilterBar .filtbtn.active');
-    if (activeBtn) {
-        var activeFilter = activeBtn.getAttribute('data-f');
-        if (activeFilter && activeFilter !== 'all') {
-            filterMenu(activeFilter);
-        }
-    }
-
-    // Update live loading status bar & toast notifications
-    if (statusEl) {
-        if (isDbSource) {
-            statusEl.innerHTML = `
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm" style="background:#e8f5e9; border:1px solid #a5d6a7; font-size:0.83rem; color:#1b5e20;">
-                    <i class="fas fa-database text-success me-1"></i>
-                    <span>Live Database Menu Loaded (${available.length} items)</span>
-                    <button type="button" class="btn btn-sm btn-light border py-0 px-2 ms-2" onclick="loadDynamicCustomerMenu(true)" title="Refresh Menu Now" style="font-size:0.75rem; border-radius:12px;">
-                        <i class="fas fa-sync-alt text-muted me-1"></i>Refresh
-                    </button>
-                </div>
-            `;
-        } else {
-            statusEl.innerHTML = `
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm" style="background:#e3f2fd; border:1px solid #90caf9; font-size:0.83rem; color:#0d47a1;">
-                    <i class="fas fa-check-circle text-primary me-1"></i>
-                    <span>Favorite Cafe Standard Menu Loaded (${available.length} items)</span>
-                    <button type="button" class="btn btn-sm btn-light border py-0 px-2 ms-2" onclick="loadDynamicCustomerMenu(true)" title="Refresh Menu Now" style="font-size:0.75rem; border-radius:12px;">
-                        <i class="fas fa-sync-alt text-primary me-1"></i>Refresh
-                    </button>
-                </div>
-            `;
-        }
-    }
-
-    if (isManualRefresh && typeof showToast === 'function') {
-        showToast('Menu data refreshed live! (' + available.length + ' items updated)', 'success', 'Menu Refreshed');
-    }
 }
 
 async function loadDynamicCategories() {
