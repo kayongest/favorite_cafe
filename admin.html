@@ -1177,109 +1177,115 @@
          SYSTEM NOTIFICATION & DISPATCH LOGS MODAL
          ============================================================ -->
    <div id="notificationLogModal" class="custom-modal-overlay">
-      <div class="modal-standard-box" style="max-width:500px;">
+      <div class="modal-standard-box" style="max-width:520px;">
          <div class="modal-standard-header">
-            <h4><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notification &amp; Dispatch Logs</h4>
+            <h4><i class="fas fa-bell me-2" style="color:#aa7262;"></i>Notification &amp; Dispatch Logs</h4>
             <button type="button" class="modal-standard-close" onclick="closeNotificationLogModal()"><i class="fas fa-times"></i></button>
          </div>
          
-         <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 flex-wrap gap-2">
-             <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-dark rounded-pill active" onclick="filterNotificationLogs('all', this)">All Logs</button>
-                <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="filterNotificationLogs('sms', this)"><i class="fas fa-comment-alt me-1"></i>SMS Alerts</button>
-                <button class="btn btn-sm btn-outline-success rounded-pill" onclick="filterNotificationLogs('email', this)"><i class="fas fa-envelope me-1"></i>Email Tickets</button>
+         <div class="p-4">
+             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3 flex-wrap gap-2">
+                 <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-dark rounded-pill active font-weight-bold px-3" onclick="filterNotificationLogs('all', this)">All Logs</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="filterNotificationLogs('sms', this)"><i class="fas fa-comment-alt me-1"></i>SMS Alerts</button>
+                    <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="filterNotificationLogs('email', this)"><i class="fas fa-envelope me-1"></i>Email Tickets</button>
+                 </div>
+                 <button class="btn btn-sm rounded-pill text-white font-weight-bold px-3" style="background:#aa7262;" onclick="sendDemoTestNotification()">
+                    <i class="fas fa-paper-plane me-1"></i> + Test Alert
+                 </button>
+              </div>
+
+             <div class="notification-feed" id="notificationFeedContainer" style="max-height: 280px; overflow-y: auto;">
+                <div class="text-center py-4 text-muted small"><i class="fas fa-bell-slash me-1"></i> No notifications logged yet.</div>
              </div>
-             <button class="btn btn-sm btn-outline-warning rounded-pill" onclick="sendDemoTestNotification()">
-                <i class="fas fa-paper-plane me-1"></i> + Send Test Alert
-             </button>
-          </div>
 
-         <div class="notification-feed" id="notificationFeedContainer">
-            <!-- Dynamic notifications rendered here -->
-         </div>
-
-         <div class="mt-3 d-flex justify-content-between align-items-center border-top pt-2">
-            <span class="small text-muted" id="notificationTotalCounter">Total: 0 logs</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="clearNotificationLogs()">Clear History</button>
+             <div class="mt-3 d-flex justify-content-between align-items-center border-top pt-3">
+                <span class="small font-weight-bold text-muted" id="notificationTotalCounter">Total: 0 logs</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="clearNotificationLogs()">Clear History</button>
+             </div>
          </div>
       </div>
+   </div>
+
    <!-- ============================================================
          PRINTABLE THERMAL RECEIPT MODAL
          ============================================================ -->
    <div id="receiptModal" class="custom-modal-overlay">
-      <div class="modal-standard-box" style="max-width:440px;">
+      <div class="modal-standard-box" style="max-width:460px;">
          <div class="modal-standard-header no-print">
-            <h4><i class="fas fa-print me-2" style="color:var(--primary);"></i>Official Receipt</h4>
+            <h4><i class="fas fa-receipt me-2" style="color:#aa7262;"></i>Official Tax Receipt</h4>
             <button type="button" class="modal-standard-close" onclick="closeReceiptModal()"><i class="fas fa-times"></i></button>
          </div>
          
-         <!-- Printable Thermal Receipt Container -->
-         <div id="printableReceiptArea" class="receipt-paper p-4 bg-white text-dark border rounded-3 font-monospace">
-            <div class="text-center mb-3 border-bottom pb-3">
-               <h4 class="font-weight-bold mb-0 text-uppercase" style="letter-spacing:1px;">FAVORITE CAFE</h4>
-               <div class="small text-muted">108 Kimironko St, Kigali - Rwanda</div>
-               <div class="small text-muted">TEL: +250 720 966 666 | TIN: 102938475</div>
-               <div class="badge bg-dark text-white mt-2 px-3 py-1">OFFICIAL TAX RECEIPT</div>
-            </div>
+         <div class="p-4">
+             <!-- Printable Thermal Receipt Container -->
+             <div id="printableReceiptArea" class="receipt-paper p-4 bg-white text-dark border rounded-4 font-monospace shadow-sm">
+                <div class="text-center mb-3 border-bottom pb-3">
+                   <h4 class="font-weight-bold mb-0 text-uppercase" style="letter-spacing:1.5px; color:#102b37; font-family:'Titillium Web', sans-serif;">FAVORITE CAFE</h4>
+                   <div class="small text-muted mt-1"><i class="fas fa-map-marker-alt me-1" style="color:#aa7262;"></i>108 Kimironko St, Kigali - Rwanda</div>
+                   <div class="small text-muted"><i class="fas fa-phone me-1" style="color:#aa7262;"></i>TEL: +250 788 000 000 | TIN: 102938475</div>
+                   <div class="badge text-white mt-2 px-3 py-1 rounded-pill" style="background:#102b37; font-size:0.75rem;">OFFICIAL EBM TAX RECEIPT</div>
+                </div>
 
-            <div class="small mb-3 d-flex justify-content-between">
-               <div>
-                  <div><strong>Invoice #:</strong> <span id="receiptNum">#MSH-8492</span></div>
-                  <div><strong>Date:</strong> <span id="receiptDate">2026-07-28</span></div>
-               </div>
-               <div class="text-end">
-                  <div><strong>Customer:</strong> <span id="receiptCustomer">Guest</span></div>
-                  <div><strong>Type:</strong> <span id="receiptServiceType">Delivery</span></div>
-               </div>
-            </div>
+                <div class="small mb-3 d-flex justify-content-between bg-light p-2 rounded">
+                   <div>
+                      <div><strong>Invoice #:</strong> <span id="receiptNum">#FAV-8492</span></div>
+                      <div><strong>Date:</strong> <span id="receiptDate">2026-08-03</span></div>
+                   </div>
+                   <div class="text-end">
+                      <div><strong>Customer:</strong> <span id="receiptCustomer">Guest</span></div>
+                      <div><strong>Type:</strong> <span id="receiptServiceType">Delivery</span></div>
+                   </div>
+                </div>
 
-            <table class="table table-sm border-top border-bottom small mb-3">
-               <thead>
-                  <tr>
-                     <th>QTY</th>
-                     <th>ITEM</th>
-                     <th class="text-end">AMOUNT</th>
-                  </tr>
-               </thead>
-               <tbody id="receiptItemsBody">
-                  <!-- Dynamic items populated here -->
-               </tbody>
-            </table>
+                <table class="table table-sm border-top border-bottom small mb-3">
+                   <thead class="table-light">
+                      <tr>
+                         <th>QTY</th>
+                         <th>ITEM</th>
+                         <th class="text-end">AMOUNT</th>
+                      </tr>
+                   </thead>
+                   <tbody id="receiptItemsBody">
+                      <!-- Dynamic items populated here -->
+                   </tbody>
+                </table>
 
-            <div class="small mb-3 border-bottom pb-2">
-               <div class="d-flex justify-content-between">
-                  <span>Subtotal:</span>
-                  <span id="receiptSubtotal">RWF 0</span>
-               </div>
-               <div class="d-flex justify-content-between">
-                  <span>VAT (18% Included):</span>
-                  <span id="receiptTax">RWF 0</span>
-               </div>
-               <div class="d-flex justify-content-between font-weight-bold fs-6 mt-1 pt-1 border-top">
-                  <span>TOTAL PAID:</span>
-                  <span id="receiptTotalAmount" class="text-dark">RWF 0</span>
-               </div>
-               <div class="d-flex justify-content-between text-muted mt-1">
-                  <span>Payment Method:</span>
-                  <span id="receiptPayMethod">Mobile Money</span>
-               </div>
-            </div>
+                <div class="small mb-3 border-bottom pb-2">
+                   <div class="d-flex justify-content-between">
+                      <span>Subtotal:</span>
+                      <span id="receiptSubtotal">RWF 0</span>
+                   </div>
+                   <div class="d-flex justify-content-between">
+                      <span>VAT (18% Included):</span>
+                      <span id="receiptTax">RWF 0</span>
+                   </div>
+                   <div class="d-flex justify-content-between font-weight-bold fs-6 mt-1 pt-1 border-top" style="color:#102b37;">
+                      <span>TOTAL PAID:</span>
+                      <span id="receiptTotalAmount" style="color:#aa7262;">RWF 0</span>
+                   </div>
+                   <div class="d-flex justify-content-between text-muted mt-1">
+                      <span>Payment Method:</span>
+                      <span id="receiptPayMethod" class="font-weight-bold text-success">Mobile Money</span>
+                   </div>
+                </div>
 
-            <div class="text-center pt-2">
-               <div class="receipt-qr-box mb-2">
-                  <img id="receiptQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ebm.rra.gov.rw/verify/MSH-8492" alt="RRA EBM QR Verification" />
-                  <div class="small text-muted font-monospace mt-1" style="font-size:0.62rem;">RRA EBM v2.1 VERIFIED</div>
-               </div>
-               <div class="small text-muted mb-1">Thank you for dining with Mashariki!</div>
-               <div class="small font-weight-bold">*** Murakoze Cyane ***</div>
-            </div>
-         </div>
+                <div class="text-center pt-2">
+                   <div class="receipt-qr-box mb-2">
+                      <img id="receiptQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ebm.rra.gov.rw/verify/FAV-8492" alt="RRA EBM QR Verification" style="border-radius:8px; border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.1);" />
+                      <div class="small text-muted font-monospace mt-1" style="font-size:0.65rem;">RRA EBM v2.1 VERIFIED</div>
+                   </div>
+                   <div class="small text-muted mb-1">Thank you for dining with Favorite Cafe!</div>
+                   <div class="small font-weight-bold" style="color:#aa7262;">*** Murakoze Cyane ***</div>
+                </div>
+             </div>
 
-         <div class="d-flex gap-2 mt-3 no-print">
-            <button type="button" class="btn btn-outline-dark w-50" onclick="closeReceiptModal()">Close</button>
-            <button type="button" class="btn btn-primary w-50" style="background:var(--primary);border-color:var(--primary);" onclick="triggerReceiptPrint()">
-               <i class="fas fa-print me-1"></i> Print / Save PDF
-            </button>
+             <div class="d-flex gap-2 mt-3 no-print">
+                <button type="button" class="btn btn-outline-dark w-50 rounded-pill" onclick="closeReceiptModal()">Close</button>
+                <button type="button" class="btn text-white w-50 rounded-pill font-weight-bold" style="background:#aa7262; border-color:#aa7262;" onclick="triggerReceiptPrint()">
+                   <i class="fas fa-print me-1"></i> Print / Save PDF
+                </button>
+             </div>
          </div>
       </div>
    </div>
@@ -1289,15 +1295,15 @@
    ============================================================ -->
    <div id="tableQrModal" class="modal-overlay" style="display:none;">
       <div class="modal-box" style="max-width:550px;">
-         <div class="modal-header">
-            <h5 class="modal-title"><i class="fas fa-qrcode text-danger me-2"></i>Generate Table QR Code Stand</h5>
+         <div class="modal-header modal-standard-header">
+            <h5 class="modal-title"><i class="fas fa-qrcode me-2" style="color:#aa7262;"></i>Generate Table QR Stand</h5>
             <button type="button" class="btn-close-modal" onclick="closeTableQrModal()"><i class="fas fa-times"></i></button>
          </div>
          <div class="modal-body p-4">
             <div class="row g-3 align-items-center mb-4">
                <div class="col-sm-6">
                   <label class="form-label font-weight-bold text-secondary">Select Location / Table:</label>
-                  <select id="qrTableSelect" class="form-select" onchange="updateQrStandPreview()">
+                  <select id="qrTableSelect" class="form-select rounded-pill px-3" onchange="updateQrStandPreview()">
                      <option value="main">Main Entrance / General Web PWA</option>
                      <option value="1">Table 1 - Main Floor</option>
                      <option value="2">Table 2 - Main Floor</option>
@@ -1312,25 +1318,25 @@
                   </select>
                </div>
                <div class="col-sm-6 text-end">
-                  <button type="button" class="btn btn-danger rounded-pill px-3 me-1" onclick="printTableQrStand()">
+                  <button type="button" class="btn text-white rounded-pill px-4 font-weight-bold" style="background:#aa7262;" onclick="printTableQrStand()">
                      <i class="fas fa-print me-1"></i>Print Tent Card
                   </button>
                </div>
             </div>
 
             <!-- Table Tent Card Preview Box -->
-            <div id="qrPrintArea" class="border rounded-3 p-4 text-center bg-white shadow-sm" style="border: 2px dashed #d9230f !important;">
-               <div style="font-family:'Playfair Display', serif; font-size:1.8rem; font-weight:700; color:#d9230f;" id="qrStandTitle">Favorite Cafe</div>
-               <div class="text-uppercase text-muted font-weight-bold tracking-wider mb-3" style="font-size:0.8rem;" id="qrStandSubtitle">Table 5 - Scan to View Menu & Order</div>
+            <div id="qrPrintArea" class="border rounded-4 p-4 text-center bg-white shadow-sm" style="border: 2px dashed #aa7262 !important; background: #fffcfa !important;">
+               <div style="font-family:'Titillium Web', sans-serif; font-size:2rem; font-weight:700; color:#102b37;" id="qrStandTitle">Favorite Cafe</div>
+               <div class="text-uppercase font-weight-bold tracking-wider mb-3" style="font-size:0.82rem; color:#aa7262;" id="qrStandSubtitle">Main Entrance - Scan to View Digital Menu &amp; Order</div>
                
                <div class="my-3">
-                  <img id="qrPreviewImg" src="" alt="Table QR Code" style="width:190px; height:190px; border-radius:12px; border:4px solid #fff; box-shadow:0 4px 15px rgba(0,0,0,0.1);" />
+                  <img id="qrPreviewImg" src="https://quickchart.io/qr?text=http%3A%2F%2Flocalhost%2Ffavorite_cafe%2Findex.html&amp;size=220&amp;margin=1" alt="Table QR Code" style="width:200px; height:200px; border-radius:14px; border:4px solid #fff; box-shadow:0 6px 20px rgba(16,43,55,0.12);" />
                </div>
 
                <div class="mt-3">
-                  <div class="font-weight-bold text-dark" style="font-size:1.05rem;">Point Smartphone Camera to Order</div>
-                  <div class="text-muted small">No App Download Needed • Fast & Contactless</div>
-                  <div class="small text-danger font-weight-bold mt-2" id="qrTargetUrl">http://localhost/favorite_cafe/?table=5</div>
+                  <div class="font-weight-bold" style="font-size:1.1rem; color:#102b37;">Point Smartphone Camera to Order</div>
+                  <div class="text-muted small">No App Download Needed • Fast &amp; Contactless</div>
+                  <div class="small font-weight-bold mt-2" style="color:#aa7262;" id="qrTargetUrl">http://localhost/favorite_cafe/index.html</div>
                </div>
             </div>
          </div>

@@ -1492,26 +1492,26 @@ function renderNotificationLogs(filterType) {
 
     var html = '';
     filtered.forEach(function(n) {
-        var badgeClass = 'sms-type';
-        var icon = '<i class="fas fa-comment-alt text-primary me-1"></i>';
+        var borderStyle = 'border-left: 4px solid #3b82f6;';
+        var icon = '<i class="fas fa-comment-alt text-primary me-2"></i>';
         if (n.type === 'email') {
-            badgeClass = 'email-type';
-            icon = '<i class="fas fa-envelope text-success me-1"></i>';
+            borderStyle = 'border-left: 4px solid #10b981;';
+            icon = '<i class="fas fa-envelope text-success me-2"></i>';
         } else if (n.type === 'alert') {
-            badgeClass = 'alert-type';
-            icon = '<i class="fas fa-bell text-warning me-1"></i>';
+            borderStyle = 'border-left: 4px solid #aa7262;';
+            icon = '<i class="fas fa-bell me-2" style="color:#aa7262;"></i>';
         }
 
         var dateStr = new Date(n.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         html += `
-            <div class="notify-card ${badgeClass}">
+            <div class="p-3 mb-2 bg-light rounded-3 shadow-sm" style="${borderStyle}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <strong class="text-dark">${icon} ${n.title}</strong>
-                    <span class="notify-time">${dateStr}</span>
+                    <strong style="color:#102b37; font-size:0.92rem;">${icon} ${n.title}</strong>
+                    <span class="badge bg-secondary font-monospace" style="font-size:0.7rem;">${dateStr}</span>
                 </div>
-                <div class="small text-muted mb-1">Recipient: <code>${n.recipient}</code></div>
-                <div class="small text-dark">${n.message}</div>
+                <div class="small text-muted mb-1">Recipient: <code class="bg-white px-2 py-0.5 rounded text-dark" style="border:1px solid #e2e8f0;">${n.recipient}</code></div>
+                <div class="small text-dark mt-1" style="font-weight:500;">${n.message}</div>
             </div>
         `;
     });
