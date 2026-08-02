@@ -2014,6 +2014,18 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDynamicCategories();
     loadDynamicCustomerMenu();
 
+    // Auto-detect ?table=X from QR code scan
+    var urlParams = new URLSearchParams(window.location.search);
+    var tableNum = urlParams.get('table');
+    if (tableNum) {
+        sessionStorage.setItem('favcafe_active_table', tableNum);
+        setTimeout(function() {
+            if (typeof showToast === 'function') {
+                showToast('Welcome to Favorite Cafe! Seated at Table ' + tableNum + '.', 'info', 'Table ' + tableNum + ' Detected');
+            }
+        }, 800);
+    }
+
     // Reservation button
     var resBtn = document.getElementById('resBtn');
     if (resBtn) {

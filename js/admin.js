@@ -2196,6 +2196,82 @@ window.onAdminMenuSearchChange = onAdminMenuSearchChange;
 window.setAdminMenuPage = setAdminMenuPage;
 window.renderAdminMenuCategoryPills = renderAdminMenuCategoryPills;
 
+/* --- TABLE QR CODE STAND GENERATOR --- */
+function openTableQrModal() {
+    var modal = document.getElementById('tableQrModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    updateQrStandPreview();
+}
+
+function closeTableQrModal() {
+    var modal = document.getElementById('tableQrModal');
+    if (!modal) return;
+    modal.style.display = 'none';
+}
+
+function updateQrStandPreview() {
+    var select = document.getElementById('qrTableSelect');
+    if (!select) return;
+
+    var val = select.value;
+    var subtitleEl = document.getElementById('qrStandSubtitle');
+    var targetUrlEl = document.getElementById('qrTargetUrl');
+    var imgEl = document.getElementById('qrPreviewImg');
+
+    var baseUrl = window.location.href.replace('admin.html', 'index.html').split('#')[0].split('?')[0];
+    var targetUrl = baseUrl;
+
+    if (val === 'main') {
+        if (subtitleEl) subtitleEl.textContent = 'Main Entrance - Scan to View Digital Menu & Order';
+        targetUrl = baseUrl;
+    } else {
+        if (subtitleEl) subtitleEl.textContent = 'Table ' + val + ' - Scan to View Menu & Order from Table';
+        targetUrl = baseUrl + '?table=' + val;
+    }
+
+    if (targetUrlEl) targetUrlEl.textContent = targetUrl;
+
+    var qrApiUrl = 'https://quickchart.io/qr?text=' + encodeURIComponent(targetUrl) + '&size=220&margin=1';
+    if (imgEl) imgEl.src = qrApiUrl;
+}
+
+function printTableQrStand() {
+    var printContent = document.getElementById('qrPrintArea');
+    if (!printContent) return;
+
+    var win = window.open('', '_blank', 'width=600,height=600');
+    win.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Favorite Cafe - Table QR Stand</title>
+            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+            <style>
+                body { font-family: 'Poppins', sans-serif; text-align: center; padding: 40px; margin: 0; }
+                .card { border: 3px double #d9230f; padding: 40px; border-radius: 16px; max-width: 450px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+                h1 { font-family: 'Playfair Display', serif; color: #d9230f; margin-bottom: 4px; font-size: 2.2rem; }
+                p { color: #555; margin-bottom: 20px; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; }
+                img { width: 220px; height: 220px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
+                .footer-text { margin-top: 24px; font-weight: 700; color: #111; font-size: 1.1rem; }
+                .sub-text { color: #777; font-size: 0.85rem; margin-top: 4px; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            <div class="card">
+                ${printContent.innerHTML}
+            </div>
+        </body>
+        </html>
+    `);
+    win.document.close();
+}
+
+window.openTableQrModal = openTableQrModal;
+window.closeTableQrModal = closeTableQrModal;
+window.updateQrStandPreview = updateQrStandPreview;
+window.printTableQrStand = printTableQrStand;
+
 
 
 

@@ -135,6 +135,10 @@
                <span class="notify-dot" id="adminNotifyDot"></span>
             </button>
 
+            <button type="button" class="btn-header-action bg-danger text-white border-0 me-1" onclick="openTableQrModal()">
+               <i class="fas fa-qrcode me-1"></i> Table QR Generator
+            </button>
+
             <button type="button" class="btn-header-action" onclick="exportSalesReport()">
                <i class="fas fa-file-download me-1"></i> Export Report
             </button>
@@ -1276,6 +1280,59 @@
             <button type="button" class="btn btn-primary w-50" style="background:var(--primary);border-color:var(--primary);" onclick="triggerReceiptPrint()">
                <i class="fas fa-print me-1"></i> Print / Save PDF
             </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+   TABLE QR CODE STAND GENERATOR MODAL
+   ============================================================ -->
+   <div id="tableQrModal" class="modal-overlay" style="display:none;">
+      <div class="modal-box" style="max-width:550px;">
+         <div class="modal-header">
+            <h5 class="modal-title"><i class="fas fa-qrcode text-danger me-2"></i>Generate Table QR Code Stand</h5>
+            <button type="button" class="btn-close-modal" onclick="closeTableQrModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <div class="modal-body p-4">
+            <div class="row g-3 align-items-center mb-4">
+               <div class="col-sm-6">
+                  <label class="form-label font-weight-bold text-secondary">Select Location / Table:</label>
+                  <select id="qrTableSelect" class="form-select" onchange="updateQrStandPreview()">
+                     <option value="main">Main Entrance / General Web PWA</option>
+                     <option value="1">Table 1 - Main Floor</option>
+                     <option value="2">Table 2 - Main Floor</option>
+                     <option value="3">Table 3 - Window View</option>
+                     <option value="4">Table 4 - Cozy Booth</option>
+                     <option value="5">Table 5 - Terrace Patio</option>
+                     <option value="6">Table 6 - Terrace Patio</option>
+                     <option value="7">Table 7 - VIP Lounge</option>
+                     <option value="8">Table 8 - VIP Lounge</option>
+                     <option value="9">Table 9 - Executive Suite</option>
+                     <option value="10">Table 10 - Executive Suite</option>
+                  </select>
+               </div>
+               <div class="col-sm-6 text-end">
+                  <button type="button" class="btn btn-danger rounded-pill px-3 me-1" onclick="printTableQrStand()">
+                     <i class="fas fa-print me-1"></i>Print Tent Card
+                  </button>
+               </div>
+            </div>
+
+            <!-- Table Tent Card Preview Box -->
+            <div id="qrPrintArea" class="border rounded-3 p-4 text-center bg-white shadow-sm" style="border: 2px dashed #d9230f !important;">
+               <div style="font-family:'Playfair Display', serif; font-size:1.8rem; font-weight:700; color:#d9230f;" id="qrStandTitle">Favorite Cafe</div>
+               <div class="text-uppercase text-muted font-weight-bold tracking-wider mb-3" style="font-size:0.8rem;" id="qrStandSubtitle">Table 5 - Scan to View Menu & Order</div>
+               
+               <div class="my-3">
+                  <img id="qrPreviewImg" src="" alt="Table QR Code" style="width:190px; height:190px; border-radius:12px; border:4px solid #fff; box-shadow:0 4px 15px rgba(0,0,0,0.1);" />
+               </div>
+
+               <div class="mt-3">
+                  <div class="font-weight-bold text-dark" style="font-size:1.05rem;">Point Smartphone Camera to Order</div>
+                  <div class="text-muted small">No App Download Needed • Fast & Contactless</div>
+                  <div class="small text-danger font-weight-bold mt-2" id="qrTargetUrl">http://localhost/favorite_cafe/?table=5</div>
+               </div>
+            </div>
          </div>
       </div>
    </div>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Cafe - Official Menu (Print & Digital PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        :root {
+            --primary: #d9230f;
+            --primary-dark: #b01908;
+            --bg-dark: #121212;
+            --text-main: #2b2b2b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Action Bar for Screen Viewers */
+        .no-print-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #ffffff;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 12px 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-print-bar h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .pdf-container {
+            max-width: 900px;
+            margin: 24px auto;
+            background: #ffffff;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border-radius: 12px;
+        }
+
+        /* Cafe Header */
+        .pdf-header {
+            text-align: center;
+            border-bottom: 3px double var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pdf-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .pdf-header p.subtitle {
+            font-size: 1.05rem;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .pdf-header .contact-info {
+            font-size: 0.85rem;
+            color: #777;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* QR Redirect Banner */
+        .qr-banner {
+            background: linear-gradient(135deg, #fff5f4, #ffebee);
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .qr-banner-text h6 {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-size: 1.1rem;
+        }
+
+        .qr-banner-text p {
+            font-size: 0.88rem;
+            margin: 0;
+            color: #444;
+        }
+
+        .qr-code-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+        }
+
+        /* Category Section */
+        .pdf-category {
+            margin-bottom: 35px;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 6px;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Menu Item Row */
+        .pdf-item {
+            margin-bottom: 16px;
+            page-break-inside: avoid;
+        }
+
+        .pdf-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .pdf-item-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #111;
+        }
+
+        .pdf-dots {
+            flex: 1;
+            border-bottom: 1px dotted #ccc;
+            margin: 0 12px;
+            position: relative;
+            top: -4px;
+        }
+
+        .pdf-item-price {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .pdf-item-desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        /* Print Adjustments */
+        @media print {
+            .no-print-bar {
+                display: none !important;
+            }
+            body {
+                background: #fff;
+            }
+            .pdf-container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            .qr-banner {
+                border-color: #999;
+                background: #fdfdfd;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Action Bar (Screen Only) -->
+    <div class="no-print-bar">
+        <div>
+            <h5><i class="fas fa-mug-hot me-2"></i>Favorite Cafe Digital & Printable Menu</h5>
+            <small class="text-muted">Live synchronization with database</small>
+        </div>
+        <div class="d-flex gap-2">
+            <a id="btnRedirectWeb" href="index.html" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                <i class="fas fa-globe me-1"></i>Open Web PWA App
+            </a>
+            <button onclick="window.print()" class="btn btn-danger btn-sm rounded-pill px-4">
+                <i class="fas fa-print me-1"></i>Print / Download PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- PDF Document Container -->
+    <div class="pdf-container">
+        
+        <!-- Cafe Header -->
+        <div class="pdf-header">
+            <h1>Favorite Cafe</h1>
+            <p class="subtitle">Modern Coffee, Bistro & Rwandan Delicacies</p>
+            <div class="contact-info">
+                <span><i class="fas fa-map-marker-alt me-1"></i>Kigali, Rwanda</span>
+                <span><i class="fas fa-phone me-1"></i>+250 788 000 000</span>
+                <span><i class="fas fa-globe me-1"></i>favoritecafe.rw</span>
+            </div>
+        </div>
+
+        <!-- Scannable QR Code Redirect Banner -->
+        <a id="qrBannerLink" href="index.html" class="qr-banner" title="Click or Scan to Order Online">
+            <div class="qr-banner-text">
+                <h6><i class="fas fa-qrcode me-2"></i>Scan or Click to Order Online from Table!</h6>
+                <p>Use your camera to open our Interactive Web App for instant orders, customization & digital payments.</p>
+            </div>
+            <div>
+                <img id="pdfQrImage" class="qr-code-img" src="" alt="Scan to Order Online">
+            </div>
+        </a>
+
+        <!-- Dynamic Menu Container -->
+        <div id="pdfMenuContent">
+            <div class="text-center py-5">
+                <div class="spinner-border text-danger" role="status"></div>
+                <p class="mt-2 text-muted">Loading live cafe menu...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-4 border-top mt-5 text-muted" style="font-size: 0.8rem;">
+            <p class="mb-1">Thank you for dining with Favorite Cafe!</p>
+            <p class="mb-0">Visit <strong>favoritecafe.rw</strong> anytime to order online or install our PWA app.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var webUrl = window.location.href.replace('menu_pdf.html', 'index.html');
+            document.getElementById('btnRedirectWeb').href = webUrl;
+            document.getElementById('qrBannerLink').href = webUrl;
+
+            // Generate scannable QR Code using QuickChart API
+            var qrApi = 'https://quickchart.io/qr?text=' + encodeURIComponent(webUrl) + '&size=180&margin=1';
+            document.getElementById('pdfQrImage').src = qrApi;
+
+            loadPdfMenuData();
+        });
+
+        async function loadPdfMenuData() {
+            var contentEl = document.getElementById('pdfMenuContent');
+            var items = [];
+
+            // 1. Try local storage overlay first
+            try {
+                var stored = localStorage.getItem('favcafe_menu');
+                if (stored) {
+                    var parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        items = parsed;
+                    }
+                }
+            } catch(e) {}
+
+            // 2. Fetch server database items
+            try {
+                var res = await fetch('api/menu.php?action=get&t=' + Date.now());
+                if (res.ok) {
+                    var data = await res.json();
+                    if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
+                        items = data.items;
+                    }
+                }
+            } catch(e) {}
+
+            // 3. Fallback to menu.json
+            if (!items || items.length === 0) {
+                try {
+                    var resJson = await fetch('api/menu.json?t=' + Date.now());
+                    if (resJson.ok) {
+                        items = await resJson.json();
+                    }
+                } catch(e) {}
+            }
+
+            if (!items || items.length === 0) {
+                contentEl.innerHTML = '<div class="alert alert-warning text-center">No menu items found.</div>';
+                return;
+            }
+
+            // Group items by category
+            var categorized = {};
+            items.forEach(function(item) {
+                if (!item || parseInt(item.is_available) === 0) return;
+                var cat = (item.category || 'Mains').toLowerCase();
+                if (!categorized[cat]) {
+                    categorized[cat] = [];
+                }
+                categorized[cat].push(item);
+            });
+
+            var html = '';
+            var categoryIcons = {
+                'coffee': 'fas fa-coffee',
+                'tea': 'fas fa-mug-hot',
+                'smoothies': 'fas fa-blender',
+                'shakes': 'fas fa-glass-martini-alt',
+                'juices': 'fas fa-cocktail',
+                'mains': 'fas fa-utensils',
+                'salads': 'fas fa-leaf',
+                'sides': 'fas fa-bread-slice',
+                'grills': 'fas fa-drumstick-bite',
+                'pizza': 'fas fa-pizza-slice',
+                'wraps': 'fas fa-hamburger'
+            };
+
+            for (var catKey in categorized) {
+                var catItems = categorized[catKey];
+                if (catItems.length === 0) continue;
+
+                var catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
+                var iconClass = categoryIcons[catKey] || 'fas fa-utensils';
+
+                html += '<div class="pdf-category">';
+                html += '   <div class="category-title"><i class="' + iconClass + ' me-2"></i>' + catName + '</div>';
+                
+                catItems.forEach(function(item) {
+                    var priceStr = parseFloat(item.price).toLocaleString() + ' RWF';
+                    html += '<div class="pdf-item">';
+                    html += '   <div class="pdf-item-header">';
+                    html += '       <span class="pdf-item-name">' + (item.title || item.name) + '</span>';
+                    html += '       <span class="pdf-dots"></span>';
+                    html += '       <span class="pdf-item-price">' + priceStr + '</span>';
+                    html += '   </div>';
+                    if (item.description) {
+                        html += '   <div class="pdf-item-desc">' + item.description + '</div>';
+                    }
+                    html += '</div>';
+                });
+
+                html += '</div>';
+            }
+
+            contentEl.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
