@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>Favorite Cafe - Admin Dashboard</title>
+   
+   <!-- Google Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
+   <!-- CSS Assets -->
+   <link href="css/bootstrap.min.css" rel="stylesheet" />
+   <link rel="stylesheet" href="css/all.min.css" />
+   <link rel="stylesheet" href="css/style.css" />
+   <link rel="stylesheet" href="css/admin.css" />
+   <link rel="manifest" href="manifest.json">
+</head>
+
+<body class="admin-body">
+
+   <!-- Toast Notification Container -->
+   <div id="toastContainer"></div>
+
+   <!-- ============================================================
+         SIDEBAR NAVIGATION
+         ============================================================ -->
+   <aside class="admin-sidebar">
+      <div class="sidebar-header">
+         <div class="brand-logo-icon">
+            <i class="fas fa-mug-hot"></i>
+         </div>
+         <div>
+            <div class="brand-title">Favorite<span>Cafe</span></div>
+            <div class="brand-subtitle">Admin Portal</div>
+         </div>
+      </div>
+
+      <nav class="sidebar-menu">
+         <div class="sidebar-label">Management</div>
+         
+         <a href="#" class="sidebar-item active" data-tab="overview">
+            <i class="fas fa-chart-pie"></i>
+            <span>Overview</span>
+         </a>
+         
+         <a href="#" class="sidebar-item" data-tab="orders">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Live Orders</span>
+            <span class="badge-count" id="sidebarOrderBadge">0</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="menu">
+            <i class="fas fa-hamburger"></i>
+            <span>Menu &amp; Stock</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="categories">
+            <i class="fas fa-tags"></i>
+            <span>Categories</span>
+            <span class="badge-count" id="sidebarCatBadge" style="background:var(--primary);">8</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="reservations">
+            <i class="fas fa-calendar-check"></i>
+            <span>Reservations</span>
+            <span class="badge-count" id="sidebarResBadge" style="background:#e67e22;">0</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="tables">
+            <i class="fas fa-chair"></i>
+            <span>Table Progress</span>
+            <span class="badge-count" id="sidebarTablesBadge" style="background:#2563eb;">0</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="users">
+            <i class="fas fa-users-cog"></i>
+            <span>Staff &amp; Loyalty</span>
+            <span class="badge-count" id="sidebarUsersBadge" style="background:#7c3aed;">New</span>
+         </a>
+
+         <div class="sidebar-label">Reports &amp; Config</div>
+
+         <a href="#" class="sidebar-item" data-tab="analytics">
+            <i class="fas fa-chart-line"></i>
+            <span>Analytics</span>
+         </a>
+
+         <a href="#" class="sidebar-item" data-tab="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+         </a>
+      </nav>
+
+      <div class="sidebar-footer">
+         <div class="admin-user-card">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+               <div class="user-name">Admin Staff</div>
+               <div class="user-role">Head Chef &amp; Manager</div>
+            </div>
+            <button class="btn-logout-icon" onclick="window.location.href='index.html'" title="Exit to Website">
+               <i class="fas fa-sign-out-alt"></i>
+            </button>
+         </div>
+      </div>
+   </aside>
+
+   <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+   <main class="admin-main">
+
+      <!-- TOP HEADER BAR -->
+      <header class="admin-topbar">
+         <div class="search-box-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" id="adminOrderSearch" placeholder="Search order ID, customer name, items..." autocomplete="off" />
+         </div>
+
+         <div class="topbar-actions">
+            <div class="clock-badge">
+               <i class="far fa-clock"></i>
+               <span id="liveClock">00:00:00</span>
+            </div>
+
+            <button type="button" class="topbar-icon-btn" onclick="refreshKitchenData()" title="Refresh Kitchen Data">
+               <i class="fas fa-sync-alt"></i>
+            </button>
+
+            <button type="button" class="topbar-icon-btn" onclick="openNotificationLogModal()" title="Notifications & Dispatch Logs">
+               <i class="far fa-bell"></i>
+               <span class="notify-dot" id="adminNotifyDot"></span>
+            </button>
+
+            <button type="button" class="btn-header-action" onclick="exportSalesReport()">
+               <i class="fas fa-file-download me-1"></i> Export Report
+            </button>
+         </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <div class="admin-content">
+
+         <!-- ============================================================
+               TAB 1: OVERVIEW & LIVE DASHBOARD
+               ============================================================ -->
+         <section id="tab-overview" class="tab-section active">
+            <div class="page-title-row">
+               <div>
+                  <h3>Dashboard Overview</h3>
+                  <p>Welcome back! Here is your real-time restaurant performance summary.</p>
+               </div>
+               <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="window.location.href='index.html'">
+                  <i class="fas fa-globe me-1"></i> View Main Website
+               </button>
+            </div>
+
+            <!-- KPI STAT CARDS GRID -->
+            <div class="stat-cards-grid">
+               <div class="stat-card">
+                  <div class="stat-icon-box primary">
+                     <i class="fas fa-dollar-sign"></i>
+                  </div>
+                  <div class="stat-info">
+                     <div class="stat-label">Today's Revenue</div>
+                     <div class="stat-value" id="statTotalRevenue">0 RWF</div>
+                     <div class="stat-trend up"><i class="fas fa-arrow-up me-1"></i>+14% vs yesterday</div>
+                  </div>
+               </div>
+
+               <div class="stat-card">
+                  <div class="stat-icon-box green">
+                     <i class="fas fa-shopping-bag"></i>
+                  </div>
+                  <div class="stat-info">
+                     <div class="stat-label">Total Orders</div>
+                     <div class="stat-value" id="statTotalOrders">0</div>
+                     <div class="stat-trend up"><i class="fas fa-arrow-up me-1"></i>+8% new orders</div>
+                  </div>
+               </div>
+
+               <div class="stat-card">
+                  <div class="stat-icon-box amber">
+                     <i class="fas fa-fire"></i>
+                  </div>
+                  <div class="stat-info">
+                     <div class="stat-label">Kitchen Preparing</div>
+                     <div class="stat-value" id="statPrepOrders">0</div>
+                     <div class="stat-trend text-warning">Active kitchen tickets</div>
+                  </div>
+               </div>
+
+               <div class="stat-card">
+                  <div class="stat-icon-box blue">
+                     <i class="fas fa-shipping-fast"></i>
+                  </div>
+                  <div class="stat-info">
+                     <div class="stat-label">Avg Delivery Speed</div>
+                     <div class="stat-value">22 min</div>
+                     <div class="stat-trend up"><i class="fas fa-check me-1"></i>On schedule</div>
+                  </div>
+               </div>
+
+               <div class="stat-card">
+                  <div class="stat-icon-box orange" style="background:rgba(230,126,34,0.15);color:#e67e22;">
+                     <i class="fas fa-calendar-check"></i>
+                  </div>
+                  <div class="stat-info">
+                     <div class="stat-label">Booked Tables</div>
+                     <div class="stat-value" id="statTotalReservations">0</div>
+                     <div class="stat-trend text-primary"><i class="fas fa-chair me-1"></i>Table Reservations</div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+               <!-- KITCHEN TICKETS BOARD -->
+               <div class="col-lg-12">
+                  <div class="admin-card">
+                     <div class="admin-card-header">
+                        <h5><i class="fas fa-fire me-2" style="color:var(--amber);"></i>Active Kitchen Live Tickets</h5>
+                        <button type="button" class="btn-action-sm" onclick="refreshKitchenData()"><i class="fas fa-sync-alt me-1"></i>Refresh Tickets</button>
+                     </div>
+                     <div class="kitchen-grid" id="kitchenGrid">
+                        <!-- Dynamic kitchen tickets rendered here -->
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- RECENT ORDERS TABLE -->
+            <div class="row g-4">
+               <div class="col-lg-8">
+                  <div class="admin-card">
+                     <div class="admin-card-header flex-wrap gap-2">
+                        <h5><i class="fas fa-receipt me-2" style="color:var(--primary);"></i>Recent Orders &amp; Dispatch</h5>
+                        <div class="order-filter-pills">
+                           <button class="filter-pill active" data-filter="all">All</button>
+                           <button class="filter-pill" data-filter="preparing">Preparing</button>
+                           <button class="filter-pill" data-filter="ready">Ready</button>
+                           <button class="filter-pill" data-filter="completed">Completed</button>
+                        </div>
+                     </div>
+                     <div class="table-responsive">
+                        <table class="admin-table">
+                           <thead>
+                              <tr>
+                                 <th>Order Code</th>
+                                 <th>Customer</th>
+                                 <th>Items Summary</th>
+                                 <th>Option</th>
+                                 <th>Total</th>
+                                 <th>Status</th>
+                                 <th>Action</th>
+                              </tr>
+                           </thead>
+                           <tbody id="adminOrdersTbody">
+                              <!-- Dynamic orders table rendered here -->
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- TOP SELLING DISHES & QUICK STOCK CONTROLS -->
+               <div class="col-lg-4">
+                  <div class="admin-card">
+                     <div class="admin-card-header">
+                        <h5><i class="fas fa-toggle-on me-2" style="color:var(--primary);"></i>Menu Stock Controls</h5>
+                     </div>
+                     <div class="d-flex flex-column gap-2 mt-2">
+                        <div class="stock-item-row">
+                           <div class="d-flex align-items-center gap-3">
+                              <img src="img/menu/1.jpg" class="stock-item-thumb" alt="" />
+                              <div>
+                                 <strong class="d-block" style="font-size:0.88rem;">Smash Burger</strong>
+                                 <span class="small text-muted">5,500 RWF • High Demand</span>
+                              </div>
+                           </div>
+                           <label class="switch">
+                              <input type="checkbox" checked />
+                              <span class="slider"></span>
+                           </label>
+                        </div>
+
+                        <div class="stock-item-row">
+                           <div class="d-flex align-items-center gap-3">
+                              <img src="img/menu/2.jpg" class="stock-item-thumb" alt="" />
+                              <div>
+                                 <strong class="d-block" style="font-size:0.88rem;">Margherita Royale</strong>
+                                 <span class="small text-muted">7,500 RWF • In Stock</span>
+                              </div>
+                           </div>
+                           <label class="switch">
+                              <input type="checkbox" checked />
+                              <span class="slider"></span>
+                           </label>
+                        </div>
+
+                        <div class="stock-item-row">
+                           <div class="d-flex align-items-center gap-3">
+                              <img src="img/menu/3.jpg" class="stock-item-thumb" alt="" />
+                              <div>
+                                 <strong class="d-block" style="font-size:0.88rem;">Nashville Hot Chicken</strong>
+                                 <span class="small text-muted">6,500 RWF • In Stock</span>
+                              </div>
+                           </div>
+                           <label class="switch">
+                              <input type="checkbox" checked />
+                              <span class="slider"></span>
+                           </label>
+                        </div>
+
+                        <div class="stock-item-row">
+                           <div class="d-flex align-items-center gap-3">
+                              <img src="img/menu/6.jpg" class="stock-item-thumb" alt="" />
+                              <div>
+                                 <strong class="d-block" style="font-size:0.88rem;">Lava Cake</strong>
+                                 <span class="small text-muted">3,500 RWF • Low Stock</span>
+                              </div>
+                           </div>
+                           <label class="switch">
+                              <input type="checkbox" checked />
+                              <span class="slider"></span>
+                           </label>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 2: LIVE ORDERS DISPATCH BOARD
+               ============================================================ -->
+         <section id="tab-orders" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Live Orders Dispatch Board</h3>
+                  <p>Filter, manage and track active kitchen and delivery orders in real-time.</p>
+               </div>
+               <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="refreshAdminOrders()">
+                  <i class="fas fa-sync-alt me-1"></i> Refresh Orders
+               </button>
+            </div>
+
+            <div class="admin-card p-0 overflow-hidden">
+               <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div class="order-filter-pills">
+                     <button class="filter-pill active" data-filter="all" onclick="filterLiveOrdersBoard('all', this)">All Orders</button>
+                     <button class="filter-pill" data-filter="preparing" onclick="filterLiveOrdersBoard('preparing', this)">Kitchen Preparing</button>
+                     <button class="filter-pill" data-filter="ready" onclick="filterLiveOrdersBoard('ready', this)">Ready for Dispatch</button>
+                     <button class="filter-pill" data-filter="completed" onclick="filterLiveOrdersBoard('completed', this)">Completed</button>
+                  </div>
+                  
+                  <div class="position-relative" style="min-width: 260px;">
+                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                     <input type="text" id="liveOrdersSearchInput" class="form-control form-control-sm ps-5 rounded-pill" placeholder="Search order code, customer, item..." onkeyup="onLiveOrdersSearchChange()" autocomplete="off" />
+                  </div>
+               </div>
+
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                     <thead class="table-dark text-nowrap">
+                        <tr>
+                           <th>ORDER CODE</th>
+                           <th>CUSTOMER DETAILS</th>
+                           <th style="min-width: 240px; max-width: 380px;">ITEMS SUMMARY</th>
+                           <th>SERVICE OPTION</th>
+                           <th>TOTAL (RWF)</th>
+                           <th>STATUS</th>
+                           <th class="text-end">ACTIONS</th>
+                        </tr>
+                     </thead>
+                     <tbody id="fullOrdersDispatchTbody">
+                        <!-- Dynamic live orders board -->
+                     </tbody>
+                  </table>
+               </div>
+
+               <!-- Pagination Footer -->
+               <div class="p-3 bg-light border-top d-flex justify-content-between align-items-center flex-wrap gap-2" id="liveOrdersPaginationBar">
+                  <div class="small text-muted font-weight-bold" id="liveOrdersPaginationInfo">
+                     Showing 1 to 7 of 7 orders
+                  </div>
+                  <nav>
+                     <ul class="pagination pagination-sm mb-0 gap-1" id="liveOrdersPaginationNav">
+                        <!-- Dynamic pagination buttons rendered by JS -->
+                     </ul>
+                  </nav>
+               </div>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 3: MENU & INVENTORY (FULL CRUD)
+               ============================================================ -->
+         <section id="tab-menu" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Menu &amp; Inventory Management</h3>
+                  <p>Create, edit, delete and toggle dish availability in real-time.</p>
+               </div>
+               <button class="btn btn-primary rounded-pill px-4" style="background:var(--primary);border-color:var(--primary);" onclick="openAddMenuModal()">
+                  <i class="fas fa-plus me-1"></i> Add New Menu Item
+               </button>
+            </div>
+
+            <!-- MENU FILTERS & SEARCH ROW -->
+            <div class="admin-card mb-4 p-3 bg-light border">
+               <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                  <!-- Dynamic Category Filter Pills -->
+                  <div class="d-flex align-items-center gap-1 flex-wrap" id="adminMenuCategoryPills">
+                     <button class="filter-pill active" data-cat="all" onclick="setAdminMenuCategoryFilter('all', this)">All Categories</button>
+                  </div>
+                  
+                  <!-- Dish Search Input -->
+                  <div class="position-relative" style="min-width: 250px;">
+                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                     <input type="text" id="adminMenuSearchInput" class="form-control form-control-sm ps-5 rounded-pill" placeholder="Search dish title, tags..." onkeyup="onAdminMenuSearchChange()" autocomplete="off" />
+                  </div>
+               </div>
+            </div>
+            
+            <div class="row g-4 mb-4" id="adminMenuGrid">
+               <!-- Dynamic Menu Cards rendered here -->
+            </div>
+
+            <!-- PAGINATION FOOTER BAR -->
+            <div class="admin-card p-3 d-flex justify-content-between align-items-center flex-wrap gap-2" id="adminMenuPaginationBar">
+               <div class="small text-muted font-weight-bold" id="adminMenuPaginationInfo">
+                  Showing 1 to 10 of 20 items
+               </div>
+               <nav>
+                  <ul class="pagination pagination-sm mb-0 gap-1" id="adminMenuPaginationNav">
+                     <!-- Dynamic pagination buttons rendered by JS -->
+                  </ul>
+               </nav>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB: CATEGORIES MANAGEMENT (FULL CRUD)
+               ============================================================ -->
+         <section id="tab-categories" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Category Management</h3>
+                  <p>Create, edit, disable &amp; update filter categories for your website menu.</p>
+               </div>
+               <button class="btn btn-primary rounded-pill px-4" style="background:var(--primary);border-color:var(--primary);" onclick="openCategoryModal()">
+                  <i class="fas fa-plus me-1"></i> Add New Category
+               </button>
+            </div>
+            
+            <div class="admin-card p-0 overflow-hidden">
+               <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                     <span class="fw-bold text-dark"><i class="fas fa-tags me-1 text-warning"></i> Menu Categories</span>
+                     <span class="badge bg-secondary rounded-pill" id="adminCatCountBadge">8 Categories</span>
+                  </div>
+                  <div class="position-relative" style="min-width: 240px;">
+                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                     <input type="text" id="adminCatSearchInput" class="form-control form-control-sm ps-5 rounded-pill" placeholder="Search category..." onkeyup="renderAdminCategoriesTable()" autocomplete="off" />
+                  </div>
+               </div>
+
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0 text-nowrap">
+                     <thead class="table-dark">
+                        <tr>
+                           <th style="width: 70px;">ICON</th>
+                           <th>CATEGORY NAME</th>
+                           <th>FILTER KEY (SLUG)</th>
+                           <th>DISH COUNT</th>
+                           <th>STATUS</th>
+                           <th>SORT ORDER</th>
+                           <th class="text-end">ACTIONS</th>
+                        </tr>
+                     </thead>
+                     <tbody id="adminCategoriesTbody">
+                        <!-- Dynamic Categories table rendered here -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 4: TABLE RESERVATIONS MANAGEMENT
+               ============================================================ -->
+         <section id="tab-reservations" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Table Reservations</h3>
+                  <p>Manage customer table bookings, party sizes, and seating arrangements.</p>
+               </div>
+               <div class="d-flex gap-2">
+                  <select id="adminResFilter" class="form-select form-select-sm rounded-pill" onchange="renderAdminReservations()">
+                     <option value="all">All Statuses</option>
+                     <option value="Confirmed" selected>Confirmed Only</option>
+                     <option value="Seated">Seated</option>
+                     <option value="Cancelled">Cancelled</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="admin-card p-0 overflow-hidden">
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0 text-nowrap">
+                     <thead class="table-dark">
+                        <tr>
+                           <th>REF ID</th>
+                           <th>CUSTOMER</th>
+                           <th>DATE &amp; TIME</th>
+                           <th>GUESTS</th>
+                           <th>SEATING AREA</th>
+                           <th>NOTES</th>
+                           <th>STATUS</th>
+                           <th class="text-end">ACTIONS</th>
+                        </tr>
+                     </thead>
+                     <tbody id="adminResTableBody">
+                        <!-- Reservations rendered dynamically -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 5: LIVE TABLE DINING TRACKER WITH PROGRESS BARS
+               ============================================================ -->
+         <section id="tab-tables" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Live Table Dining Tracker</h3>
+                  <p>Track dine-in tables in real-time with animated progress bars (Seated ➔ Cooking ➔ Dining ➔ Bill ➔ Cleared).</p>
+               </div>
+               <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="resetAllTables()">
+                  <i class="fas fa-sync-alt me-1"></i> Reset All Tables
+               </button>
+            </div>
+
+            <!-- Stage Legend Bar -->
+            <div class="p-3 bg-white border rounded-3 mb-4 shadow-sm">
+               <div class="row align-items-center text-center g-2 small font-weight-bold">
+                  <div class="col-md-2 col-4">
+                     <span class="badge bg-primary w-100 py-2 shadow-sm">1. Seated (20%)</span>
+                  </div>
+                  <div class="col-md-3 col-4">
+                     <span class="badge bg-warning text-dark w-100 py-2 shadow-sm">2. Cooking / Serving (45%)</span>
+                  </div>
+                  <div class="col-md-3 col-4">
+                     <span class="badge bg-info text-dark w-100 py-2 shadow-sm">3. Dining &amp; Eating (70%)</span>
+                  </div>
+                  <div class="col-md-2 col-6">
+                     <span class="badge bg-danger w-100 py-2 shadow-sm">4. Bill / Payment (90%)</span>
+                  </div>
+                  <div class="col-md-2 col-6">
+                     <span class="badge bg-success w-100 py-2 shadow-sm">5. Cleared &amp; Free (100%)</span>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Live Tables Grid -->
+            <div class="row g-3" id="liveTablesProgressGrid">
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #1 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Main Hall</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>38 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Kagabo Patrick</strong> (4 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Dining &amp; Eating</span>
+                        <span class="text-dark" style="font-size:0.75rem;">70%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info text-dark" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Guests enjoying main meals">Guests enjoying main meals</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(1)">
+                        ▶ Next Stage
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #2 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Main Hall</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>15 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Aline Uwase</strong> (2 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Cooking / Serving</span>
+                        <span class="text-dark" style="font-size:0.75rem;">45%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning text-dark" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Food prep &amp; appetizers served">Food prep &amp; appetizers served</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(2)">
+                        ▶ Next Stage
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #3 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Terrace</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>55 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Keza Diane</strong> (2 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Bill Requested</span>
+                        <span class="text-dark" style="font-size:0.75rem;">90%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Bill requested &amp; payment">Bill requested &amp; payment</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(3)">
+                        🧹 Clear Table
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #4 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Terrace</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>5 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Eric Munyaneza</strong> (3 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Seated</span>
+                        <span class="text-dark" style="font-size:0.75rem;">20%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Guests seated &amp; menus served">Guests seated &amp; menus served</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(4)">
+                        ▶ Next Stage
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #5 <span class="badge bg-light text-dark border ms-1 font-weight-normal">VIP Lounge</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>42 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Jean Paul Ndayi</strong> (6 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Dining &amp; Eating</span>
+                        <span class="text-dark" style="font-size:0.75rem;">70%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info text-dark" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Guests enjoying main meals">Guests enjoying main meals</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(5)">
+                        ▶ Next Stage
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #6 <span class="badge bg-light text-dark border ms-1 font-weight-normal">VIP Lounge</span></h5>
+                     <span class="badge bg-secondary font-monospace"><i class="far fa-clock me-1"></i>Vacant</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Vacant</strong> (Free)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Cleared &amp; Free</span>
+                        <span class="text-dark" style="font-size:0.75rem;">100%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Table cleaned &amp; sanitized">Table cleaned &amp; sanitized</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(6)">
+                        🛋️ Seat New Guests
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #7 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Garden</span></h5>
+                     <span class="badge bg-dark font-monospace"><i class="far fa-clock me-1"></i>20 min</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Kayonga Raul</strong> (2 Guests)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Cooking / Serving</span>
+                        <span class="text-dark" style="font-size:0.75rem;">45%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning text-dark" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Food prep &amp; appetizers served">Food prep &amp; appetizers served</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(7)">
+                        ▶ Next Stage
+                     </button>
+                  </div>
+               </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-6">
+               <div class="table-tracker-card p-3 bg-white rounded-3 border shadow-sm h-100 position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                     <h5 class="font-weight-bold mb-0 text-dark">Table #8 <span class="badge bg-light text-dark border ms-1 font-weight-normal">Garden</span></h5>
+                     <span class="badge bg-secondary font-monospace"><i class="far fa-clock me-1"></i>Vacant</span>
+                  </div>
+                  
+                  <div class="small text-muted mb-3">
+                     <i class="fas fa-user me-1 text-primary"></i><strong>Vacant</strong> (Free)
+                  </div>
+                  
+                  <!-- Live Animated Progress Bar -->
+                  <div class="mb-3">
+                     <div class="d-flex justify-content-between small font-weight-bold mb-1">
+                        <span class="text-uppercase" style="font-size:0.75rem;">Stage: Cleared &amp; Free</span>
+                        <span class="text-dark" style="font-size:0.75rem;">100%</span>
+                     </div>
+                     <div class="progress" style="height: 12px; border-radius: 10px; background: #e2e8f0;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                     <small class="text-muted text-truncate me-2" title="Table cleaned &amp; sanitized">Table cleaned &amp; sanitized</small>
+                     <button class="btn btn-sm btn-outline-dark py-1 px-2 font-weight-bold text-nowrap" onclick="advanceTableStage(8)">
+                        🛋️ Seat New Guests
+                     </button>
+                  </div>
+               </div>
+            </div>
+        </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 4: ANALYTICS
+               ============================================================ -->
+         <section id="tab-analytics" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Sales &amp; Revenue Analytics</h3>
+                  <p>Gain insights into sales trends, order volumes, and top dishes.</p>
+               </div>
+            </div>
+            <div class="admin-card">
+               <p class="text-muted">Revenue trends and sales reporting widgets.</p>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 5: SETTINGS
+               ============================================================ -->
+         <section id="tab-settings" class="tab-section">
+            <div class="page-title-row">
+               <div>
+                  <h3>Restaurant Admin Settings</h3>
+                  <p>Configure store operating hours, delivery fees, and staff access.</p>
+               </div>
+            </div>
+            <div class="admin-card">
+               <p class="text-muted">Restaurant store settings and operational defaults.</p>
+            </div>
+         </section>
+
+         <!-- ============================================================
+               TAB 6: STAFF ROLES & CUSTOMER LOYALTY POINTS MANAGEMENT
+               ============================================================ -->
+         <section id="tab-users" class="tab-section">
+            <div class="page-title-row flex-wrap gap-2 mb-4">
+               <div>
+                  <h3 class="mb-0"><i class="fas fa-users-cog me-2" style="color:var(--primary);"></i>Staff Roles &amp; Customer Loyalty Points</h3>
+                  <p class="text-muted small mb-0">Manage staff access permissions, roles, and customer legacy loyalty points balances.</p>
+               </div>
+               <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-dark rounded-pill px-3 py-2" onclick="openAddStaffModal()">
+                     <i class="fas fa-user-plus me-1"></i> + Add Staff Member
+                  </button>
+                  <button class="btn btn-sm btn-warning text-dark rounded-pill px-3 py-2 font-weight-bold" onclick="openGrantPointsModal()">
+                     <i class="fas fa-star me-1"></i> + Grant Loyalty Points
+                  </button>
+               </div>
+            </div>
+
+            <!-- STAFF MEMBERS TABLE -->
+            <div class="admin-card mb-4 shadow-sm">
+               <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="font-weight-bold mb-0 text-dark"><i class="fas fa-id-badge me-2 text-primary"></i>Staff Members &amp; Access Roles</h5>
+                  <span class="badge bg-primary rounded-pill px-3 py-1" id="staffTotalCounter">4 Active Staff</span>
+               </div>
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                     <thead class="table-dark">
+                        <tr>
+                           <th>STAFF CODE</th>
+                           <th>NAME &amp; CONTACT</th>
+                           <th>ASSIGNED ROLE</th>
+                           <th>PERMISSIONS / ACCESS</th>
+                           <th>STATUS</th>
+                           <th class="text-end">ACTIONS</th>
+                        </tr>
+                     </thead>
+                     <tbody id="staffTableBody">
+                        <!-- Dynamic Staff List rendered here -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+
+            <!-- CUSTOMER LOYALTY POINTS TABLE -->
+            <div class="admin-card shadow-sm">
+               <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="font-weight-bold mb-0 text-dark"><i class="fas fa-coins me-2 text-warning"></i>Customer Accounts &amp; Legacy Points</h5>
+                  <span class="badge bg-warning text-dark rounded-pill px-3 py-1" id="customerTotalCounter">Customer Balances</span>
+               </div>
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                     <thead class="table-dark">
+                        <tr>
+                           <th>CUSTOMER CODE</th>
+                           <th>NAME &amp; PHONE</th>
+                           <th>EMAIL ADDRESS</th>
+                           <th>LOYALTY POINTS</th>
+                           <th>DISCOUNT VALUE (RWF)</th>
+                           <th class="text-end">ACTIONS</th>
+                        </tr>
+                     </thead>
+                     <tbody id="customerLoyaltyTableBody">
+                        <!-- Dynamic Customer Loyalty rendered here -->
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </section>
+
+      </div>
+   </main>
+
+   <!-- ============================================================
+         ADD / EDIT STAFF MEMBER MODAL
+         ============================================================ -->
+   <div id="staffModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:460px;">
+         <div class="modal-standard-header">
+            <h4 id="staffModalTitle"><i class="fas fa-user-shield me-2" style="color:var(--primary);"></i>Add Staff Member</h4>
+            <button type="button" class="modal-standard-close" onclick="closeStaffModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="staffForm" onsubmit="confirmSaveStaff(event)">
+            <input type="hidden" id="staffId" value="" />
+            
+            <div class="auth-input-group mb-2">
+               <label>Full Name *</label>
+               <input type="text" id="staffName" class="form-control" placeholder="e.g. Jean Paul Ndayi" required />
+            </div>
+
+            <div class="row g-2 mb-2">
+               <div class="col-md-6 auth-input-group">
+                  <label>Staff ID / Username *</label>
+                  <input type="text" id="staffCode" class="form-control" placeholder="staff_jp" required />
+               </div>
+               <div class="col-md-6 auth-input-group">
+                  <label>Phone Number *</label>
+                  <input type="tel" id="staffPhone" class="form-control" placeholder="+250 788 111 222" required />
+               </div>
+            </div>
+
+            <div class="auth-input-group mb-2">
+               <label>Assigned Staff Role *</label>
+               <select id="staffRole" class="form-select" required>
+                  <option value="Super Admin">Super Admin (Full System Access)</option>
+                  <option value="Head Chef / Kitchen Manager">Head Chef / Kitchen Manager</option>
+                  <option value="Floor Manager / Waiter">Floor Manager / Waiter (Table Progress)</option>
+                  <option value="Cashier & POS Billing">Cashier &amp; POS Billing</option>
+               </select>
+            </div>
+
+            <div class="auth-input-group mb-3">
+               <label>Account Password *</label>
+               <input type="password" id="staffPass" class="form-control" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="btn-checkout-submit w-100" style="background:var(--primary);border:none;">
+               <i class="fas fa-save me-1"></i> Save Staff Member
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         GRANT / DEDUCT CUSTOMER LOYALTY POINTS MODAL
+         ============================================================ -->
+   <div id="grantPointsModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:440px;">
+         <div class="modal-standard-header">
+            <h4><i class="fas fa-coins me-2" style="color:var(--primary);"></i>Grant Customer Loyalty Points</h4>
+            <button type="button" class="modal-standard-close" onclick="closeGrantPointsModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="grantPointsForm" onsubmit="confirmGrantPointsSubmit(event)">
+            <div class="auth-input-group mb-3">
+               <label>Select Customer Account *</label>
+               <select id="grantCustomerSelect" class="form-select" required>
+                  <!-- Populated dynamically -->
+               </select>
+            </div>
+
+            <div class="auth-input-group mb-3">
+               <label>Points to Grant (1 Point = 1 RWF Discount) *</label>
+               <input type="number" id="grantPointsAmount" class="form-control" placeholder="e.g. 1500" required step="100" />
+               <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle me-1"></i>Loyalty points can be redeemed by customer at checkout for discount.</small>
+            </div>
+
+            <button type="submit" class="btn-checkout-submit w-100" style="background:#e67e22;border:none;">
+               <i class="fas fa-star me-1"></i> Grant Loyalty Points
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         ADD / EDIT MENU ITEM MODAL
+         ============================================================ -->
+   <div id="menuItemModal" class="custom-modal-overlay">
+      <div class="modal-standard-box">
+         <div class="modal-standard-header">
+            <h4 id="menuModalTitle"><i class="fas fa-utensils me-2" style="color:var(--primary);"></i>Add New Dish</h4>
+            <button type="button" class="modal-standard-close" onclick="closeMenuItemModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="menuItemForm" onsubmit="saveMenuItem(event)">
+            <input type="hidden" id="menuItemId" value="" />
+            
+            <div class="auth-input-group">
+               <label>Dish Title *</label>
+               <input type="text" id="menuTitle" class="form-control" placeholder="e.g. Kigali Spicy Wings" required />
+            </div>
+
+            <div class="row g-2">
+               <div class="col-md-6 auth-input-group">
+                  <label>Category *</label>
+                  <select id="menuCategory" class="form-select" required>
+                     <option value="burgers">Burgers</option>
+                     <option value="pizza">Pizza</option>
+                     <option value="chicken">Chicken</option>
+                     <option value="wraps">Wraps</option>
+                     <option value="pasta">Pasta</option>
+                     <option value="desserts">Desserts</option>
+                     <option value="drinks">Drinks</option>
+                  </select>
+               </div>
+               <div class="col-md-6 auth-input-group">
+                  <label>Price (RWF) *</label>
+                  <input type="number" step="100" id="menuPrice" class="form-control" placeholder="5500" required />
+               </div>
+            </div>
+
+            <div class="row g-2">
+               <div class="col-md-6 auth-input-group">
+                  <label>Old Price (RWF)</label>
+                  <input type="number" step="100" id="menuOldPrice" class="form-control" placeholder="7000" />
+               </div>
+               <div class="col-md-6 auth-input-group">
+                  <label>Prep Time (mins)</label>
+                  <input type="number" id="menuPrepTime" class="form-control" placeholder="15" />
+               </div>
+            </div>
+
+            <div class="row g-2">
+               <div class="col-md-4 auth-input-group">
+                  <label>Calories (kcal)</label>
+                  <input type="number" id="menuCalories" class="form-control" placeholder="400" />
+               </div>
+               <div class="col-md-4 auth-input-group">
+                  <label>Rating (1-5)</label>
+                  <input type="text" id="menuRating" class="form-control" placeholder="5.0" />
+               </div>
+               <div class="col-md-4 auth-input-group">
+                  <label>Reviews Count</label>
+                  <input type="number" id="menuReviews" class="form-control" placeholder="12" />
+               </div>
+            </div>
+
+            <div class="auth-input-group">
+               <label><i class="fas fa-image me-1" style="color:var(--primary);"></i>Upload Dish Photo</label>
+               <input type="file" id="menuImageFile" class="form-control" accept="image/*" onchange="previewMenuImage(this)" />
+               <div class="mt-2 text-center" id="imagePreviewBox" style="display:none;">
+                  <img id="menuImagePreview" src="" class="img-thumbnail shadow-sm rounded-3" style="max-height:140px;object-fit:cover;" alt="Dish Preview" />
+               </div>
+               <input type="hidden" id="menuImage" value="img/menu/1.jpg" />
+            </div>
+
+            <div class="auth-input-group">
+               <label>Description</label>
+               <textarea id="menuDesc" class="form-control" rows="3" placeholder="Short appetizing description of ingredients..."></textarea>
+            </div>
+
+            <div class="auth-input-group">
+               <label>Tags (comma-separated)</label>
+               <input type="text" id="menuTags" class="form-control" placeholder="Popular, Chef Special, Spicy" />
+            </div>
+
+            <button type="submit" class="btn-checkout-submit mt-3">
+               <i class="fas fa-save me-1"></i> Save Dish to Menu
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         CATEGORY MANAGEMENT MODAL (CREATE / EDIT)
+         ============================================================ -->
+   <div id="categoryModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:500px;">
+         <div class="modal-standard-header">
+            <h4 class="mb-0" id="catModalTitle"><i class="fas fa-tags me-2" style="color:var(--primary);"></i>Add New Category</h4>
+            <button type="button" class="modal-standard-close" onclick="closeCategoryModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="categoryForm" onsubmit="saveCategorySubmit(event)">
+            <input type="hidden" id="catId" value="" />
+
+            <div class="auth-input-group">
+               <label>Category Display Name *</label>
+               <input type="text" id="catName" class="form-control" placeholder="e.g. Smoothies, Mocktails" required onkeyup="autoGenerateSlug(this.value)" />
+            </div>
+
+            <div class="auth-input-group">
+               <label>Filter Key / Slug * <small class="text-muted">(Used for website filtering, e.g. smoothies)</small></label>
+               <input type="text" id="catSlug" class="form-control" placeholder="e.g. smoothies" required />
+            </div>
+
+            <div class="row g-2">
+               <div class="col-md-6 auth-input-group">
+                  <label>FontAwesome Icon Class</label>
+                  <input type="text" id="catIcon" class="form-control" placeholder="fas fa-coffee" value="fas fa-utensils" />
+               </div>
+               <div class="col-md-6 auth-input-group">
+                  <label>Sort Order</label>
+                  <input type="number" id="catSortOrder" class="form-control" placeholder="1" value="1" />
+               </div>
+            </div>
+
+            <button type="submit" class="btn-checkout-submit mt-3">
+               <i class="fas fa-save me-1"></i> Save Category
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         SEAT GUEST MODAL FOR TABLE TRACKER
+         ============================================================ -->
+   <div id="seatGuestModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:400px;">
+         <div class="modal-standard-header">
+            <h4 class="mb-0"><i class="fas fa-chair me-2" style="color:var(--primary);"></i>Seat Guests at Table</h4>
+            <button type="button" class="modal-standard-close" onclick="closeSeatGuestModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="seatGuestForm" onsubmit="confirmSeatGuestSubmit(event)">
+            <input type="hidden" id="seatTableId" value="" />
+            
+            <div class="mb-3">
+               <label class="form-label small text-muted font-weight-bold">Assigned Table</label>
+               <input type="text" id="seatTableName" class="form-control bg-light" readonly />
+            </div>
+
+            <div class="auth-input-group mb-3">
+               <label>Customer / Party Name *</label>
+               <input type="text" id="seatCustomerName" class="form-control" placeholder="e.g. Kagabo &amp; Family" required />
+            </div>
+
+            <div class="mb-3">
+               <label class="form-label small text-muted font-weight-bold">Number of Guests *</label>
+               <select id="seatPartySize" class="form-select" required>
+                  <option value="1 Guest">1 Guest</option>
+                  <option value="2 Guests" selected>2 Guests</option>
+                  <option value="3-4 Guests">3-4 Guests</option>
+                  <option value="5-8 Guests">5-8 Guests</option>
+                  <option value="VIP Party (9+)">VIP Party (9+)</option>
+               </select>
+            </div>
+
+            <button type="submit" class="btn-checkout-submit w-100" style="background:var(--primary);border:none;">
+               <i class="fas fa-check-circle me-1"></i> Confirm &amp; Start Seated (20%)
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         SYSTEM NOTIFICATION & DISPATCH LOGS MODAL
+         ============================================================ -->
+   <div id="notificationLogModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:500px;">
+         <div class="modal-standard-header">
+            <h4><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notification &amp; Dispatch Logs</h4>
+            <button type="button" class="modal-standard-close" onclick="closeNotificationLogModal()"><i class="fas fa-times"></i></button>
+         </div>
+         
+         <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 flex-wrap gap-2">
+             <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-outline-dark rounded-pill active" onclick="filterNotificationLogs('all', this)">All Logs</button>
+                <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="filterNotificationLogs('sms', this)"><i class="fas fa-comment-alt me-1"></i>SMS Alerts</button>
+                <button class="btn btn-sm btn-outline-success rounded-pill" onclick="filterNotificationLogs('email', this)"><i class="fas fa-envelope me-1"></i>Email Tickets</button>
+             </div>
+             <button class="btn btn-sm btn-outline-warning rounded-pill" onclick="sendDemoTestNotification()">
+                <i class="fas fa-paper-plane me-1"></i> + Send Test Alert
+             </button>
+          </div>
+
+         <div class="notification-feed" id="notificationFeedContainer">
+            <!-- Dynamic notifications rendered here -->
+         </div>
+
+         <div class="mt-3 d-flex justify-content-between align-items-center border-top pt-2">
+            <span class="small text-muted" id="notificationTotalCounter">Total: 0 logs</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="clearNotificationLogs()">Clear History</button>
+         </div>
+      </div>
+   <!-- ============================================================
+         PRINTABLE THERMAL RECEIPT MODAL
+         ============================================================ -->
+   <div id="receiptModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:440px;">
+         <div class="modal-standard-header no-print">
+            <h4><i class="fas fa-print me-2" style="color:var(--primary);"></i>Official Receipt</h4>
+            <button type="button" class="modal-standard-close" onclick="closeReceiptModal()"><i class="fas fa-times"></i></button>
+         </div>
+         
+         <!-- Printable Thermal Receipt Container -->
+         <div id="printableReceiptArea" class="receipt-paper p-4 bg-white text-dark border rounded-3 font-monospace">
+            <div class="text-center mb-3 border-bottom pb-3">
+               <h4 class="font-weight-bold mb-0 text-uppercase" style="letter-spacing:1px;">FAVORITE CAFE</h4>
+               <div class="small text-muted">108 Kimironko St, Kigali - Rwanda</div>
+               <div class="small text-muted">TEL: +250 720 966 666 | TIN: 102938475</div>
+               <div class="badge bg-dark text-white mt-2 px-3 py-1">OFFICIAL TAX RECEIPT</div>
+            </div>
+
+            <div class="small mb-3 d-flex justify-content-between">
+               <div>
+                  <div><strong>Invoice #:</strong> <span id="receiptNum">#MSH-8492</span></div>
+                  <div><strong>Date:</strong> <span id="receiptDate">2026-07-28</span></div>
+               </div>
+               <div class="text-end">
+                  <div><strong>Customer:</strong> <span id="receiptCustomer">Guest</span></div>
+                  <div><strong>Type:</strong> <span id="receiptServiceType">Delivery</span></div>
+               </div>
+            </div>
+
+            <table class="table table-sm border-top border-bottom small mb-3">
+               <thead>
+                  <tr>
+                     <th>QTY</th>
+                     <th>ITEM</th>
+                     <th class="text-end">AMOUNT</th>
+                  </tr>
+               </thead>
+               <tbody id="receiptItemsBody">
+                  <!-- Dynamic items populated here -->
+               </tbody>
+            </table>
+
+            <div class="small mb-3 border-bottom pb-2">
+               <div class="d-flex justify-content-between">
+                  <span>Subtotal:</span>
+                  <span id="receiptSubtotal">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between">
+                  <span>VAT (18% Included):</span>
+                  <span id="receiptTax">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between font-weight-bold fs-6 mt-1 pt-1 border-top">
+                  <span>TOTAL PAID:</span>
+                  <span id="receiptTotalAmount" class="text-dark">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between text-muted mt-1">
+                  <span>Payment Method:</span>
+                  <span id="receiptPayMethod">Mobile Money</span>
+               </div>
+            </div>
+
+            <div class="text-center pt-2">
+               <div class="receipt-qr-box mb-2">
+                  <img id="receiptQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ebm.rra.gov.rw/verify/MSH-8492" alt="RRA EBM QR Verification" />
+                  <div class="small text-muted font-monospace mt-1" style="font-size:0.62rem;">RRA EBM v2.1 VERIFIED</div>
+               </div>
+               <div class="small text-muted mb-1">Thank you for dining with Mashariki!</div>
+               <div class="small font-weight-bold">*** Murakoze Cyane ***</div>
+            </div>
+         </div>
+
+         <div class="d-flex gap-2 mt-3 no-print">
+            <button type="button" class="btn btn-outline-dark w-50" onclick="closeReceiptModal()">Close</button>
+            <button type="button" class="btn btn-primary w-50" style="background:var(--primary);border-color:var(--primary);" onclick="triggerReceiptPrint()">
+               <i class="fas fa-print me-1"></i> Print / Save PDF
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- Scripts -->
+   <script src="js/jquery-3.7.1.min.js"></script>
+   <script src="js/bootstrap.bundle.min.js"></script>
+   <script src="js/admin.js?v=2.0"></script>
+</body>
+
+</html>
+

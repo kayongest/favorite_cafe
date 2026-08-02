@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="author" content="Favorite Cafe">
+   <meta name="description" content="Favorite Cafe - Modern Coffee & Bistro">
+   <title>Favorite Cafe - Modern Coffee & Bistro</title>
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#d3a04c">
+   <!-- Google Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+      rel="stylesheet">
+
+   <!-- Local CSS Assets -->
+   <link href="css/bootstrap.min.css" rel="stylesheet" />
+   <link href="css/aos.css" rel="stylesheet" />
+   <link href="css/swiper-bundle.min.css" rel="stylesheet" />
+   <!-- Local Icon & Styling Assets -->
+   <link rel="stylesheet" href="css/all.min.css" />
+   <link rel="stylesheet" href="css/magnific-popup.css" />
+   <link rel="stylesheet" href="css/style.css?v=14.0" />
+
+   <!-- ============================================================
+         FIXED AUTH MODAL STYLES  (clean, reliable)
+         ============================================================ -->
+   <style>
+      * {
+         font-family: 'Titillium Web', sans-serif !important;
+      }
+
+      /* --- OVERLAY --- */
+      #MasharikiAuthModal {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100vw;
+         height: 100vh;
+         background: rgba(10, 25, 35, 0.85);
+         backdrop-filter: blur(8px);
+         -webkit-backdrop-filter: blur(8px);
+         z-index: 99999999 !important;
+         align-items: center;
+         justify-content: center;
+         padding: 15px;
+         box-sizing: border-box;
+      }
+
+      #MasharikiAuthModal.open {
+         display: flex !important;
+         opacity: 1 !important;
+         visibility: visible !important;
+         pointer-events: auto !important;
+      }
+
+      /* --- INNER BOX --- */
+      #MasharikiAuthModal .auth-modal-sm-box {
+         display: block !important;
+         visibility: visible !important;
+         opacity: 1 !important;
+         z-index: 100000000 !important;
+         background: #ffffff !important;
+         color: #1e293b !important;
+         width: 100% !important;
+         max-width: 420px !important;
+         border-radius: 22px !important;
+         padding: 30px 26px !important;
+         position: relative !important;
+         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5) !important;
+         margin: auto !important;
+         max-height: 95vh;
+         overflow-y: auto;
+      }
+
+      /* --- CLOSE BUTTON --- */
+      .auth-modal-close {
+         position: absolute;
+         top: 12px;
+         right: 16px;
+         background: transparent;
+         border: none;
+         font-size: 1.4rem;
+         color: #94a3b8;
+         transition: 0.2s;
+         cursor: pointer;
+         padding: 4px 8px;
+         border-radius: 8px;
+         line-height: 1;
+      }
+
+      .auth-modal-close:hover {
+         color: #0f172a;
+         background: #f1f5f9;
+      }
+
+      /* --- BRAND ICON --- */
+      .auth-modal-brand-icon {
+         width: 56px;
+         height: 56px;
+         background: var(--primary, #e67e22);
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 1.6rem;
+         color: #fff;
+         margin-bottom: 8px;
+      }
+
+      /* --- SEGMENTED PILLS --- */
+      .auth-seg-pill-wrapper {
+         display: flex;
+         gap: 6px;
+         background: #f1f5f9;
+         border-radius: 40px;
+         padding: 5px;
+      }
+
+      .auth-seg-pill {
+         flex: 1;
+         border: none;
+         background: transparent;
+         padding: 8px 10px;
+         border-radius: 30px;
+         font-size: 0.82rem;
+         font-weight: 600;
+         color: #64748b;
+         transition: 0.2s;
+         cursor: pointer;
+         text-align: center;
+         white-space: nowrap;
+      }
+
+      .auth-seg-pill.active {
+         background: var(--dark, #1e293b);
+         color: #ffffff;
+         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
+
+      .auth-seg-pill:hover:not(.active) {
+         background: #e2e8f0;
+      }
+
+      /* --- INPUTS --- */
+      .auth-input-group {
+         margin-bottom: 14px;
+      }
+
+      .auth-input-group label {
+         display: block;
+         font-size: 0.82rem;
+         font-weight: 500;
+         color: #334155;
+         margin-bottom: 4px;
+      }
+
+      .auth-input-group input {
+         width: 100%;
+         padding: 10px 14px;
+         border: 1.5px solid #e2e8f0;
+         border-radius: 12px;
+         font-size: 0.92rem;
+         background: #f8fafc !important;
+         color: #0f172a !important;
+         transition: 0.2s;
+         outline: none;
+      }
+
+      .auth-input-group input:focus {
+         border-color: var(--primary, #e67e22);
+         background: #ffffff !important;
+         box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15);
+      }
+
+      .auth-pass-wrapper {
+         position: relative;
+      }
+
+      .auth-pass-wrapper input {
+         padding-right: 42px;
+      }
+
+      .auth-toggle-pass {
+         position: absolute;
+         right: 12px;
+         top: 50%;
+         transform: translateY(-50%);
+         background: transparent;
+         border: none;
+         color: #94a3b8;
+         cursor: pointer;
+         font-size: 1rem;
+         padding: 4px;
+      }
+
+      .auth-toggle-pass:hover {
+         color: #475569;
+      }
+
+      .auth-checkbox {
+         display: flex;
+         align-items: center;
+         gap: 8px;
+         font-size: 0.85rem;
+         color: #475569;
+         cursor: pointer;
+      }
+
+      .auth-checkbox input[type="checkbox"] {
+         width: 17px;
+         height: 17px;
+         accent-color: var(--primary, #e67e22);
+         cursor: pointer;
+      }
+
+      .auth-link {
+         font-size: 0.82rem;
+         color: var(--primary, #e67e22);
+         font-weight: 500;
+      }
+
+      .auth-link:hover {
+         text-decoration: underline !important;
+      }
+
+      /* --- BUTTONS --- */
+      .btn-auth-submit {
+         width: 100%;
+         padding: 11px;
+         border: none;
+         border-radius: 40px;
+         background: var(--dark, #1e293b);
+         color: #fff;
+         font-weight: 600;
+         font-size: 0.92rem;
+         transition: 0.2s;
+         cursor: pointer;
+      }
+
+      .btn-auth-submit:hover {
+         background: #0f172a;
+         transform: translateY(-1px);
+         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-auth-submit.btn-admin-submit {
+         background: #b45309;
+      }
+
+      .btn-auth-submit.btn-admin-submit:hover {
+         background: #92400e;
+      }
+
+      .btn-demo-login {
+         width: 100%;
+         padding: 10px;
+         border: 1.5px dashed #cbd5e1;
+         border-radius: 40px;
+         background: transparent;
+         color: #475569;
+         font-weight: 500;
+         font-size: 0.85rem;
+         transition: 0.2s;
+         cursor: pointer;
+      }
+
+      .btn-demo-login:hover {
+         background: #f1f5f9;
+         border-color: var(--primary, #e67e22);
+      }
+
+      .auth-footer-text a {
+         color: var(--primary, #e67e22);
+         font-weight: 600;
+      }
+
+      .auth-footer-text a:hover {
+         text-decoration: underline !important;
+      }
+
+      /* --- HIDE FORMS BY DEFAULT --- */
+      #mRegisterForm,
+      #mAdminForm {
+         display: none;
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 480px) {
+         #MasharikiAuthModal .auth-modal-sm-box {
+            padding: 20px 16px !important;
+            border-radius: 16px !important;
+         }
+
+         .auth-seg-pill {
+            font-size: 0.72rem;
+            padding: 6px 8px;
+         }
+      }
+   </style>
+
+   <!-- ============================================================
+         FIXED AUTH CONTROLLER  (clean, reliable)
+         ============================================================ -->
+   <script>
+      (function () {
+         "use strict";
+
+         // ---- Open Modal ----
+         window.openMasharikiModal = function (initialTab) {
+            var modal = document.getElementById('MasharikiAuthModal');
+            if (!modal) {
+               console.error('[Auth] Modal #MasharikiAuthModal not found.');
+               return;
+            }
+
+            // Show modal
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            // Switch tab
+            if (typeof window.switchMasharikiTab === 'function') {
+               window.switchMasharikiTab(initialTab || 'login');
+            } else {
+               console.warn('[Auth] switchMasharikiTab not defined yet.');
+            }
+         };
+
+         // ---- Close Modal ----
+         window.closeAuthModal = function () {
+            var modal = document.getElementById('MasharikiAuthModal');
+            if (modal) {
+               modal.classList.remove('open');
+               document.body.style.overflow = '';
+            }
+         };
+
+         // ---- Tab Switcher ----
+         window.switchMasharikiTab = function (tab) {
+            var loginBtn = document.getElementById('mTabLoginBtn');
+            var regBtn = document.getElementById('mTabRegisterBtn');
+            var adminBtn = document.getElementById('mTabAdminBtn');
+
+            var loginForm = document.getElementById('mLoginForm');
+            var regForm = document.getElementById('mRegisterForm');
+            var adminForm = document.getElementById('mAdminForm');
+            var subtitle = document.getElementById('mAuthSubtitle');
+
+            // Reset all tabs
+            [loginBtn, regBtn, adminBtn].forEach(function (btn) {
+               if (btn) {
+                  btn.classList.remove('active');
+                  btn.style.background = 'transparent';
+                  btn.style.color = '#64748b';
+               }
+            });
+
+            // Hide all forms
+            if (loginForm) loginForm.style.display = 'none';
+            if (regForm) regForm.style.display = 'none';
+            if (adminForm) adminForm.style.display = 'none';
+
+            // Show selected
+            if (tab === 'register') {
+               if (regBtn) {
+                  regBtn.classList.add('active');
+                  regBtn.style.background = 'var(--dark)';
+                  regBtn.style.color = '#ffffff';
+               }
+               if (regForm) regForm.style.display = 'block';
+               if (subtitle) subtitle.textContent = 'Create New Customer Account';
+            } else if (tab === 'admin') {
+               if (adminBtn) {
+                  adminBtn.classList.add('active');
+                  adminBtn.style.background = 'var(--dark)';
+                  adminBtn.style.color = '#ffffff';
+               }
+               if (adminForm) adminForm.style.display = 'block';
+               if (subtitle) subtitle.textContent = 'Authorized Staff & Admin Portal';
+            } else {
+               if (loginBtn) {
+                  loginBtn.classList.add('active');
+                  loginBtn.style.background = 'var(--dark)';
+                  loginBtn.style.color = '#ffffff';
+               }
+               if (loginForm) loginForm.style.display = 'block';
+               if (subtitle) subtitle.textContent = 'Customer Sign In & Account Access';
+            }
+         };
+
+         // ---- Click outside to close ----
+         document.addEventListener('click', function (e) {
+            var modal = document.getElementById('MasharikiAuthModal');
+            if (!modal) return;
+            if (modal.classList.contains('open')) {
+               var box = modal.querySelector('.auth-modal-sm-box');
+               if (box && !box.contains(e.target) && e.target !== modal) {
+                  // If click is on the overlay (not the box), close it
+                  if (e.target === modal || e.target.closest('#MasharikiAuthModal') === modal) {
+                     window.closeAuthModal();
+                  }
+               }
+            }
+         });
+
+         // ---- ESC key to close ----
+         document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+               window.closeAuthModal();
+            }
+         });
+
+         // ---- DEMO: Client Login ----
+         window.demoClientLogin = function () {
+            var email = document.getElementById('mClientEmail');
+            var pass = document.getElementById('mClientPass');
+            if (email) email.value = 'customer@mashariki.com';
+            if (pass) pass.value = 'password123';
+            if (typeof window.showToast === 'function') {
+               window.showToast('Demo customer credentials loaded!', 'info', 'Demo Sign In');
+            }
+            setTimeout(function () {
+               if (typeof window.handleClientLogin === 'function') window.handleClientLogin();
+            }, 300);
+         };
+
+         // ---- DEMO: Admin Login ----
+         window.demoAdminLogin = function () {
+            var user = document.getElementById('mAdminUser');
+            var pass = document.getElementById('mAdminPass');
+            if (user) user.value = 'admin_Mashariki';
+            if (pass) pass.value = 'admin2026';
+            if (typeof window.showToast === 'function') {
+               window.showToast('Demo admin credentials loaded!', 'info', 'Admin Access');
+            }
+            setTimeout(function () {
+               if (typeof window.handleAdminLogin === 'function') window.handleAdminLogin();
+            }, 300);
+         };
+
+         // ---- Toggle password visibility ----
+         window.toggleAuthPass = function (inputId, btn) {
+            var inp = document.getElementById(inputId);
+            if (!inp) return;
+            if (inp.type === 'password') {
+               inp.type = 'text';
+               btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+               inp.type = 'password';
+               btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+         };
+
+         // ---- Handle Client Login ----
+         window.handleClientLogin = function () {
+            if (typeof window.processClientLogin === 'function') {
+               window.processClientLogin();
+            }
+         };
+
+         // ---- Handle Client Register ----
+         window.handleClientRegister = function () {
+            if (typeof window.processClientRegister === 'function') {
+               window.processClientRegister();
+            }
+         };
+
+         // ---- Handle Admin Login ----
+         window.handleAdminLogin = function () {
+            var user = document.getElementById('mAdminUser');
+            var pass = document.getElementById('mAdminPass');
+            if (user && pass && user.value.trim() && pass.value.trim()) {
+               if (typeof window.showToast === 'function') {
+                  window.showToast('Admin staff access granted! Opening Dashboard in new tab...', 'success', 'Admin Portal');
+               }
+               window.closeAuthModal();
+               setTimeout(function () {
+                  window.open('admin.html', '_blank');
+               }, 300);
+            } else {
+               if (typeof window.showToast === 'function') {
+                  window.showToast('Please enter Admin Staff ID and Password.', 'warning', 'Admin Login');
+               }
+            }
+         };
+
+         // ---- Admin Portal controls ----
+         window.closeAdminPortal = function () {
+            var portal = document.getElementById('adminPortalModal');
+            if (portal) {
+               portal.classList.remove('open');
+               portal.style.display = 'none !important';
+            }
+         };
+
+         window.refreshAdminOrders = function () {
+            if (typeof window.showToast === 'function') {
+               window.showToast('Kitchen order dashboard refreshed successfully!', 'info', 'Admin System');
+            }
+         };
+
+         window.advanceOrderStatus = function (orderId, newStatus) {
+            var row = document.getElementById(orderId);
+            if (!row) return;
+            var badge = row.querySelector('.status-badge');
+            if (badge) {
+               badge.textContent = newStatus;
+               badge.className = 'badge status-badge';
+               if (newStatus === 'Ready for Delivery') {
+                  badge.classList.add('bg-warning', 'text-dark');
+               } else if (newStatus === 'Ready for Table') {
+                  badge.classList.add('bg-info', 'text-dark');
+               } else if (newStatus === 'Completed') {
+                  badge.classList.add('bg-success');
+               }
+            }
+            var actionBtn = row.querySelector('button');
+            if (actionBtn && newStatus === 'Completed') {
+               actionBtn.outerHTML = '<span class="text-muted small"><i class="fas fa-check-double me-1"></i>Done</span>';
+            }
+         };
+
+         // ---- Auto-init: ensure modal is hidden on load ----
+         document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('MasharikiAuthModal');
+            if (modal) {
+               modal.classList.remove('open');
+               modal.style.display = 'none';
+            }
+            // Ensure admin portal is hidden
+            var portal = document.getElementById('adminPortalModal');
+            if (portal) {
+               portal.classList.remove('open');
+               portal.style.display = 'none';
+            }
+            console.log('[Auth] ✅ Initialized.');
+         });
+
+      })();
+   </script>
+
+   <!-- Additional overlay styles for other popups (unchanged) -->
+   <style>
+      #adminPortalModal {
+         display: none !important;
+         position: fixed !important;
+         top: 0 !important;
+         left: 0 !important;
+         width: 100vw !important;
+         height: 100vh !important;
+         background: rgba(16, 43, 55, 0.95) !important;
+         backdrop-filter: blur(10px) !important;
+         z-index: 9999999 !important;
+         align-items: center !important;
+         justify-content: center !important;
+         padding: 20px !important;
+      }
+
+      #adminPortalModal.open {
+         display: flex !important;
+         opacity: 1 !important;
+      }
+
+      #menuPop {
+         display: none !important;
+         position: fixed !important;
+         inset: 0 !important;
+         z-index: 999999 !important;
+         background: rgba(0, 0, 0, 0.85) !important;
+         backdrop-filter: blur(6px) !important;
+         align-items: center !important;
+         justify-content: center !important;
+         padding: 18px !important;
+      }
+
+      #menuPop.open {
+         display: flex !important;
+      }
+
+      #searchOv {
+         display: none !important;
+         position: fixed !important;
+         inset: 0 !important;
+         z-index: 999999 !important;
+         background: rgba(16, 43, 55, 0.96) !important;
+         backdrop-filter: blur(10px) !important;
+         align-items: center !important;
+         justify-content: center !important;
+         padding: 20px !important;
+      }
+
+      #searchOv.open {
+         display: flex !important;
+      }
+   </style>
+</head>
+
+<body>
+   <!-- ============================================================
+         TOP BAR
+         ============================================================ -->
+   <div id="topbar">
+      <div class="container">
+         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="top-contact d-flex flex-wrap">
+               <span><i class="fas fa-phone-alt"></i>+250 783499648</span>
+               <span><i class="fas fa-envelope"></i>info@favoritecafe.com</span>
+               <span><i class="fas fa-map-marker-alt"></i>108 Kimironko Street, Kigali, Rwanda</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+               <span class="ttag"><i class="fas fa-fire me-1"></i>Free Delivery Today!</span>
+               <div class="tsoc">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                  <a href="#"><i class="fab fa-tiktok"></i></a>
+                  <a href="#"><i class="fab fa-youtube"></i></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         NAVBAR  — FIXED: button uses data-auth-modal
+         ============================================================ -->
+   <nav class="navbar navbar-expand-lg" id="nav">
+      <div class="container">
+         <a class="navbar-brand" href="#">
+            <div class="blogo">
+               <div class="bico"><i class="fas fa-mug-hot"></i></div>
+               <div>
+                  <div class="bname">Favorite<span>Cafe</span></div>
+                  <div class="bsub">Coffee & Bistro</div>
+               </div>
+            </div>
+         </a>
+         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <i class="fas fa-bars" style="color:var(--primary);font-size:1.35rem;"></i>
+         </button>
+         <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="navbar-nav mx-auto">
+               <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+               <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+               <li class="nav-item"><a class="nav-link" href="#" onclick="openMyOrdersModal(event)"><i
+                        class="fas fa-receipt me-1" style="color:var(--primary);"></i>Orders</a></li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+               <button type="button" id="navSearchBtn" title="Search"><i class="fas fa-search"></i></button>
+
+               <!-- Cart Button with Live Badge -->
+               <button type="button" id="navCartBtn" class="btn-nav-cart" onclick="openCartDrawer()" title="View Cart">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span>Cart</span>
+                  <span class="cart-badge" id="cartCount">0</span>
+               </button>
+
+               <!-- Table Reservation Button -->
+               <button type="button" id="navReserveBtn" class="btn-nav-reserve" onclick="openReservationModal()" title="Book a Table">
+                  <i class="fas fa-calendar-check me-1"></i><span>Book Table</span>
+               </button>
+
+               <!-- Login / Account Button -->
+               <button type="button" id="navAuthBtn" class="btn-auth" data-auth-modal="login">
+                  <i class="fas fa-user-circle me-1"></i>Login / Account
+               </button>
+
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <!-- ============================================================
+         SEARCH OVERLAY
+         ============================================================ -->
+   <div id="searchOv">
+      <button class="sovclose" id="searchClose" onclick="closeSearch()"><i class="fas fa-times"></i></button>
+      <div class="sovbox">
+         <h4>What are you craving today?</h4>
+         <div class="sovinput">
+            <input type="text" id="searchInput" placeholder="Search burgers, pizza, chicken..." autocomplete="off" />
+            <button><i class="fas fa-search"></i></button>
+         </div>
+         <div class="sovcats">
+            <div class="sovcat active" data-cat="all"><img src="img/menu/1.jpg" alt="" />All Items</div>
+            <div class="sovcat" data-cat="burgers"><img src="img/menu/1.jpg" alt="" />Burgers</div>
+            <div class="sovcat" data-cat="pizza"><img src="img/menu/2.jpg" alt="" />Pizza</div>
+            <div class="sovcat" data-cat="chicken"><img src="img/menu/3.jpg" alt="" />Chicken</div>
+            <div class="sovcat" data-cat="wraps"><img src="img/menu/4.jpg" alt="" />Wraps</div>
+            <div class="sovcat" data-cat="pasta"><img src="img/menu/5.jpg" alt="" />Pasta</div>
+            <div class="sovcat" data-cat="desserts"><img src="img/menu/6.jpg" alt="" />Desserts</div>
+         </div>
+         <div class="sovtrend">
+            <p><i class="fas fa-fire me-1" style="color:var(--secondary);"></i>Trending Searches</p>
+            <span class="ttag">Smash Burger</span>
+            <span class="ttag">Nashville Chicken</span>
+            <span class="ttag">Truffle Pizza</span>
+            <span class="ttag">Lava Cake</span>
+            <span class="ttag">Loaded Fries</span>
+            <span class="ttag">Mango Shake</span>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         HERO
+         ============================================================ -->
+   <section id="hero">
+      <div class="hs hs1"></div>
+      <div class="hs hs2"></div>
+      <div class="hbgtxt">FOOD</div>
+      <div class="container">
+         <div class="row align-items-center g-5" style="min-height:88vh;">
+            <div class="col-lg-6">
+               <div class="hbadge">
+                  <div class="hbi"><i class="fas fa-star"></i></div>
+                  <span>#1 Rated Fast Food Restaurant in Kigali</span>
+               </div>
+               <h1 class="htitle">Delicious <span class="hl">Fast Food</span><br />for Every Moment</h1>
+               <p class="hdesc">Experience bold flavors crafted from premium ingredients. From crispy burgers to gourmet
+                  pizzas - every bite is an adventure worth savoring.</p>
+            </div>
+            <div class="col-lg-6">
+               <div style="position:relative;text-align:center;">
+                  <div class="hcircle"><img src="img/banner-img.jpg" alt="Burger" /></div>
+                  <div class="fcard fc1">
+                     <div class="fcoi r"><i class="fas fa-fire"></i></div>
+                     <div><span class="fcnum">Hot Deal</span><span class="fcsm">30% off today</span></div>
+                  </div>
+                  <div class="fcard fc2">
+                     <div class="fcoi y"><i class="fas fa-star"></i></div>
+                     <div><span class="fcnum">4.9/5</span><span class="fcsm">2k+ reviews</span></div>
+                  </div>
+                  <div class="fcard fc3">
+                     <div class="fcoi g"><i class="fas fa-clock"></i></div>
+                     <div><span class="fcnum">20 min</span><span class="fcsm">Fast delivery</span></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+   <!-- ============================================================
+         MENU
+         ============================================================ -->
+   <section id="menu">
+      <div class="container">
+         <div class="text-center mb-5" data-aos="fade-up">
+            <span class="slbl">What's Cooking</span>
+            <h2 class="stitle">Our Delicious <span>Menu</span></h2>
+            <div class="sline"></div>
+         </div>
+         <!-- LIVE MENU SYNC & REFRESH STATUS INDICATOR -->
+         <div id="menuLoadingStatus" class="text-center mb-4" style="min-height:36px;">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill" style="background:var(--cream2); border:1px solid rgba(170,114,98,0.2); font-size:0.85rem; color:var(--dark);">
+               <i class="fas fa-spinner fa-spin" style="color:var(--primary);"></i>
+               <span>Syncing live menu items...</span>
+            </div>
+         </div>
+         <div class="text-center mb-4" id="categoryFilterBar" data-aos="fade-up">
+            <button class="filtbtn active" data-f="all">All</button>
+            <button class="filtbtn" data-f="coffee">Coffee</button>
+            <button class="filtbtn" data-f="tea">Tea</button>
+            <button class="filtbtn" data-f="smoothies">Smoothies</button>
+            <button class="filtbtn" data-f="shakes">Shakes</button>
+            <button class="filtbtn" data-f="juices">Juices</button>
+            <button class="filtbtn" data-f="mains">Mains</button>
+            <button class="filtbtn" data-f="salads">Salads</button>
+            <button class="filtbtn" data-f="sides">Sides</button>
+            <button class="filtbtn" data-f="grills">Grills</button>
+            <button class="filtbtn" data-f="pizza">Pizza</button>
+            <button class="filtbtn" data-f="wraps">Wraps</button>
+         </div>
+         <div class="row g-4" id="mgrid">
+            <!-- CARD 1 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/dish_1785231158_5216.jpg"
+                  data-title="Special Favorite Omelette" data-cat="Mains" data-price="4,500 RWF" data-old="5,500 RWF"
+                  data-rating="5.0" data-reviews="140" data-cal="420" data-time="12"
+                  data-desc="Signature fluffy omelette with herbs, cheese, onions, peppers and fresh parsley."
+                  data-tags="Breakfast,Special">
+                  <div class="mimg">
+                     <img src="img/menu/dish_1785231158_5216.jpg" alt="Special Favorite Omelette" />
+                     <div class="mbdg hot"><i class="fas fa-star"></i> Favorite Special</div>
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Special Favorite Omelette</div>
+                     <div class="mdesc">Signature fluffy omelette with herbs, cheese, onions, peppers and fresh parsley.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">4,500 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">5.0</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- CARD 2 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up" data-aos-delay="80">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/dish_1785231176_2795.jpg"
+                  data-title="Chicken Strips & Chips" data-cat="Mains" data-price="6,000 RWF" data-old="7,500 RWF"
+                  data-rating="4.9" data-reviews="115" data-cal="650" data-time="15"
+                  data-desc="Golden crispy chicken tenders served with crispy french fries and dip."
+                  data-tags="Crispy,Bestseller">
+                  <div class="mimg">
+                     <img src="img/menu/dish_1785231176_2795.jpg" alt="Chicken Strips & Chips" />
+                     <div class="mbdg hot"><i class="fas fa-fire"></i> Bestseller</div>
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Chicken Strips & Chips</div>
+                     <div class="mdesc">Golden crispy chicken tenders served with crispy french fries and dip.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">6,000 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">4.9</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- CARD 3 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up" data-aos-delay="160">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/3.jpg"
+                  data-title="Crispy Fried Chicken" data-cat="Mains" data-price="6,500 RWF" data-old="8,000 RWF"
+                  data-rating="5.0" data-reviews="180" data-cal="680" data-time="18"
+                  data-desc="Juicy seasoned chicken fried to a golden crunch."
+                  data-tags="Chicken,Hot">
+                  <div class="mimg">
+                     <img src="img/menu/3.jpg" alt="Crispy Fried Chicken" />
+                     <div class="mbdg hot"><i class="fas fa-star"></i> Best Seller</div>
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Crispy Fried Chicken</div>
+                     <div class="mdesc">Juicy seasoned chicken fried to a golden crunch.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">6,500 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">5.0</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- CARD 4 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/dish_1785231327_9665.jpg"
+                  data-title="Chicken & Rice" data-cat="Mains" data-price="6,000 RWF" data-old="7,500 RWF"
+                  data-rating="4.8" data-reviews="92" data-cal="580" data-time="15"
+                  data-desc="Roasted chicken leg served with fluffy white rice, fresh cucumber and sauce."
+                  data-tags="Main,Dinner">
+                  <div class="mimg">
+                     <img src="img/menu/dish_1785231327_9665.jpg" alt="Chicken & Rice" />
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Chicken & Rice</div>
+                     <div class="mdesc">Roasted chicken leg served with fluffy white rice, fresh cucumber and sauce.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">6,000 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">4.8</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- CARD 5 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up" data-aos-delay="80">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/Jollof Rice & Chicken.jpg"
+                  data-title="Jollof Rice & Chicken" data-cat="Mains" data-price="7,000 RWF" data-old="8,500 RWF"
+                  data-rating="5.0" data-reviews="210" data-cal="720" data-time="20"
+                  data-desc="Flavorful West African spiced jollof rice served with grilled chicken and plantain."
+                  data-tags="Special,Spicy">
+                  <div class="mimg">
+                     <img src="img/menu/Jollof Rice & Chicken.jpg" alt="Jollof Rice & Chicken" onerror="this.onerror=null; this.src='img/menu/1.jpg';" />
+                     <div class="mbdg hot"><i class="fas fa-fire"></i> Popular</div>
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Jollof Rice & Chicken</div>
+                     <div class="mdesc">Flavorful West African spiced jollof rice served with grilled chicken and plantain.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">7,000 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">5.0</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- CARD 6 -->
+            <div class="col-sm-6 col-lg-4 mwrap" data-c="mains" data-aos="fade-up" data-aos-delay="160">
+               <div class="mcard" onclick="openMenuPop(this)" data-img="img/menu/dish_1785237288_3313.jpg"
+                  data-title="Burger & Chips" data-cat="Mains" data-price="6,000 RWF" data-old="7,500 RWF"
+                  data-rating="4.9" data-reviews="165" data-cal="780" data-time="15"
+                  data-desc="Juicy beef burger with cheese, lettuce, tomatoes, served with fries and cold drink."
+                  data-tags="Burger,Combo">
+                  <div class="mimg">
+                     <img src="img/menu/dish_1785237288_3313.jpg" alt="Burger & Chips" />
+                     <div class="mbdg hot"><i class="fas fa-star"></i> Bestseller</div>
+                     <div class="mhrt"><i class="far fa-heart"></i></div>
+                  </div>
+                  <div class="mbody">
+                     <div class="mcat">Mains</div>
+                     <div class="mtit">Burger & Chips</div>
+                     <div class="mdesc">Juicy beef burger with cheese, lettuce, tomatoes, served with fries and cold drink.</div>
+                     <div class="mfoot">
+                        <div>
+                           <div class="mprice">6,000 RWF</div>
+                           <div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">4.9</span></div>
+                        </div>
+                        <button class="madd" title="View Details"
+                           onclick="event.stopPropagation(); openMenuPop(this.closest('.mcard'))"><i
+                              class="fas fa-plus"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+   <!-- ============================================================
+   MENU DETAIL POPUP
+   ============================================================ -->
+   <div id="menuPop">
+      <div class="mpbox">
+         <button class="mpclose" id="mpClose" onclick="closeMenuPop()"><i class="fas fa-times"></i></button>
+         <div class="mpimg"><img id="mpImg" src="" alt="" /></div>
+         <div class="mpbody">
+            <div id="mpCat"></div>
+            <div id="mpTitle"></div>
+            <div id="mpStars"></div>
+            <div id="mpDesc"></div>
+            <div id="mpPrice"></div>
+            <div class="mpmeta" id="mpMeta"></div>
+            <div class="mpqty">
+               <button class="mpqbtn" id="mpMinus" onclick="changeMenuPopQty(-1)">-</button>
+               <span class="mpqnum" id="mpQnum">1</span>
+               <button class="mpqbtn" id="mpPlus" onclick="changeMenuPopQty(1)">+</button>
+               <span style="font-size:.82rem;color:#aaa;margin-left:9px;">portion</span>
+            </div>
+            <div class="mptags" id="mpTags"></div>
+            <button class="mpaddcart" id="mpAddCart"><i class="fas fa-shopping-cart"></i>Add to Cart</button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+   GALLERY POPUP
+   ============================================================ -->
+   <div id="galPop">
+      <div class="gpbox">
+         <button class="gpclose" id="gpClose" onclick="closeGal()"><i class="fas fa-times"></i></button>
+         <img id="gpImg" src="" alt="" />
+         <div class="gpcap">
+            <h5 id="gpTitle"></h5>
+            <p id="gpDesc"></p>
+         </div>
+         <div class="gpnav">
+            <button id="gpPrev"><i class="fas fa-chevron-left me-1"></i>Prev</button>
+            <button id="gpNext">Next <i class="fas fa-chevron-right ms-1"></i></button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+   FOOTER
+   ============================================================ -->
+   <footer>
+      <div class="container">
+         <div class="row g-5">
+            <div class="col-lg-4">
+               <div class="fnm">Masha<span>riki</span></div>
+               <p class="fdesc">We bring the world's finest flavors together in a fast, friendly, and affordable
+                  experience. Every meal crafted with love.</p>
+               <div class="fsoc">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                  <a href="#"><i class="fab fa-x"></i></a>
+                  <!-- <a href="#"><i class="fab fa-youtube"></i></a>
+                  <a href="#"><i class="fab fa-tiktok"></i></a> -->
+               </div>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+               <div class="ftit">Quick Links</div>
+               <ul class="flinks ps-0">
+                  <li><a href="#hero"><i class="fas fa-chevron-right"></i>Home</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Our Menu</a></li>
+                  <li><a href="#reservation"><i class="fas fa-chevron-right"></i>Reservation</a></li>
+               </ul>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+               <div class="ftit">Our Menu</div>
+               <ul class="flinks ps-0">
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Burgers</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Pizza</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Fried Chicken</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Wraps &amp; Rolls</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Pasta</a></li>
+                  <li><a href="#menu"><i class="fas fa-chevron-right"></i>Desserts</a></li>
+               </ul>
+            </div>
+            <div class="col-lg-4">
+               <div class="ftit">Get In Touch</div>
+               <div class="fci">
+                  <div class="fciico"><i class="fas fa-map-marker-alt"></i></div>
+                  <div class="fciinfo"><strong>Address</strong>108 Kimironko - Kigali, Rwanda</div>
+               </div>
+               <div class="fci">
+                  <div class="fciico"><i class="fas fa-phone-alt"></i></div>
+                  <div class="fciinfo"><strong>Phone</strong>+1 (800) 123-4567</div>
+               </div>
+               <div class="fci">
+                  <div class="fciico"><i class="fas fa-envelope"></i></div>
+                  <div class="fciinfo"><strong>Email</strong>hello@mashariki.com</div>
+               </div>
+               <div class="fci">
+                  <div class="fciico"><i class="fas fa-clock"></i></div>
+                  <div class="fciinfo"><strong>Hours</strong>Wed - Sun: 09 AM - 11 PM</div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="fbot">
+         <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+               <p>&copy 2026 <span>Mashariki Restaurant</span>. All Rights Reserved </p>
+               <div><a href="#">Privacy Policy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+            </div>
+         </div>
+      </div>
+   </footer>
+
+   <!-- Back to top -->
+   <button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+
+   <!-- ============================================================
+   Mashariki AUTH MODAL  —  clean, reliable
+   ============================================================ -->
+   <div id="MasharikiAuthModal">
+      <div class="auth-modal-sm-box">
+         <button type="button" class="auth-modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+
+         <div class="text-center mb-3">
+            <div class="auth-modal-brand-icon mx-auto"><i class="fas fa-utensils"></i></div>
+            <h4 class="fw-bold mb-0" style="font-family:'Poppins',sans-serif; color: var(--dark);">Mashariki <span
+                  style="color:var(--primary);">Portal</span></h4>
+            <p class="small text-muted mb-0" id="mAuthSubtitle">Customer Sign In &amp; Account Access</p>
+         </div>
+
+         <!-- Tabs -->
+         <div class="auth-seg-pill-wrapper mb-3">
+            <button type="button" class="auth-seg-pill active" id="mTabLoginBtn" onclick="switchMasharikiTab('login')">
+               <i class="fas fa-sign-in-alt me-1"></i>Sign In
+            </button>
+            <button type="button" class="auth-seg-pill" id="mTabRegisterBtn" onclick="switchMasharikiTab('register')">
+               <i class="fas fa-user-plus me-1"></i>Register
+            </button>
+            <button type="button" class="auth-seg-pill" id="mTabAdminBtn" onclick="switchMasharikiTab('admin')">
+               <i class="fas fa-user-shield me-1"></i>Staff Admin
+            </button>
+         </div>
+
+         <!-- SIGN IN -->
+         <div id="mLoginForm">
+            <!-- Active Session: User Already Logged In -->
+            <div id="mLoggedInSection" style="display:none;" class="p-3 bg-light rounded-3 text-center border">
+               <div class="bico mx-auto mb-2" style="width:54px;height:54px;font-size:1.5rem;background:linear-gradient(135deg,#1b4332,#2d6a4f);color:#fff;">
+                  <i class="fas fa-user-check"></i>
+               </div>
+               <div class="badge bg-success bg-opacity-10 text-success px-3 py-1 mb-2 font-monospace" style="font-size:0.75rem;"><i class="fas fa-circle me-1" style="font-size:0.5rem;"></i>ACCOUNT ACTIVE</div>
+               <h5 class="font-weight-bold text-dark mb-1" id="mLoggedInName">Customer Account</h5>
+               <div class="small text-muted mb-3" id="mLoggedInEmail">user@mashariki.com</div>
+               
+               <div class="d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-dark btn-sm py-2 rounded-pill font-weight-bold" onclick="openMyOrdersModal()"><i class="fas fa-receipt me-1"></i> View My Orders &amp; Track</button>
+                  <button type="button" class="btn btn-outline-danger btn-sm py-2 rounded-pill font-weight-bold" onclick="logoutClient()"><i class="fas fa-sign-out-alt me-1"></i> Sign Out / Switch Account</button>
+               </div>
+            </div>
+
+            <!-- Standard Login Form Inputs -->
+            <div id="mLoginInputs">
+               <form onsubmit="event.preventDefault(); handleClientLogin();">
+                  <div class="auth-input-group">
+                     <label><i class="fas fa-envelope me-1" style="color:var(--primary);"></i>Email or Phone</label>
+                     <input type="text" id="mClientEmail" placeholder="kayonga70@gmail.com" required />
+                  </div>
+                  <div class="auth-input-group">
+                     <label><i class="fas fa-lock me-1" style="color:var(--primary);"></i>Password</label>
+                     <div class="auth-pass-wrapper">
+                        <input type="password" id="mClientPass" placeholder="••••••••" required />
+                        <button type="button" class="auth-toggle-pass" onclick="toggleAuthPass('mClientPass', this)"><i class="fas fa-eye"></i></button>
+                     </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                     <label class="auth-checkbox mb-0"><input type="checkbox" checked /> Remember me</label>
+                     <a href="#" onclick="showToast('Password reset link sent (if account exists).', 'info', 'Password Reset')" class="auth-link text-decoration-none">Forgot?</a>
+                  </div>
+                  <button type="submit" class="btn-auth-submit mb-2"><i class="fas fa-sign-in-alt me-1"></i>Sign In to Order</button>
+               </form>
+               <div class="auth-footer-text mt-3 text-center small">
+                  New customer? <a href="#" onclick="switchMasharikiTab('register')" class="fw-bold text-decoration-none" style="color:var(--primary);">Create an Account</a>
+               </div>
+            </div>
+         </div>
+
+         <!-- REGISTER -->
+         <div id="mRegisterForm">
+            <form onsubmit="event.preventDefault(); handleClientRegister();">
+               <div class="auth-input-group">
+                  <label><i class="fas fa-user me-1" style="color:var(--primary);"></i>Full Name</label>
+                  <input type="text" id="mRegName" placeholder="e.g. Alice Umutoni" required />
+               </div>
+               <div class="auth-input-group">
+                  <label><i class="fas fa-envelope me-1" style="color:var(--primary);"></i>Email Address</label>
+                  <input type="email" id="mRegEmail" placeholder="alice@example.com" required />
+               </div>
+               <div class="auth-input-group">
+                  <label><i class="fas fa-phone me-1" style="color:var(--primary);"></i>Phone Number</label>
+                  <input type="tel" id="mRegPhone" placeholder="+250 788 000 000" required />
+               </div>
+               <div class="auth-input-group">
+                  <label><i class="fas fa-lock me-1" style="color:var(--primary);"></i>Create Password</label>
+                  <div class="auth-pass-wrapper">
+                     <input type="password" id="mRegPass" placeholder="At least 6 characters" required minlength="6" />
+                     <button type="button" class="auth-toggle-pass" onclick="toggleAuthPass('mRegPass', this)"><i class="fas fa-eye"></i></button>
+                  </div>
+               </div>
+               <div class="mb-3">
+                  <label class="auth-checkbox mb-0"><input type="checkbox" required checked /> I agree to Terms &amp; Conditions</label>
+               </div>
+               <button type="submit" class="btn-auth-submit mb-2"><i class="fas fa-user-check me-1"></i>Create Customer Account</button>
+            </form>
+            <div class="auth-footer-text mt-3 text-center small">
+               Already have an account? <a href="#" onclick="switchMasharikiTab('login')" class="fw-bold text-decoration-none" style="color:var(--primary);">Sign In</a>
+            </div>
+         </div>
+
+         <!-- ADMIN STAFF -->
+         <div id="mAdminForm">
+            <form onsubmit="event.preventDefault(); handleAdminLogin();">
+               <div class="auth-input-group">
+                  <label><i class="fas fa-id-badge me-1" style="color:var(--primary);"></i>Admin Staff ID</label>
+                  <input type="text" id="mAdminUser" placeholder="admin_Mashariki" required />
+               </div>
+               <div class="auth-input-group">
+                  <label><i class="fas fa-key me-1" style="color:var(--primary);"></i>Password</label>
+                  <div class="auth-pass-wrapper">
+                     <input type="password" id="mAdminPass" placeholder="••••••••" required />
+                     <button type="button" class="auth-toggle-pass" onclick="toggleAuthPass('mAdminPass', this)"><i class="fas fa-eye"></i></button>
+                  </div>
+               </div>
+               <div class="mb-3">
+                  <span class="small text-muted"><i class="fas fa-shield-alt text-warning me-1"></i>Authorized staff access only</span>
+               </div>
+               <button type="submit" class="btn-auth-submit btn-admin-submit mb-2"><i class="fas fa-tachometer-alt me-1"></i>Access Dashboard</button>
+            </form>
+            <div class="auth-footer-text mt-3 text-center small">Authorized staff portal access.</div>
+         </div>
+
+      </div>
+   </div>
+
+   <!-- ============================================================
+   ADMIN PORTAL
+   ============================================================ -->
+   <div id="adminPortalModal" class="admin-portal-overlay">
+      <div class="admin-portal-container">
+         <div class="admin-portal-header">
+            <div class="d-flex align-items-center gap-3">
+               <div class="admin-logo-ico"><i class="fas fa-utensils"></i></div>
+               <div>
+                  <h4>Mashariki <span>Admin Portal</span></h4>
+                  <span class="admin-status-badge"><i class="fas fa-circle text-success me-1"></i> Live Dashboard &bull;
+                     Kitchen Connected</span>
+               </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+               <button class="btn-admin-action" onclick="refreshAdminOrders()"><i
+                     class="fas fa-sync-alt me-1"></i>Refresh</button>
+               <button class="admin-portal-close" id="adminPortalClose" onclick="closeAdminPortal()"><i
+                     class="fas fa-times"></i> Close Dashboard</button>
+            </div>
+         </div>
+
+         <div class="admin-portal-body">
+            <!-- STATS -->
+            <div class="row g-3 mb-4">
+               <div class="col-6 col-lg-3">
+                  <div class="admin-stat-card">
+                     <div class="asc-icon r"><i class="fas fa-coins"></i></div>
+                     <div>
+                        <span class="asc-title">Today's Revenue</span>
+                        <h3 class="asc-val">1,845,500 RWF</h3>
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> +14% vs yesterday</small>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-6 col-lg-3">
+                  <div class="admin-stat-card">
+                     <div class="asc-icon y"><i class="fas fa-hamburger"></i></div>
+                     <div>
+                        <span class="asc-title">Active Kitchen Orders</span>
+                        <h3 class="asc-val" id="adminActiveCount">5 Orders</h3>
+                        <small class="text-warning"><i class="fas fa-clock"></i> Avg prep: 14 mins</small>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-6 col-lg-3">
+                  <div class="admin-stat-card">
+                     <div class="asc-icon g"><i class="fas fa-check-circle"></i></div>
+                     <div>
+                        <span class="asc-title">Completed Orders</span>
+                        <h3 class="asc-val">48 Orders</h3>
+                        <small class="text-success"><i class="fas fa-check me-1"></i>100% delivered</small>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-6 col-lg-3">
+                  <div class="admin-stat-card">
+                     <div class="asc-icon b"><i class="fas fa-users"></i></div>
+                     <div>
+                        <span class="asc-title">Total Customers</span>
+                        <h3 class="asc-val">84 Guests</h3>
+                        <small class="text-info"><i class="fas fa-star me-1"></i>4.9 Avg Rating</small>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- ORDERS -->
+            <div class="row g-4">
+               <div class="col-lg-8">
+                  <div class="admin-panel-card">
+                     <div class="apc-head">
+                        <h5><i class="fas fa-receipt me-2" style="color:var(--primary);"></i>Live Client Orders Queue
+                        </h5>
+                        <span class="badge bg-danger rounded-pill">Realtime Kitchen Updates</span>
+                     </div>
+                     <div class="table-responsive">
+                        <table class="table admin-orders-table align-middle">
+                           <thead>
+                              <tr>
+                                 <th>Order #</th>
+                                 <th>Customer</th>
+                                 <th>Items</th>
+                                 <th>Total</th>
+                                 <th>Status</th>
+                                 <th>Action</th>
+                              </tr>
+                           </thead>
+                           <tbody id="adminOrdersTbody">
+                              <tr id="ord-1045">
+                                 <td><strong>#1045</strong></td>
+                                 <td>
+                                    <div>Sarah Jenkins</div><small class="text-muted">+250 788 123 456</small>
+                                 </td>
+                                 <td>Classic Smash Burger x2, Loaded Fries</td>
+                                 <td><strong>16,500 RWF</strong></td>
+                                 <td><span class="badge bg-warning text-dark status-badge">In Preparation</span></td>
+                                 <td><button class="btn btn-sm btn-outline-primary"
+                                       onclick="advanceOrderStatus('ord-1045', 'Ready for Delivery')">Advance
+                                       Status</button></td>
+                              </tr>
+                              <tr id="ord-1044">
+                                 <td><strong>#1044</strong></td>
+                                 <td>
+                                    <div>David K.</div><small class="text-muted">Table 4 &bull; Dine-in</small>
+                                 </td>
+                                 <td>Margherita Royale x1, Mango Shake</td>
+                                 <td><strong>12,000 RWF</strong></td>
+                                 <td><span class="badge bg-info text-dark status-badge">Ready for Table</span></td>
+                                 <td><button class="btn btn-sm btn-outline-success"
+                                       onclick="advanceOrderStatus('ord-1044', 'Completed')">Complete Order</button>
+                                 </td>
+                              </tr>
+                              <tr id="ord-1043">
+                                 <td><strong>#1043</strong></td>
+                                 <td>
+                                    <div>Eric Munyaneza</div><small class="text-muted">Kigali Delivery</small>
+                                 </td>
+                                 <td>Nashville Hot Chicken x3</td>
+                                 <td><strong>19,500 RWF</strong></td>
+                                 <td><span class="badge bg-success status-badge">Completed</span></td>
+                                 <td><span class="text-muted small"><i class="fas fa-check-double me-1"></i>Done</span>
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- STOCK CONTROLS -->
+               <div class="col-lg-4">
+                  <div class="admin-panel-card mb-3">
+                     <div class="apc-head">
+                        <h5><i class="fas fa-toggle-on me-2" style="color:var(--primary);"></i>Menu Stock Controls</h5>
+                     </div>
+                     <div class="d-flex flex-column gap-3 mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                           <div><strong>Smash Burger</strong><small class="d-block text-muted">Stock: High</small></div>
+                           <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                                 checked /></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                           <div><strong>Margherita Royale</strong><small class="d-block text-muted">Stock:
+                                 Medium</small></div>
+                           <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                                 checked /></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                           <div><strong>Nashville Hot Chicken</strong><small class="d-block text-muted">Stock:
+                                 High</small></div>
+                           <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                                 checked /></div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="admin-panel-card text-center p-3">
+                     <i class="fas fa-shield-alt fa-2x mb-2" style="color:var(--primary);"></i>
+                     <h6>Admin Quick Export</h6>
+                     <p class="small text-muted mb-2">Generate report for daily sales &amp; kitchen orders</p>
+                     <button class="btn btn-sm btn-dark w-100"
+                        onclick="showToast('Daily Sales Report exported successfully!', 'success', 'Report Exported')"><i
+                           class="fas fa-file-download me-1"></i>Export Report</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         CART DRAWER & OVERLAY MODAL (Matching requested UI)
+         ============================================================ -->
+   <div id="cartDrawerModal" class="custom-modal-overlay">
+      <div class="cart-drawer-box">
+         <div class="cart-drawer-header">
+            <div>
+               <h3 class="cart-drawer-title mb-0">My Cart</h3>
+               <span id="cartHeaderCount" class="cart-drawer-subtitle">0 items</span>
+            </div>
+            <button type="button" class="cart-drawer-close" onclick="closeCartDrawer()"><i class="fas fa-times"></i></button>
+         </div>
+
+         <div class="cart-drawer-body" id="cartItemsList">
+            <!-- Dynamic Cart Items rendered here -->
+         </div>
+
+         <!-- ADD EXTRAS SECTION -->
+         <div class="cart-extras-section">
+            <div class="cart-extras-header">ADD EXTRAS:</div>
+            <div class="cart-extras-grid">
+               <div class="extra-pill-btn" onclick="addExtraToCart('Avocado', 500, 'img/menu/1.jpg')">
+                  <span>Avocado <small>(500)</small></span>
+                  <i class="fas fa-plus"></i>
+               </div>
+               <div class="extra-pill-btn" onclick="addExtraToCart('Kachumbari', 0, 'img/menu/2.jpg')">
+                  <span>Kachumbari <span class="free-text">(FREE)</span></span>
+                  <i class="fas fa-plus"></i>
+               </div>
+               <div class="extra-pill-btn" onclick="addExtraToCart('Mayonnaise', 0, 'img/menu/3.jpg')">
+                  <span>Mayonnaise <span class="free-text">(FREE)</span></span>
+                  <i class="fas fa-plus"></i>
+               </div>
+               <div class="extra-pill-btn" onclick="addExtraToCart('Ketchup', 0, 'img/menu/4.jpg')">
+                  <span>Ketchup <span class="free-text">(FREE)</span></span>
+                  <i class="fas fa-plus"></i>
+               </div>
+               <div class="extra-pill-btn" onclick="addExtraToCart('PiliPili', 0, 'img/menu/5.jpg')">
+                  <span>PiliPili <span class="free-text">(FREE)</span></span>
+                  <i class="fas fa-plus"></i>
+               </div>
+            </div>
+         </div>
+
+         <div class="cart-drawer-footer">
+            <!-- PROMO CODE ROW -->
+            <div class="cart-promo-row mb-3">
+               <input type="text" id="cartPromoInput" class="form-control cart-promo-input" placeholder="Promo code">
+               <button type="button" class="btn cart-promo-btn" onclick="applyPromoCode()">Apply</button>
+            </div>
+
+            <!-- CUSTOMER LOYALTY POINTS REDEMPTION BANNER IN CART -->
+            <div id="cartLoyaltyBox" class="p-2 mb-3 rounded-3 border" style="background:#fffbeb; border-color:#fef3c7 !important;">
+               <div class="d-flex justify-content-between align-items-center mb-1">
+                  <strong class="text-dark small"><i class="fas fa-star text-warning me-1"></i>Loyalty Points: <span id="cartLoyaltyPointsBadge" class="badge bg-warning text-dark font-monospace">2,500 Pts</span></strong>
+                  <span class="small text-success font-weight-bold" id="cartLoyaltyRwfVal">2,500 RWF</span>
+               </div>
+               
+               <div class="mt-2" id="cartLoyaltyInputRow">
+                  <div class="input-group input-group-sm mb-1">
+                     <input type="number" id="cartLoyaltyCustomInput" class="form-control font-monospace" placeholder="Points e.g. 500" min="1" step="50" />
+                     <button type="button" class="btn btn-warning font-weight-bold" onclick="applyCustomLoyaltyPoints('cart')">Apply</button>
+                  </div>
+                  <div class="d-flex gap-1">
+                     <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(500, 'cart')">500 Pts</button>
+                     <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(1000, 'cart')">1,000 Pts</button>
+                     <button type="button" class="btn btn-xs btn-outline-dark py-0 font-weight-bold flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints('max', 'cart')">Max Pts</button>
+                  </div>
+               </div>
+
+               <div id="cartLoyaltyActiveBadge" class="mt-2 text-center" style="display:none;">
+                  <div class="badge bg-success bg-opacity-10 text-success w-100 p-2 font-monospace mb-1 d-flex justify-content-between align-items-center">
+                     <span><i class="fas fa-check-circle me-1"></i><span id="cartAppliedPointsText">0 Pts</span> Discount</span>
+                     <strong id="cartAppliedDiscountText">-0 RWF</strong>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" style="font-size:0.75rem;" onclick="removeLoyaltyDiscount()">
+                     <i class="fas fa-times me-1"></i> Remove Points Discount
+                  </button>
+               </div>
+            </div>
+
+            <div class="cart-summary-line">
+               <span>Subtotal</span>
+               <strong id="cartSubtotal">RWF 0</strong>
+            </div>
+            <div class="cart-summary-line">
+               <span>Delivery Fee</span>
+               <span id="cartDeliveryFee" style="color:#27ae60; font-weight:700;">FREE</span>
+            </div>
+            
+            <div class="cart-summary-divider"></div>
+
+            <div class="cart-summary-total">
+               <span>Total</span>
+               <span id="cartTotal" class="cart-total-amount">RWF 0</span>
+            </div>
+            <button type="button" class="btn-proceed-checkout" onclick="openCheckoutModal()">
+               Proceed to Checkout
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         CHECKOUT MODAL
+         ============================================================ -->
+   <div id="checkoutModal" class="custom-modal-overlay">
+      <div class="modal-standard-box">
+         <div class="modal-standard-header">
+            <h4><i class="fas fa-credit-card me-2" style="color:var(--primary);"></i>Complete Your Order</h4>
+            <button type="button" class="modal-standard-close" onclick="closeCheckoutModal()"><i
+                  class="fas fa-times"></i></button>
+         </div>
+         <form id="checkoutForm" onsubmit="handleOrderSubmission(event)">
+            <div class="mb-3">
+               <label class="form-label small text-muted font-weight-bold">Service Option</label>
+               <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-dark flex-grow-1 active service-type-btn"
+                     data-type="delivery" onclick="selectServiceType('delivery', this)">
+                     <i class="fas fa-truck me-1"></i> Delivery
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-dark flex-grow-1 service-type-btn"
+                     data-type="takeaway" onclick="selectServiceType('takeaway', this)">
+                     <i class="fas fa-store me-1"></i> Pickup
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-dark flex-grow-1 service-type-btn"
+                     data-type="dinein" onclick="selectServiceType('dinein', this)">
+                     <i class="fas fa-chair me-1"></i> Dine-In
+                  </button>
+               </div>
+            </div>
+
+            <!-- CUSTOMER LOYALTY POINTS REDEMPTION BANNER IN CHECKOUT -->
+            <div id="checkoutLoyaltyBox" class="p-3 mb-3 rounded-3 border" style="background:#fffbeb; border-color:#fef3c7 !important;">
+               <div class="d-flex justify-content-between align-items-center mb-1">
+                  <strong class="text-dark small"><i class="fas fa-star text-warning me-1"></i>Redeem Legacy Loyalty Points</strong>
+                  <span class="badge bg-warning text-dark font-monospace" id="checkoutLoyaltyPointsBadge">2,500 Pts</span>
+               </div>
+               <div class="small text-muted mb-2">Available Balance: <strong id="checkoutLoyaltyRwfVal" class="text-success">2,500 RWF</strong></div>
+
+               <div id="checkoutLoyaltyInputRow">
+                  <div class="input-group input-group-sm mb-2">
+                     <input type="number" id="checkoutLoyaltyCustomInput" class="form-control font-monospace" placeholder="Choose points to use..." min="1" step="50" />
+                     <button type="button" class="btn btn-warning font-weight-bold" onclick="applyCustomLoyaltyPoints('checkout')">Apply Points</button>
+                  </div>
+                  <div class="d-flex gap-1">
+                     <button type="button" class="btn btn-sm btn-outline-secondary py-1 text-dark flex-grow-1" style="font-size:0.78rem;" onclick="quickSelectLoyaltyPoints(500, 'checkout')">500 Pts</button>
+                     <button type="button" class="btn btn-sm btn-outline-secondary py-1 text-dark flex-grow-1" style="font-size:0.78rem;" onclick="quickSelectLoyaltyPoints(1000, 'checkout')">1,000 Pts</button>
+                     <button type="button" class="btn btn-sm btn-outline-dark py-1 font-weight-bold flex-grow-1" style="font-size:0.78rem;" onclick="quickSelectLoyaltyPoints('max', 'checkout')">Use Max Pts</button>
+                  </div>
+               </div>
+
+               <div id="checkoutLoyaltyActiveBadge" class="mt-2 text-center" style="display:none;">
+                  <div class="badge bg-success bg-opacity-10 text-success w-100 p-2 font-monospace mb-1 d-flex justify-content-between align-items-center fs-6">
+                     <span><i class="fas fa-check-circle me-1"></i><span id="checkoutAppliedPointsText">0 Pts</span> Applied</span>
+                     <strong id="checkoutAppliedDiscountText">-0 RWF</strong>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" style="font-size:0.8rem;" onclick="removeLoyaltyDiscount()">
+                     <i class="fas fa-times me-1"></i> Remove Points Discount
+                  </button>
+               </div>
+            </div>
+
+            <div class="auth-input-group">
+               <label>Full Name *</label>
+               <input type="text" id="orderCustName" class="form-control" placeholder="e.g. Eric Munyaneza" required />
+            </div>
+
+            <div class="auth-input-group">
+               <label>Phone Number *</label>
+               <input type="tel" id="orderCustPhone" class="form-control" placeholder="e.g. +250 788 123 456"
+                  required />
+            </div>
+
+            <div class="auth-input-group" id="addressInputGroup">
+               <label id="addressLabel">Delivery Address *</label>
+               <input type="text" id="orderCustAddress" class="form-control"
+                  placeholder="e.g. 108 Kimironko St, House #14" required />
+            </div>
+
+            <div class="mb-3">
+               <label class="form-label small text-muted font-weight-bold">Payment Method</label>
+               <div class="payment-pills">
+                  <div class="payment-pill active" onclick="selectPaymentMethod('momo', this)">
+                     <i class="fas fa-mobile-alt me-1"></i> Mobile Money
+                  </div>
+                  <div class="payment-pill" onclick="selectPaymentMethod('card', this)">
+                     <i class="fas fa-credit-card me-1"></i> Card / Visa
+                  </div>
+                  <div class="payment-pill" onclick="selectPaymentMethod('cash', this)">
+                     <i class="fas fa-money-bill-wave me-1"></i> Cash
+                  </div>
+               </div>
+            </div>
+
+            <!-- CUSTOMER LOYALTY POINTS REDEMPTION BANNER -->
+            <div id="checkoutLoyaltyBox" class="p-3 mb-3 rounded-3 border" style="background:#fffbeb; border-color:#fef3c7 !important;">
+               <div class="d-flex justify-content-between align-items-center mb-1">
+                  <strong class="text-dark small"><i class="fas fa-star text-warning me-1"></i>Redeem Legacy Loyalty Points</strong>
+                  <span class="badge bg-warning text-dark font-monospace" id="checkoutLoyaltyPointsBadge">2,500 Pts</span>
+               </div>
+               <div class="small text-muted mb-2">Available Value: <strong id="checkoutLoyaltyRwfVal" class="text-success">2,500 RWF</strong></div>
+               <button type="button" class="btn btn-sm btn-outline-warning text-dark font-weight-bold w-100 rounded-pill" id="checkoutRedeemPointsBtn" onclick="toggleLoyaltyPointsRedemption()">
+                  <i class="fas fa-coins me-1"></i> Redeem Points Discount
+               </button>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 mb-3">
+               <div class="d-flex justify-content-between text-muted small mb-1">
+                  <span>Order Items:</span>
+                  <span id="checkoutItemsSummary">0 items</span>
+               </div>
+               <div class="d-flex justify-content-between font-weight-bold fs-6">
+                  <span>Total Amount Due:</span>
+                  <span id="checkoutTotalSummary" style="color:var(--primary);">RWF 0</span>
+               </div>
+            </div>
+
+            <button type="submit" class="btn-checkout-submit">
+               <i class="fas fa-check-circle me-1"></i> Confirm & Place Order
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         ORDER SUCCESS CONFIRMATION MODAL
+         ============================================================ -->
+   <div id="orderSuccessModal" class="custom-modal-overlay">
+      <div class="modal-standard-box text-center p-4">
+         <div class="bico mx-auto mb-3"
+            style="width:68px;height:68px;font-size:2rem;background:linear-gradient(135deg,#2d6a4f,#1b4332);">
+            <i class="fas fa-check"></i>
+         </div>
+         <h3 style="font-family:'Playfair Display',serif;color:var(--dark);">Order Confirmed!</h3>
+         <p class="text-muted small">Thank you for ordering with Mashariki Restaurant. Your order has been dispatched to
+            our kitchen.</p>
+
+         <div class="bg-light p-3 rounded-3 my-3">
+            <div class="small text-muted mb-1">Order Tracking Number</div>
+            <h4 id="successOrderCode" class="text-dark font-weight-bold mb-0">#MSH-0000</h4>
+            <div class="small text-success mt-2"><i class="fas fa-clock me-1"></i> Estimated Prep Time: 20-30 mins</div>
+         </div>
+
+         <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-outline-dark flex-grow-1"
+               onclick="closeOrderSuccessModal()">Close</button>
+            <button type="button" class="btn btn-primary flex-grow-1"
+               style="background:var(--primary);border-color:var(--primary);" onclick="viewOrderFromSuccess()">
+               <i class="fas fa-truck me-1"></i> Track Order
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         MY ORDERS MODAL
+         ============================================================ -->
+   <div id="ordersModal" class="custom-modal-overlay">
+      <div class="modal-standard-box">
+         <div class="modal-standard-header">
+            <h4><i class="fas fa-utensils me-2" style="color:var(--primary);"></i>My Orders &amp; Tracking</h4>
+            <button type="button" class="modal-standard-close" onclick="closeMyOrdersModal()"><i
+                  class="fas fa-times"></i></button>
+         </div>
+         <div id="myOrdersList">
+            <!-- Dynamic Orders list rendered here -->
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         ORDER TIMELINE TRACKING MODAL
+         ============================================================ -->
+   <div id="timelineModal" class="custom-modal-overlay">
+      <div class="modal-standard-box">
+         <div class="modal-standard-header">
+            <div>
+               <h4 id="timelineOrderCode" class="mb-0">Order #MSH-0000</h4>
+               <span id="timelineStatusBadge" class="status-badge bg-info text-dark">Processing</span>
+            </div>
+            <button type="button" class="modal-standard-close" onclick="closeTimelineModal()"><i
+                  class="fas fa-times"></i></button>
+         </div>
+         <div id="timelineDetailsContent" class="mb-3 p-3 bg-light rounded-3 small">
+            <!-- Summary of items in tracked order -->
+         </div>
+         <h6 class="font-weight-bold text-uppercase small text-muted mb-2">Live Delivery Status</h6>
+         <div class="timeline-stepper" id="timelineStepper">
+            <!-- Timeline steps rendered here -->
+         </div>
+         <button type="button" class="btn btn-sm btn-outline-dark w-100 mt-4" onclick="closeTimelineModal()">
+            Back to Orders
+         </button>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         TABLE RESERVATION MODAL
+         ============================================================ -->
+   <div id="reservationModal" class="custom-modal-overlay">
+      <div class="modal-standard-box">
+         <div class="modal-standard-header">
+            <h4><i class="fas fa-calendar-alt me-2" style="color:var(--primary);"></i>Book a Table</h4>
+            <button type="button" class="modal-standard-close" onclick="closeReservationModal()"><i class="fas fa-times"></i></button>
+         </div>
+         <form id="reservationForm" onsubmit="handleReservationSubmit(event)">
+            <div class="row g-2 mb-3">
+               <div class="col-6">
+                  <label class="form-label small text-muted font-weight-bold">Date *</label>
+                  <input type="date" id="resDate" class="form-control" required />
+               </div>
+               <div class="col-6">
+                  <label class="form-label small text-muted font-weight-bold">Time Slot *</label>
+                  <select id="resTime" class="form-select" required>
+                     <option value="12:00 PM">12:00 PM (Lunch)</option>
+                     <option value="01:30 PM">01:30 PM (Lunch)</option>
+                     <option value="06:00 PM">06:00 PM (Dinner)</option>
+                     <option value="07:30 PM" selected>07:30 PM (Dinner)</option>
+                     <option value="09:00 PM">09:00 PM (Late Dinner)</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+               <div class="col-6">
+                  <label class="form-label small text-muted font-weight-bold">Number of Guests *</label>
+                  <select id="resGuests" class="form-select" required>
+                     <option value="1 Guest">1 Guest</option>
+                     <option value="2 Guests" selected>2 Guests</option>
+                     <option value="3-4 Guests">3-4 Guests</option>
+                     <option value="5-8 Guests">5-8 Guests (Family Table)</option>
+                     <option value="9+ Guests">9+ Guests (VIP Party)</option>
+                  </select>
+               </div>
+               <div class="col-6">
+                  <label class="form-label small text-muted font-weight-bold">Seating Area *</label>
+                  <select id="resArea" class="form-select" required>
+                     <option value="Main Dining Hall" selected>Main Dining Hall</option>
+                     <option value="Terrace & Outdoor Garden">Terrace Outdoor</option>
+                     <option value="VIP Private Lounge">VIP Private Lounge</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="auth-input-group mb-2">
+               <label>Your Full Name *</label>
+               <input type="text" id="resCustName" class="form-control" placeholder="e.g. Jean-Luc Nkurunziza" required />
+            </div>
+
+            <div class="auth-input-group mb-2">
+               <label>Phone Number (MTN / Airtel RWF) *</label>
+               <input type="tel" id="resCustPhone" class="form-control" placeholder="e.g. 0788 123 456" required />
+            </div>
+
+            <div class="auth-input-group mb-3">
+               <label>Special Requests / Occasion</label>
+               <input type="text" id="resNotes" class="form-control" placeholder="e.g. Birthday celebration, Quiet corner..." />
+            </div>
+
+            <button type="submit" class="btn-checkout-submit w-100" style="background:var(--primary);border:none;">
+               <i class="fas fa-check-circle me-1"></i> Confirm Table Reservation
+            </button>
+         </form>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         RESERVATION SUCCESS MODAL
+         ============================================================ -->
+   <div id="reservationSuccessModal" class="custom-modal-overlay">
+      <div class="modal-standard-box text-center p-4">
+         <div class="bico mx-auto mb-3" style="width:68px;height:68px;font-size:2rem;background:linear-gradient(135deg,#e67e22,#d35400);">
+            <i class="fas fa-calendar-check"></i>
+         </div>
+         <h3 style="font-family:'Playfair Display',serif;color:var(--dark);">Table Reserved!</h3>
+         <p class="text-muted small">We look forward to hosting you at Mashariki Restaurant.</p>
+
+         <div class="bg-light p-3 rounded-3 my-3 text-start small">
+            <div class="d-flex justify-content-between mb-1">
+               <span class="text-muted">Booking Reference:</span>
+               <strong id="resSuccessCode" class="text-dark">#RES-0000</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+               <span class="text-muted">Date &amp; Time:</span>
+               <strong id="resSuccessDateTime" class="text-dark">-</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+               <span class="text-muted">Guests &amp; Area:</span>
+               <strong id="resSuccessGuestsArea" class="text-dark">-</strong>
+            </div>
+         </div>
+
+         <button type="button" class="btn btn-dark w-100 mt-2" onclick="closeReservationSuccessModal()">
+            Done &amp; Close
+         </button>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         MOBILE MONEY USSD PUSH PROMPT SIMULATION MODAL
+         ============================================================ -->
+   <!-- ============================================================
+         MOBILE MONEY USSD & PIN SIMULATOR MODAL (SMARTPHONE DESIGN)
+         ============================================================ -->
+   <div id="momoUssdModal" class="custom-modal-overlay">
+      <div class="modal-standard-box text-center p-4" style="max-width:390px; border-radius:24px; box-shadow:0 20px 40px rgba(0,0,0,0.3); border:none;">
+         
+         <!-- Dual Operator Selector Pills -->
+         <div class="d-flex gap-2 mb-3 p-1 rounded-pill" style="background:#f1f5f9; border:1px solid #e2e8f0;">
+            <button type="button" class="btn btn-sm flex-fill rounded-pill py-2 font-weight-bold" id="momoOpMtnBtn" style="background:#ffcc00; color:#000; border:none; box-shadow:0 2px 6px rgba(255,204,0,0.4);" onclick="selectMomoOperator('MTN')">
+               <i class="fas fa-mobile-alt me-1"></i> MTN MoMo
+            </button>
+            <button type="button" class="btn btn-sm flex-fill rounded-pill py-2 font-weight-bold" id="momoOpAirtelBtn" style="background:transparent; color:#64748b; border:none;" onclick="selectMomoOperator('Airtel')">
+               <i class="fas fa-mobile-alt me-1"></i> Airtel Money
+            </button>
+         </div>
+
+         <div class="mb-2">
+            <h5 class="font-weight-bold mb-1 text-dark" id="momoProviderTitle">MTN Mobile Money</h5>
+            <div class="small text-muted">Push Request Sent to <strong id="momoTargetPhone" class="text-dark">+250 788 700 870</strong></div>
+         </div>
+         
+         <!-- Realistic Dark Smartphone Terminal Box -->
+         <div class="p-3 mb-3 text-start rounded-3 shadow-sm" style="background:linear-gradient(135deg, #0f172a, #1e293b); color:#38bdf8; border:1px solid #334155;">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+               <span class="badge bg-warning text-dark font-monospace" style="font-size:0.65rem;"><i class="fas fa-terminal me-1"></i>USSD PROMPT *182#</span>
+               <span class="small text-muted font-monospace" style="font-size:0.7rem;">Mashariki POS</span>
+            </div>
+            <div class="small text-light mb-3" style="line-height:1.4;">
+               "Pay <strong id="momoPaymentAmount" class="text-warning fs-6">0 RWF</strong> to Mashariki Restaurant Ltd? Enter 4-digit PIN:"
+            </div>
+
+            <!-- PIN Display Dots Container -->
+            <div class="py-2 px-3 rounded text-center" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); min-height:44px; display:flex; align-items:center; justify-content:center;">
+               <div id="momoPinDots" class="font-monospace fs-4 text-warning" style="letter-spacing:14px;">
+                  • • • •
+               </div>
+            </div>
+         </div>
+
+         <!-- Smartphone 3x4 Keypad Grid -->
+         <div style="display:grid !important; grid-template-columns:repeat(3, 1fr) !important; gap:10px !important; max-width:240px !important; margin:0 auto 16px auto !important; padding:12px !important; background:#f8fafc !important; border:1px solid #e2e8f0 !important; border-radius:20px !important;">
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('1')">1</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('2')">2</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('3')">3</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('4')">4</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('5')">5</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('6')">6</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('7')">7</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('8')">8</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('9')">9</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #fee2e2; background:#fef2f2; color:#dc2626; font-size:1.1rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="clearPinDigits()"><i class="fas fa-backspace"></i></button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #cbd5e1; background:#ffffff; color:#1e293b; font-size:1.2rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="pressPinDigit('0')">0</button>
+            <button type="button" style="width:52px; height:52px; border-radius:50%; border:1px solid #bbf7d0; background:#f0fdf4; color:#16a34a; font-size:1.1rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 2px 4px rgba(0,0,0,0.06);" onclick="confirmMomoUssdSuccess()"><i class="fas fa-check"></i></button>
+         </div>
+
+         <!-- Bottom Action Buttons -->
+         <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary w-50 py-2 font-weight-bold rounded-pill" onclick="cancelMomoUssd()">Cancel</button>
+            <button type="button" class="btn btn-success w-50 py-2 font-weight-bold rounded-pill" style="background:#16a34a; border-color:#16a34a;" onclick="confirmMomoUssdSuccess()">
+               <i class="fas fa-check-circle me-1"></i> Approve Payment
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- ============================================================
+         PRINTABLE THERMAL RECEIPT MODAL
+         ============================================================ -->
+   <div id="receiptModal" class="custom-modal-overlay">
+      <div class="modal-standard-box" style="max-width:440px;">
+         <div class="modal-standard-header no-print">
+            <h4><i class="fas fa-print me-2" style="color:var(--primary);"></i>Official Receipt</h4>
+            <button type="button" class="modal-standard-close" onclick="closeReceiptModal()"><i class="fas fa-times"></i></button>
+         </div>
+         
+         <!-- Printable Thermal Receipt Container -->
+         <div id="printableReceiptArea" class="receipt-paper p-4 bg-white text-dark border rounded-3 font-monospace">
+            <div class="text-center mb-3 border-bottom pb-3">
+               <h4 class="font-weight-bold mb-0 text-uppercase" style="letter-spacing:1px;">MASHARIKI RESTAURANT</h4>
+               <div class="small text-muted">108 Kimironko St, Kigali - Rwanda</div>
+               <div class="small text-muted">TEL: +250 720 966 666 | TIN: 102938475</div>
+               <div class="badge bg-dark text-white mt-2 px-3 py-1">OFFICIAL TAX RECEIPT</div>
+            </div>
+
+            <div class="small mb-3 d-flex justify-content-between">
+               <div>
+                  <div><strong>Invoice #:</strong> <span id="receiptNum">#MSH-8492</span></div>
+                  <div><strong>Date:</strong> <span id="receiptDate">2026-07-28</span></div>
+               </div>
+               <div class="text-end">
+                  <div><strong>Customer:</strong> <span id="receiptCustomer">Guest</span></div>
+                  <div><strong>Type:</strong> <span id="receiptServiceType">Delivery</span></div>
+               </div>
+            </div>
+
+            <table class="table table-sm border-top border-bottom small mb-3">
+               <thead>
+                  <tr>
+                     <th>QTY</th>
+                     <th>ITEM</th>
+                     <th class="text-end">AMOUNT</th>
+                  </tr>
+               </thead>
+               <tbody id="receiptItemsBody">
+                  <!-- Dynamic items populated here -->
+               </tbody>
+            </table>
+
+            <div class="small mb-3 border-bottom pb-2">
+               <div class="d-flex justify-content-between">
+                  <span>Subtotal:</span>
+                  <span id="receiptSubtotal">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between">
+                  <span>VAT (18% Included):</span>
+                  <span id="receiptTax">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between font-weight-bold fs-6 mt-1 pt-1 border-top">
+                  <span>TOTAL PAID:</span>
+                  <span id="receiptTotalAmount" class="text-dark">RWF 0</span>
+               </div>
+               <div class="d-flex justify-content-between text-muted mt-1">
+                  <span>Payment Method:</span>
+                  <span id="receiptPayMethod">Mobile Money</span>
+               </div>
+               <div class="text-center pt-2">
+                <div class="receipt-qr-box mb-2">
+                   <img id="receiptQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ebm.rra.gov.rw/verify/MSH-8492" alt="RRA EBM QR Verification" />
+                   <div class="small text-muted font-monospace mt-1" style="font-size:0.62rem;">RRA EBM v2.1 VERIFIED</div>
+                </div>
+                <div class="small text-muted mb-1">Thank you for dining with Mashariki!</div>
+                <div class="small font-weight-bold">*** Murakoze Cyane ***</div>
+             </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3 no-print">
+             <button type="button" class="btn btn-outline-dark w-50" onclick="closeReceiptModal()">Close</button>
+             <button type="button" class="btn btn-primary w-50" style="background:var(--primary);border-color:var(--primary);" onclick="triggerReceiptPrint()">
+                <i class="fas fa-print me-1"></i> Print / Save PDF
+             </button>
+          </div>
+       </div>
+    </div>
+
+    <!-- ============================================================
+          SYSTEM NOTIFICATION & DISPATCH LOGS MODAL
+          ============================================================ -->
+    <div id="notificationLogModal" class="custom-modal-overlay">
+       <div class="modal-standard-box" style="max-width:500px;">
+          <div class="modal-standard-header">
+             <h4><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notification &amp; Dispatch Logs</h4>
+             <button type="button" class="modal-standard-close" onclick="closeNotificationLogModal()"><i class="fas fa-times"></i></button>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 flex-wrap gap-2">
+             <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-outline-dark rounded-pill active" onclick="filterNotificationLogs('all', this)">All Logs</button>
+                <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="filterNotificationLogs('sms', this)"><i class="fas fa-comment-alt me-1"></i>SMS Alerts</button>
+                <button class="btn btn-sm btn-outline-success rounded-pill" onclick="filterNotificationLogs('email', this)"><i class="fas fa-envelope me-1"></i>Email Tickets</button>
+             </div>
+             <button class="btn btn-sm btn-outline-warning rounded-pill" onclick="sendDemoTestNotification()">
+                <i class="fas fa-paper-plane me-1"></i> + Send Test Alert
+             </button>
+          </div>
+
+          <div class="notification-feed" id="notificationFeedContainer">
+             <!-- Dynamic notifications rendered here -->
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-center border-top pt-2">
+             <span class="small text-muted" id="notificationTotalCounter">Total: 0 logs</span>
+             <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="clearNotificationLogs()">Clear History</button>
+          </div>
+       </div>
+    </div>
+
+   <!-- ============================================================
+   SCRIPTS
+   ============================================================ -->
+   <script src="js/jquery-3.7.1.min.js"></script>
+   <script src="js/bootstrap.bundle.min.js"></script>
+   <script src="js/aos.js"></script>
+   <script src="js/swiper-bundle.min.js"></script>
+   <script src="js/jquery.magnific-popup.min.js"></script>
+   <script src="js/main.js?v=23.0"></script>
+
+   <!-- ============================================================
+   EXTRA: Global click handler for data-auth-modal buttons
+   ============================================================ -->
+   <script>
+      (function () {
+         "use strict";
+         document.addEventListener('click', function (e) {
+            var trigger = e.target.closest('[data-auth-modal]');
+            if (trigger) {
+               e.preventDefault();
+               var tab = trigger.getAttribute('data-auth-modal') || 'login';
+               if (typeof window.openMasharikiModal === 'function') {
+                  window.openMasharikiModal(tab);
+               } else {
+                  console.warn('[Auth] openMasharikiModal not ready.');
+               }
+            }
+         });
+      })();
+   </script>
+
+   <!-- PWA Service Worker Registration -->
+   <script>
+      if ('serviceWorker' in navigator) {
+         window.addEventListener('load', function() {
+            navigator.serviceWorker.register('./sw.js').then(function(reg) {
+               console.log('[PWA] Favorite Cafe ServiceWorker registered with scope: ', reg.scope);
+            }).catch(function(err) {
+               console.log('[PWA] ServiceWorker registration failed: ', err);
+            });
+         });
+      }
+   </script>
+
+</body>
+
+</html>
