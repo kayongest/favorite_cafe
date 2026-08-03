@@ -933,11 +933,12 @@ function renderAdminMenuCategoryPills() {
         { name: 'Shakes', slug: 'shakes' },
         { name: 'Juices', slug: 'juices' },
         { name: 'Mains', slug: 'mains' },
-        { name: 'Salads', slug: 'salads' },
-        { name: 'Sides', slug: 'sides' },
+        { name: 'Burger', slug: 'burger' },
         { name: 'Grills', slug: 'grills' },
         { name: 'Pizza', slug: 'pizza' },
-        { name: 'Wraps', slug: 'wraps' }
+        { name: 'Wraps', slug: 'wraps' },
+        { name: 'Salads', slug: 'salads' },
+        { name: 'Sides', slug: 'sides' }
     ];
 
     var list = (typeof adminCategories !== 'undefined' && Array.isArray(adminCategories) && adminCategories.length > 0) ? adminCategories : defaultCats;
@@ -1953,8 +1954,12 @@ async function loadAdminCategories() {
             { id: 4, name: 'Shakes', slug: 'shakes', icon: 'fas fa-glass-martini-alt', is_active: 1, sort_order: 4 },
             { id: 5, name: 'Juices', slug: 'juices', icon: 'fas fa-cocktail', is_active: 1, sort_order: 5 },
             { id: 6, name: 'Mains', slug: 'mains', icon: 'fas fa-utensils', is_active: 1, sort_order: 6 },
-            { id: 7, name: 'Salads', slug: 'salads', icon: 'fas fa-leaf', is_active: 1, sort_order: 7 },
-            { id: 8, name: 'Sides', slug: 'sides', icon: 'fas fa-bread-slice', is_active: 1, sort_order: 8 }
+            { id: 7, name: 'Burger', slug: 'burger', icon: 'fas fa-hamburger', is_active: 1, sort_order: 7 },
+            { id: 8, name: 'Grills', slug: 'grills', icon: 'fas fa-drumstick-bite', is_active: 1, sort_order: 8 },
+            { id: 9, name: 'Pizza', slug: 'pizza', icon: 'fas fa-pizza-slice', is_active: 1, sort_order: 9 },
+            { id: 10, name: 'Wraps', slug: 'wraps', icon: 'fas fa-hotdog', is_active: 1, sort_order: 10 },
+            { id: 11, name: 'Salads', slug: 'salads', icon: 'fas fa-leaf', is_active: 1, sort_order: 11 },
+            { id: 12, name: 'Sides', slug: 'sides', icon: 'fas fa-bread-slice', is_active: 1, sort_order: 12 }
         ];
         saveCategoriesToStorage();
     }
