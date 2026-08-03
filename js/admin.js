@@ -905,6 +905,8 @@ async function loadAdminMenu() {
                 }
             } catch (e) {}
         }
+    }
+
     renderAdminMenuCategoryPills();
     renderAdminMenu();
 }
