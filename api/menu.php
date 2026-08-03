@@ -164,16 +164,13 @@ try {
         $pdo->exec("ALTER TABLE menu_items ADD `reviews_count` INT(11) DEFAULT 12");
     }
     
-    $checkOmelette = $pdo->query("SELECT COUNT(*) FROM menu_items WHERE title LIKE '%Special Favorite Omelette%'")->fetchColumn();
-    $checkSmash = $pdo->query("SELECT COUNT(*) FROM menu_items WHERE title LIKE '%Smash Burger%'")->fetchColumn();
     $checkCount = $pdo->query("SELECT COUNT(*) FROM menu_items")->fetchColumn();
     
-    if ($checkCount == 0 || $checkOmelette == 0 || $checkSmash > 0) {
+    if ($checkCount == 0) {
         $jsonPath = __DIR__ . '/menu.json';
         if (file_exists($jsonPath)) {
             $jsonItems = json_decode(file_get_contents($jsonPath), true);
             if (is_array($jsonItems) && count($jsonItems) > 0) {
-                $pdo->exec("DELETE FROM menu_items");
                 $stmt = $pdo->prepare("INSERT INTO menu_items (id, title, category, price, old_price, image, rating, reviews_count, calories, prep_time, description, tags, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 foreach ($jsonItems as $item) {
                     $stmt->execute([

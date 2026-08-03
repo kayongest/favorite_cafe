@@ -379,56 +379,75 @@
 
             // Live Auto-Sync Listeners: Re-fetch whenever admin updates menu or tab regains focus
             window.addEventListener('storage', function(e) {
-                if (e.key === 'favcafe_menu' || e.key === 'favcafe_categories') {
+                if (e.key === 'favcafe_menu' || e.key === 'favcafe_menu_timestamp' || e.key === 'favcafe_categories') {
                     loadPdfMenuData();
                 }
             });
             window.addEventListener('focus', function() {
                 loadPdfMenuData();
             });
-            // Auto-refresh every 15 seconds in background
+
+            // Listen to instant admin BroadcastChannel messages across browser tabs
+            try {
+                var channel = new BroadcastChannel('favcafe_menu_channel');
+                channel.onmessage = function(e) {
+                    loadPdfMenuData();
+                };
+            } catch(e) {}
+
+            // Auto-refresh every 5 seconds in background
             setInterval(function() {
                 loadPdfMenuData();
-            }, 15000);
+            }, 5000);
         });
 
         async function loadPdfMenuData() {
             var contentEl = document.getElementById('pdfMenuContent');
-            var items = [];
+            var dbItems = [];
+            var localItems = [];
 
-            // 1. Fetch live server database items first (with cache-busting timestamp)
+            // 1. Fetch live server database items
             try {
                 var res = await fetch('api/menu.php?action=get&t=' + Date.now());
                 if (res.ok) {
                     var data = await res.json();
-                    if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
-                        items = data.items;
+                    if (data && data.status === 'success' && Array.isArray(data.items)) {
+                        dbItems = data.items;
                     }
                 }
             } catch(e) {}
 
-            // 2. Check local storage overlay fallback
-            if (!items || items.length === 0) {
+            // 2. Fetch browser local storage items
+            try {
+                var stored = localStorage.getItem('favcafe_menu');
+                if (stored) {
+                    var parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        localItems = parsed;
+                    }
+                }
+            } catch(e) {}
+
+            // 3. Fallback to menu.json if both empty
+            if (dbItems.length === 0 && localItems.length === 0) {
                 try {
-                    var stored = localStorage.getItem('favcafe_menu');
-                    if (stored) {
-                        var parsed = JSON.parse(stored);
-                        if (Array.isArray(parsed) && parsed.length > 0) {
-                            items = parsed;
-                        }
+                    var resJson = await fetch('api/menu.json?t=' + Date.now());
+                    if (resJson.ok) {
+                        localItems = await resJson.json();
                     }
                 } catch(e) {}
             }
 
-            // 3. Fallback to menu.json
-            if (!items || items.length === 0) {
-                try {
-                    var resJson = await fetch('api/menu.json?t=' + Date.now());
-                    if (resJson.ok) {
-                        items = await resJson.json();
-                    }
-                } catch(e) {}
-            }
+            // Merge items prioritizing newest items by ID
+            var itemsMap = {};
+            dbItems.forEach(function(i) {
+                if (i && i.id) itemsMap[i.id] = i;
+            });
+            localItems.forEach(function(i) {
+                if (i && i.id) itemsMap[i.id] = Object.assign({}, itemsMap[i.id] || {}, i);
+            });
+
+            var items = Object.values(itemsMap);
 
             if (!items || items.length === 0) {
                 contentEl.innerHTML = '<div class="alert alert-warning text-center">No menu items found.</div>';
