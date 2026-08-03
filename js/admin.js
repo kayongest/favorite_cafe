@@ -1257,10 +1257,9 @@ async function saveMenuItem(e) {
         };
         adminMenuItems.unshift(newItem);
     }
-    localStorage.setItem('favcafe_menu', JSON.stringify(adminMenuItems));
-
     // Try PHP MySQL API in background
     try {
+        var action = id ? 'update' : 'add';
         var res = await fetch('api/menu.php?action=' + action, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1270,8 +1269,7 @@ async function saveMenuItem(e) {
         if (data && data.status === 'success') {
             closeMenuItemModal();
             showToast(data.message || 'Menu item saved to database!', 'success', 'Menu Updated');
-            renderAdminMenuCategoryPills();
-            renderAdminMenu();
+            await loadAdminMenu();
             broadcastMenuUpdate();
             return;
         }
