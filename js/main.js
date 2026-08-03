@@ -2181,25 +2181,14 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
             if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
                 menuItems = data.items;
                 isDbSource = true;
+                localStorage.setItem('favcafe_menu', JSON.stringify(menuItems));
             }
         }
     } catch (e) {}
 
-    // 3. Overlay local admin edits if DB loaded
-    if (localItems.length > 0) {
-        if (menuItems.length === 0) {
-            menuItems = localItems;
-        } else {
-            localItems.forEach(function(loc) {
-                if (!loc || !loc.id) return;
-                var idx = menuItems.findIndex(function(m) { return parseInt(m.id) === parseInt(loc.id); });
-                if (idx !== -1) {
-                    menuItems[idx] = loc;
-                } else {
-                    menuItems.unshift(loc);
-                }
-            });
-        }
+    // 3. Fallback to localItems if DB was unreachable
+    if (!isDbSource && localItems.length > 0) {
+        menuItems = localItems;
     }
 
     // 4. Fallback to static menu.json if both DB and localStorage are empty
@@ -2470,6 +2459,7 @@ window.sendDemoTestNotification = sendDemoTestNotification;
 var _lastMenuToastTime = 0;
 function handleLiveMenuUpdateSignal() {
     loadDynamicCustomerMenu(false);
+    loadDynamicCategories();
     var now = Date.now();
     if (now - _lastMenuToastTime > 2500) {
         _lastMenuToastTime = now;

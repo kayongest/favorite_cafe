@@ -1280,6 +1280,7 @@ async function saveMenuItem(e) {
         if (data && data.status === 'success') {
             closeMenuItemModal();
             showToast(data.message || 'Menu item saved to database!', 'success', 'Menu Updated');
+            renderAdminMenuCategoryPills();
             renderAdminMenu();
             broadcastMenuUpdate();
             return;
@@ -1289,6 +1290,7 @@ async function saveMenuItem(e) {
     }
 
     closeMenuItemModal();
+    renderAdminMenuCategoryPills();
     renderAdminMenu();
     broadcastMenuUpdate();
     showToast('Menu item "' + title + '" saved successfully!', 'success', 'Menu Updated');
@@ -1311,6 +1313,9 @@ function broadcastMenuUpdate() {
 async function deleteMenuItem(id) {
     if (!confirm('Are you sure you want to delete this dish from the menu?')) return;
 
+    adminMenuItems = adminMenuItems.filter(function(i) { return parseInt(i.id) !== parseInt(id); });
+    localStorage.setItem('favcafe_menu', JSON.stringify(adminMenuItems));
+
     try {
         var res = await fetch('api/menu.php?action=delete', {
             method: 'POST',
@@ -1318,21 +1323,16 @@ async function deleteMenuItem(id) {
             body: JSON.stringify({ id: id })
         });
         var data = await res.json();
-        if (data.status === 'success') {
+        if (data && data.status === 'success') {
             showToast(data.message || 'Menu item deleted.', 'success', 'Dish Removed');
-            loadAdminMenu();
-            broadcastMenuUpdate();
-            return;
         }
     } catch (e) {
         console.log('[Admin Menu API] Offline delete fallback');
     }
 
-    adminMenuItems = adminMenuItems.filter(function(i) { return parseInt(i.id) !== parseInt(id); });
-    localStorage.setItem('favcafe_menu', JSON.stringify(adminMenuItems));
+    renderAdminMenuCategoryPills();
     renderAdminMenu();
     broadcastMenuUpdate();
-    showToast('Menu item deleted successfully.', 'success', 'Dish Removed');
 }
 
 async function toggleMenuItemStock(id, isAvailable) {
