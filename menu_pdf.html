@@ -419,68 +419,51 @@
                 return;
             }
 
-            // Group items by category
-            var categorized = {};
+            var html = '<div class="category-block-container"><div class="dish-grid">';
+
             items.forEach(function(item) {
                 if (!item || parseInt(item.is_available) === 0) return;
-                var cat = (item.category || 'Mains').toLowerCase();
-                if (!categorized[cat]) {
-                    categorized[cat] = [];
-                }
-                categorized[cat].push(item);
-            });
-
-            var html = '';
-
-            for (var catKey in categorized) {
-                var catItems = categorized[catKey];
-                if (catItems.length === 0) continue;
-
+                var catKey = (item.category || 'Mains').toLowerCase();
                 var catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
 
-                html += '<div class="category-block-container">';
-                html += '   <div class="dish-grid">';
+                var title = item.title || item.name || 'Special Dish';
+                var priceStr = parseFloat(item.price).toLocaleString() + ' RWF';
+                var oldPriceStr = item.old_price ? parseFloat(item.old_price).toLocaleString() + ' RWF' : '';
+                var imgSrc = (item.image && item.image !== 'undefined') ? item.image : ((item.img && item.img !== 'undefined') ? item.img : 'img/menu/1.jpg');
+                var rating = item.rating || 5.0;
                 
-                catItems.forEach(function(item) {
-                    var title = item.title || item.name || 'Special Dish';
-                    var priceStr = parseFloat(item.price).toLocaleString() + ' RWF';
-                    var oldPriceStr = item.old_price ? parseFloat(item.old_price).toLocaleString() + ' RWF' : '';
-                    var imgSrc = (item.image && item.image !== 'undefined') ? item.image : ((item.img && item.img !== 'undefined') ? item.img : 'img/menu/1.jpg');
-                    var rating = item.rating || 5.0;
-                    
-                    var firstTag = item.tags ? String(item.tags).split(',')[0].trim() : catName;
+                var firstTag = item.tags ? String(item.tags).split(',')[0].trim() : catName;
 
-                    html += `
-                        <div class="dish-visual-card">
-                            <div class="card-img-wrapper">
-                                <img src="${imgSrc}" alt="${title}" onerror="this.onerror=null; this.src='img/menu/1.jpg';">
-                                <div class="card-top-badge"><i class="fas fa-star" style="font-size:0.7rem;"></i> ${firstTag}</div>
-                                <div class="card-heart-btn"><i class="far fa-heart"></i></div>
-                            </div>
-                            <div class="card-body-content">
-                                <div class="card-cat-label">${catName}</div>
-                                <div class="card-dish-title">${title}</div>
-                                <div class="card-dish-desc">${item.description || ''}</div>
-                                <div class="card-dish-footer">
+                html += `
+                    <div class="dish-visual-card">
+                        <div class="card-img-wrapper">
+                            <img src="${imgSrc}" alt="${title}" onerror="this.onerror=null; this.src='img/menu/1.jpg';">
+                            <div class="card-top-badge"><i class="fas fa-star" style="font-size:0.7rem;"></i> ${firstTag}</div>
+                            <div class="card-heart-btn"><i class="far fa-heart"></i></div>
+                        </div>
+                        <div class="card-body-content">
+                            <div class="card-cat-label">${catName}</div>
+                            <div class="card-dish-title">${title}</div>
+                            <div class="card-dish-desc">${item.description || ''}</div>
+                            <div class="card-dish-footer">
+                                <div>
                                     <div>
-                                        <div>
-                                            <span class="price-main">${priceStr}</span>
-                                            ${oldPriceStr ? `<span class="price-old">${oldPriceStr}</span>` : ''}
-                                        </div>
-                                        <div class="star-rating"><i class="fas fa-star"></i> <span>${rating}</span></div>
+                                        <span class="price-main">${priceStr}</span>
+                                        ${oldPriceStr ? `<span class="price-old">${oldPriceStr}</span>` : ''}
                                     </div>
-                                    <button type="button" class="card-add-btn" title="Order Dish" onclick="window.location.href='index.html'">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
+                                    <div class="star-rating"><i class="fas fa-star"></i> <span>${rating}</span></div>
                                 </div>
+                                <button type="button" class="card-add-btn" title="Order Dish" onclick="window.location.href='index.html'">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </div>
-                    `;
-                });
+                    </div>
+                `;
+            });
 
-                html += '   </div>';
-                html += '</div>';
-            }
+            html += '   </div>';
+            html += '</div>';
 
             contentEl.innerHTML = html;
         }
