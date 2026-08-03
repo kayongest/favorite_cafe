@@ -1015,7 +1015,7 @@
             <h4 id="menuModalTitle"><i class="fas fa-utensils me-2" style="color:var(--primary);"></i>Add New Dish</h4>
             <button type="button" class="modal-standard-close" onclick="closeMenuItemModal()"><i class="fas fa-times"></i></button>
          </div>
-         <form id="menuItemForm" onsubmit="saveMenuItem(event)">
+         <form id="menuItemForm" onsubmit="saveMenuItem(event)" class="p-4" style="overflow-y:auto;">
             <input type="hidden" id="menuItemId" value="" />
             
             <div class="auth-input-group">
@@ -1103,7 +1103,7 @@
             <h4 class="mb-0" id="catModalTitle"><i class="fas fa-tags me-2" style="color:var(--primary);"></i>Add New Category</h4>
             <button type="button" class="modal-standard-close" onclick="closeCategoryModal()"><i class="fas fa-times"></i></button>
          </div>
-         <form id="categoryForm" onsubmit="saveCategorySubmit(event)">
+         <form id="categoryForm" onsubmit="saveCategorySubmit(event)" class="p-4" style="overflow-y:auto;">
             <input type="hidden" id="catId" value="" />
 
             <div class="auth-input-group">

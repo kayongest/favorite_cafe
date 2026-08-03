@@ -823,29 +823,36 @@ input:checked + .slider:before {
 
 .modal-standard-box, .modal-box {
   background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   width: 100%;
-  max-width: 540px;
+  max-width: 560px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   position: relative;
+  border: none;
+  padding: 0 !important;
 }
 
 .modal-standard-header {
-  padding: 20px 26px;
-  background: linear-gradient(135deg, #102b37 0%, #1a3c4c 100%);
+  padding: 18px 24px;
+  background: #102b37;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin: 0;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .modal-standard-header h4, .modal-standard-header h5 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   font-family: 'Titillium Web', sans-serif;
   color: #ffffff;
@@ -853,8 +860,13 @@ input:checked + .slider:before {
   align-items: center;
 }
 
+.modal-standard-header h4 i, .modal-standard-header h5 i {
+  color: #df9c83 !important;
+  font-size: 1.15rem;
+}
+
 .modal-standard-close, .btn-close-modal {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   border: none;
   color: #ffffff;
   width: 32px;
@@ -864,12 +876,20 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .modal-standard-close:hover, .btn-close-modal:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
+  background: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.modal-standard-box > form,
+.modal-standard-box > .modal-body,
+.modal-standard-box > div:not(.modal-standard-header) {
+  padding: 24px;
+  overflow-y: auto;
 }
 
 /* Thermal Receipt Paper Styling */
