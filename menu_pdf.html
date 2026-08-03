@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Favorite Cafe - Official Menu (Print & Digital PDF)</title>
-    <!-- Titillium Web Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Fonts: Amatic SC for main title, Titillium Web for body & cards -->
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/all.min.css">
     <style>
@@ -15,7 +15,8 @@
             --terracotta: #d8745d;
             --terracotta-dark: #c84837;
             --dark: #102b37;
-            --bg-warm: #f9f5f0;
+            --bg-warm: #f4eee7;
+            --card-container-bg: rgba(255, 255, 255, 0.4);
             --text-main: #2d2320;
             --text-muted: #857570;
         }
@@ -51,62 +52,33 @@
         }
 
         .pdf-container {
-            max-width: 1100px;
-            margin: 30px auto;
-            background: var(--bg-warm);
-            padding: 35px 25px;
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 40px 20px 60px 20px;
         }
 
-        /* Cafe Header */
+        /* Clean Top Header */
         .pdf-header {
             text-align: center;
-            border-bottom: 3px double #aa7262;
-            padding-bottom: 22px;
-            margin-bottom: 30px;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(16,43,55,0.05);
+            margin-bottom: 40px;
         }
 
         .pdf-header h1 {
-            font-family: 'Titillium Web', sans-serif;
+            font-family: 'Amatic SC', cursive, sans-serif;
             font-weight: 700;
-            font-size: 3rem;
-            color: #102b37;
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        .pdf-header p.subtitle {
-            font-size: 1.05rem;
-            color: #aa7262;
-            font-weight: 600;
+            font-size: 4.8rem;
+            color: #4a3e3b;
+            margin: 0;
             letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
+            line-height: 1;
         }
 
-        .pdf-header .contact-info {
-            font-size: 0.9rem;
-            color: #556b73;
-            display: flex;
-            justify-content: center;
-            gap: 22px;
-            flex-wrap: wrap;
-            font-weight: 400;
-        }
-
-        .pdf-header .contact-info i {
-            color: #aa7262;
-        }
-
-        /* QR Redirect Banner */
+        /* QR Redirect Banner (Screen & Print Helper) */
         .qr-banner {
             background: #ffffff;
             border: 2px dashed #aa7262;
             border-radius: 18px;
-            padding: 18px 26px;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -126,55 +98,39 @@
             font-weight: 700;
             color: #102b37;
             margin-bottom: 4px;
-            font-size: 1.15rem;
-        }
-
-        .qr-banner-text h6 i {
-            color: #aa7262;
+            font-size: 1.1rem;
         }
 
         .qr-banner-text p {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             margin: 0;
             color: #556b73;
         }
 
         .qr-code-img {
-            width: 95px;
-            height: 95px;
+            width: 85px;
+            height: 85px;
             border-radius: 10px;
             border: 2px solid #f9f5f0;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        /* Category Section */
-        .pdf-category {
-            margin-bottom: 45px;
+        /* Category Section Block Container */
+        .category-block-container {
+            background: var(--card-container-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            page-break-inside: avoid;
         }
 
-        .category-title {
-            font-family: 'Titillium Web', sans-serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #102b37;
-            border-bottom: 2.5px solid #aa7262;
-            padding-bottom: 8px;
-            margin-bottom: 24px;
-            text-transform: capitalize;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .category-title i {
-            color: #aa7262;
-        }
-
-        /* Visual Card Grid */
+        /* Grid inside category container */
         .dish-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-            gap: 26px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         /* Visual Card Style */
@@ -182,8 +138,7 @@
             background: #ffffff;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-            border: 1px solid rgba(170, 114, 98, 0.12);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -193,13 +148,13 @@
 
         .dish-visual-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
         }
 
         /* Card Image Header */
         .card-img-wrapper {
             position: relative;
-            height: 190px;
+            height: 180px;
             width: 100%;
             overflow: hidden;
             background: #f1f5f9;
@@ -224,7 +179,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
         }
 
         .card-heart-btn {
@@ -245,7 +200,7 @@
 
         /* Card Content Body */
         .card-body-content {
-            padding: 18px 20px 20px 20px;
+            padding: 16px 18px 18px 18px;
             display: flex;
             flex-direction: column;
             flex: 1;
@@ -261,19 +216,19 @@
         }
 
         .card-dish-title {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: #2d2320;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             line-height: 1.3;
         }
 
         .card-dish-desc {
-            font-size: 0.85rem;
-            color: #857570;
-            margin-bottom: 18px;
+            font-size: 0.82rem;
+            color: #948580;
+            margin-bottom: 16px;
             flex: 1;
-            line-height: 1.45;
+            line-height: 1.4;
             font-weight: 400;
         }
 
@@ -284,7 +239,7 @@
         }
 
         .price-main {
-            font-size: 1.35rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #b44332;
             line-height: 1;
@@ -292,14 +247,14 @@
         }
 
         .price-old {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #a0908b;
             text-decoration: line-through;
             margin-left: 6px;
         }
 
         .star-rating {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: #d8745d;
             margin-top: 4px;
             font-weight: 600;
@@ -309,13 +264,13 @@
         }
 
         .card-add-btn {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #c84837;
             color: #ffffff;
             border: none;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -335,7 +290,7 @@
                 display: none !important;
             }
             body {
-                background: #ffffff !important;
+                background: #f4eee7 !important;
             }
             .pdf-container {
                 box-shadow: none !important;
@@ -343,17 +298,17 @@
                 margin: 0 !important;
                 max-width: 100% !important;
             }
-            .qr-banner {
-                border-color: #aa7262 !important;
-                background: #ffffff !important;
+            .category-block-container {
+                background: rgba(255, 255, 255, 0.5) !important;
+                padding: 16px !important;
+                margin-bottom: 30px !important;
             }
             .dish-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 18px !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 16px !important;
             }
             .dish-visual-card {
                 box-shadow: none !important;
-                border: 1px solid #e2e8f0 !important;
             }
         }
     </style>
@@ -363,8 +318,8 @@
     <!-- Action Bar (Screen Only) -->
     <div class="no-print-bar">
         <div>
-            <h5><i class="fas fa-mug-hot me-2" style="color:#aa7262;"></i>Favorite Cafe Official Visual Menu</h5>
-            <small style="color:#a0b4bd;">Live synchronized with server & local database</small>
+            <h5><i class="fas fa-mug-hot me-2" style="color:#aa7262;"></i>Favorite Cafe Visual Menu</h5>
+            <small style="color:#a0b4bd;">Live synchronized with database</small>
         </div>
         <div class="d-flex gap-2">
             <a id="btnRedirectWeb" href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-3" style="font-weight:600;">
@@ -379,22 +334,16 @@
     <!-- PDF Document Container -->
     <div class="pdf-container">
         
-        <!-- Cafe Header -->
+        <!-- Clean Main Header -->
         <div class="pdf-header">
-            <h1>Favorite Cafe</h1>
-            <p class="subtitle">Modern Coffee, Bistro & Rwandan Delicacies</p>
-            <div class="contact-info">
-                <span><i class="fas fa-map-marker-alt me-1"></i>Kigali, Rwanda</span>
-                <span><i class="fas fa-phone me-1"></i>+250 788 000 000</span>
-                <span><i class="fas fa-globe me-1"></i>favoritecafe.rw</span>
-            </div>
+            <h1>Favorite Cafe Menu</h1>
         </div>
 
         <!-- Scannable QR Code Redirect Banner -->
         <a id="qrBannerLink" href="index.html" class="qr-banner" title="Click or Scan to Order Online">
             <div class="qr-banner-text">
-                <h6><i class="fas fa-qrcode me-2"></i>Scan or Click to Order Online from Table!</h6>
-                <p>Use your camera to open our Interactive Web App for instant orders, customization & digital payments.</p>
+                <h6><i class="fas fa-qrcode me-2" style="color:#aa7262;"></i>Scan or Click to Order Online from Table!</h6>
+                <p>Point your smartphone camera to open our interactive digital app for instant ordering & payments.</p>
             </div>
             <div>
                 <img id="pdfQrImage" class="qr-code-img" src="" alt="Scan to Order Online">
@@ -418,7 +367,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var webUrl = window.location.href.replace('menu_pdf.html', 'index.html');
+            var webUrl = window.location.href.replace('menu_pdf.html', 'index.html').split('#')[0].split('?')[0];
             document.getElementById('btnRedirectWeb').href = webUrl;
             document.getElementById('qrBannerLink').href = webUrl;
 
@@ -482,29 +431,14 @@
             });
 
             var html = '';
-            var categoryIcons = {
-                'coffee': 'fas fa-coffee',
-                'tea': 'fas fa-mug-hot',
-                'smoothies': 'fas fa-blender',
-                'shakes': 'fas fa-glass-martini-alt',
-                'juices': 'fas fa-cocktail',
-                'mains': 'fas fa-utensils',
-                'salads': 'fas fa-leaf',
-                'sides': 'fas fa-bread-slice',
-                'grills': 'fas fa-drumstick-bite',
-                'pizza': 'fas fa-pizza-slice',
-                'wraps': 'fas fa-hamburger'
-            };
 
             for (var catKey in categorized) {
                 var catItems = categorized[catKey];
                 if (catItems.length === 0) continue;
 
                 var catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
-                var iconClass = categoryIcons[catKey] || 'fas fa-utensils';
 
-                html += '<div class="pdf-category">';
-                html += '   <div class="category-title"><i class="' + iconClass + ' me-2"></i>' + catName + '</div>';
+                html += '<div class="category-block-container">';
                 html += '   <div class="dish-grid">';
                 
                 catItems.forEach(function(item) {
