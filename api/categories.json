@@ -49,49 +49,49 @@
   },
   {
     "id": 7,
-    "name": "Burger",
-    "slug": "burger",
-    "icon": "fas fa-hamburger",
+    "name": "Salads",
+    "slug": "salads",
+    "icon": "fas fa-leaf",
     "is_active": 1,
     "sort_order": 7
   },
   {
     "id": 8,
-    "name": "Grills",
-    "slug": "grills",
-    "icon": "fas fa-drumstick-bite",
+    "name": "Sides",
+    "slug": "sides",
+    "icon": "fas fa-bread-slice",
     "is_active": 1,
     "sort_order": 8
   },
   {
     "id": 9,
-    "name": "Pizza",
-    "slug": "pizza",
-    "icon": "fas fa-pizza-slice",
+    "name": "Grills",
+    "slug": "grills",
+    "icon": "fas fa-meat",
     "is_active": 1,
     "sort_order": 9
   },
   {
     "id": 10,
-    "name": "Wraps",
-    "slug": "wraps",
-    "icon": "fas fa-hotdog",
+    "name": "Burger",
+    "slug": "burger",
+    "icon": "fas fa-burger",
     "is_active": 1,
     "sort_order": 10
   },
   {
     "id": 11,
-    "name": "Salads",
-    "slug": "salads",
-    "icon": "fas fa-leaf",
+    "name": "Pizza",
+    "slug": "pizza",
+    "icon": "fas fa-pizza-slice",
     "is_active": 1,
     "sort_order": 11
   },
   {
     "id": 12,
-    "name": "Sides",
-    "slug": "sides",
-    "icon": "fas fa-bread-slice",
+    "name": "Wraps",
+    "slug": "wraps",
+    "icon": "fas fa-hotdog",
     "is_active": 1,
     "sort_order": 12
   }

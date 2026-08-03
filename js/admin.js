@@ -965,9 +965,7 @@ function renderAdminMenuCategoryPills() {
         var count = adminMenuItems.filter(function(m) {
             return m.category && m.category.toString().toLowerCase().trim() === slug;
         }).length;
-        if (count > 0 || adminMenuItems.length === 0) {
-            html += `<button class="filter-pill ${adminMenuCategoryFilter === slug ? 'active' : ''}" data-cat="${slug}" onclick="setAdminMenuCategoryFilter('${slug}', this)">${name} (${count})</button>`;
-        }
+        html += `<button class="filter-pill ${adminMenuCategoryFilter === slug ? 'active' : ''}" data-cat="${slug}" onclick="setAdminMenuCategoryFilter('${slug}', this)">${name} (${count})</button>`;
     });
 
     container.innerHTML = html;
