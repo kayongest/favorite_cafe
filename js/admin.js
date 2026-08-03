@@ -2237,11 +2237,11 @@ function printTableQrStand() {
         <html>
         <head>
             <title>Favorite Cafe - Table QR Stand</title>
-            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
             <style>
-                body { font-family: 'Poppins', sans-serif; text-align: center; padding: 40px; margin: 0; }
+                body { font-family: 'Titillium Web', sans-serif; text-align: center; padding: 40px; margin: 0; }
                 .card { border: 3px double #d9230f; padding: 40px; border-radius: 16px; max-width: 450px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-                h1 { font-family: 'Playfair Display', serif; color: #d9230f; margin-bottom: 4px; font-size: 2.2rem; }
+                h1 { font-family: 'Titillium Web', sans-serif; color: #102b37; margin-bottom: 4px; font-size: 2.2rem; text-transform: uppercase; font-weight: 700; }
                 p { color: #555; margin-bottom: 20px; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; }
                 img { width: 220px; height: 220px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
                 .footer-text { margin-top: 24px; font-weight: 700; color: #111; font-size: 1.1rem; }

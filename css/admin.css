@@ -21,6 +21,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Titillium Web', sans-serif;
 }
 
 body.admin-body {
@@ -30,6 +31,10 @@ body.admin-body {
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, input, button, select, textarea {
+  font-family: 'Titillium Web', sans-serif;
 }
 
 /* Explicit FontAwesome Icon Family Protection */
