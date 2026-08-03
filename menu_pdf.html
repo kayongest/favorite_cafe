@@ -52,7 +52,7 @@
         }
 
         .pdf-container {
-            max-width: 1050px;
+            max-width: 1350px;
             margin: 0 auto;
             padding: 40px 20px 60px 20px;
         }
@@ -126,17 +126,17 @@
             page-break-inside: avoid;
         }
 
-        /* Grid inside category container */
+        /* Grid inside category container: 4 items per row */
         .dish-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
 
         /* Visual Card Style */
         .dish-visual-card {
             background: #ffffff;
-            border-radius: 20px;
+            border-radius: 18px;
             overflow: hidden;
             box-shadow: 0 6px 20px rgba(0,0,0,0.05);
             display: flex;
@@ -154,7 +154,7 @@
         /* Card Image Header */
         .card-img-wrapper {
             position: relative;
-            height: 180px;
+            height: 165px;
             width: 100%;
             overflow: hidden;
             background: #f1f5f9;
@@ -304,7 +304,7 @@
                 margin-bottom: 30px !important;
             }
             .dish-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
+                grid-template-columns: repeat(4, 1fr) !important;
                 gap: 16px !important;
             }
             .dish-visual-card {
