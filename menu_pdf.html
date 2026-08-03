@@ -376,24 +376,27 @@
             document.getElementById('pdfQrImage').src = qrApi;
 
             loadPdfMenuData();
+
+            // Live Auto-Sync Listeners: Re-fetch whenever admin updates menu or tab regains focus
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'favcafe_menu' || e.key === 'favcafe_categories') {
+                    loadPdfMenuData();
+                }
+            });
+            window.addEventListener('focus', function() {
+                loadPdfMenuData();
+            });
+            // Auto-refresh every 15 seconds in background
+            setInterval(function() {
+                loadPdfMenuData();
+            }, 15000);
         });
 
         async function loadPdfMenuData() {
             var contentEl = document.getElementById('pdfMenuContent');
             var items = [];
 
-            // 1. Try local storage overlay first
-            try {
-                var stored = localStorage.getItem('favcafe_menu');
-                if (stored) {
-                    var parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        items = parsed;
-                    }
-                }
-            } catch(e) {}
-
-            // 2. Fetch server database items
+            // 1. Fetch live server database items first (with cache-busting timestamp)
             try {
                 var res = await fetch('api/menu.php?action=get&t=' + Date.now());
                 if (res.ok) {
@@ -403,6 +406,19 @@
                     }
                 }
             } catch(e) {}
+
+            // 2. Check local storage overlay fallback
+            if (!items || items.length === 0) {
+                try {
+                    var stored = localStorage.getItem('favcafe_menu');
+                    if (stored) {
+                        var parsed = JSON.parse(stored);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            items = parsed;
+                        }
+                    }
+                } catch(e) {}
+            }
 
             // 3. Fallback to menu.json
             if (!items || items.length === 0) {
