@@ -905,19 +905,6 @@ async function loadAdminMenu() {
                 }
             } catch (e) {}
         }
-    }
-
-    if (!adminMenuItems || adminMenuItems.length === 0) {
-        adminMenuItems = [
-            { id: 11, title: 'Special Favorite Omelette', category: 'mains', price: 4500, old_price: 5500, image: 'img/menu/dish_1785231158_5216.jpg', rating: 5.0, reviews_count: 140, calories: 420, prep_time: 12, description: 'Signature fluffy omelette with herbs, cheese, onions, peppers and fresh parsley.', tags: 'Breakfast,Special', is_available: 1 },
-            { id: 12, title: 'Chicken Strips & Chips', category: 'mains', price: 6000, old_price: 7500, image: 'img/menu/dish_1785231176_2795.jpg', rating: 4.9, reviews_count: 115, calories: 650, prep_time: 15, description: 'Golden crispy chicken tenders served with crispy french fries and dip.', tags: 'Crispy,Bestseller', is_available: 1 },
-            { id: 13, title: 'Crispy Fried Chicken', category: 'mains', price: 6500, old_price: 8000, image: 'img/menu/3.jpg', rating: 5.0, reviews_count: 180, calories: 680, prep_time: 18, description: 'Juicy seasoned chicken fried to a golden crunch.', tags: 'Chicken,Hot', is_available: 1 },
-            { id: 14, title: 'Chicken & Rice', category: 'mains', price: 6000, old_price: 7500, image: 'img/menu/dish_1785231327_9665.jpg', rating: 4.8, reviews_count: 92, calories: 580, prep_time: 15, description: 'Roasted chicken leg served with fluffy white rice, fresh cucumber and sauce.', tags: 'Main,Dinner', is_available: 1 },
-            { id: 15, title: 'Jollof Rice & Chicken', category: 'mains', price: 7000, old_price: 8500, image: 'img/menu/dish_1785237079_2394.jpg', rating: 5.0, reviews_count: 210, calories: 720, prep_time: 20, description: 'Flavorful West African spiced jollof rice served with grilled chicken and plantain.', tags: 'Special,Spicy', is_available: 1 },
-            { id: 16, title: 'Burger & Chips', category: 'mains', price: 6000, old_price: 7500, image: 'img/menu/dish_1785237288_3313.jpg', rating: 4.9, reviews_count: 165, calories: 780, prep_time: 15, description: 'Juicy beef burger with cheese, lettuce, tomatoes, served with fries and cold drink.', tags: 'Burger,Combo', is_available: 1 }
-        ];
-    }
-
     renderAdminMenuCategoryPills();
     renderAdminMenu();
 }
