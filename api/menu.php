@@ -164,34 +164,6 @@ try {
         $pdo->exec("ALTER TABLE menu_items ADD `reviews_count` INT(11) DEFAULT 12");
     }
     
-    $checkCount = $pdo->query("SELECT COUNT(*) FROM menu_items")->fetchColumn();
-    
-    if ($checkCount == 0) {
-        $jsonPath = __DIR__ . '/menu.json';
-        if (file_exists($jsonPath)) {
-            $jsonItems = json_decode(file_get_contents($jsonPath), true);
-            if (is_array($jsonItems) && count($jsonItems) > 0) {
-                $stmt = $pdo->prepare("INSERT INTO menu_items (id, title, category, price, old_price, image, rating, reviews_count, calories, prep_time, description, tags, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                foreach ($jsonItems as $item) {
-                    $stmt->execute([
-                        $item['id'],
-                        $item['title'],
-                        $item['category'],
-                        $item['price'],
-                        $item['old_price'] ?? null,
-                        $item['image'],
-                        $item['rating'] ?? 5.0,
-                        $item['reviews_count'] ?? 50,
-                        $item['calories'] ?? 350,
-                        $item['prep_time'] ?? 15,
-                        $item['description'] ?? '',
-                        $item['tags'] ?? 'Popular',
-                        $item['is_available'] ?? 1
-                    ]);
-                }
-            }
-        }
-    }
 } catch (PDOException $e) {}
 
 if ($action === 'get') {

@@ -2178,7 +2178,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         var res = await fetch('api/menu.php?action=get&t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
             var data = await res.json();
-            if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
+            if (data && data.status === 'success' && Array.isArray(data.items)) {
                 menuItems = data.items;
                 isDbSource = true;
                 localStorage.setItem('favcafe_menu', JSON.stringify(menuItems));
@@ -2186,22 +2186,21 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         }
     } catch (e) {}
 
-    // 3. Fallback to localItems if DB was unreachable
-    if (!isDbSource && localItems.length > 0) {
-        menuItems = localItems;
-    }
-
-    // 4. Fallback to static menu.json if both DB and localStorage are empty
-    if (menuItems.length === 0) {
-        try {
-            var resJson = await fetch('api/menu.json?t=' + Date.now(), { cache: 'no-store' });
-            if (resJson.ok) {
-                var jsonItems = await resJson.json();
-                if (Array.isArray(jsonItems) && jsonItems.length > 0) {
-                    menuItems = jsonItems;
+    // 3. Fallback to localItems/menu.json ONLY if DB was offline/unreachable
+    if (!isDbSource) {
+        if (localItems.length > 0) {
+            menuItems = localItems;
+        } else {
+            try {
+                var resJson = await fetch('api/menu.json?t=' + Date.now(), { cache: 'no-store' });
+                if (resJson.ok) {
+                    var jsonItems = await resJson.json();
+                    if (Array.isArray(jsonItems) && jsonItems.length > 0) {
+                        menuItems = jsonItems;
+                    }
                 }
-            }
-        } catch (e) {}
+            } catch (e) {}
+        }
     }
 
     if (!menuItems || menuItems.length === 0) {

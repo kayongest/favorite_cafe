@@ -869,41 +869,42 @@ var adminMenuCategoryFilter = 'all';
 
 async function loadAdminMenu() {
     adminMenuItems = [];
+    var isDbConnected = false;
     try {
-        var res = await fetch('api/menu.php?action=get');
+        var res = await fetch('api/menu.php?action=get&t=' + Date.now());
         if (res.ok) {
             var data = await res.json();
-            if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
+            if (data && data.status === 'success' && Array.isArray(data.items)) {
                 adminMenuItems = data.items;
+                isDbConnected = true;
                 localStorage.setItem('favcafe_menu', JSON.stringify(adminMenuItems));
             }
         }
     } catch (e) {}
 
-    // Check localStorage for user-edited items (prioritized over static menu.json)
-    if (adminMenuItems.length === 0) {
+    // Fallback to localStorage / menu.json ONLY if DB was offline/unreachable
+    if (!isDbConnected) {
         try {
             var stored = localStorage.getItem('favcafe_menu');
             if (stored) {
                 var parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0 && !JSON.stringify(parsed).includes('Smash Burger')) {
+                if (Array.isArray(parsed)) {
                     adminMenuItems = parsed;
                 }
             }
         } catch (e) {}
-    }
 
-    // Fallback to static menu.json if DB and localStorage are empty
-    if (adminMenuItems.length === 0) {
-        try {
-            var resJson = await fetch('api/menu.json');
-            if (resJson.ok) {
-                var jsonItems = await resJson.json();
-                if (Array.isArray(jsonItems) && jsonItems.length > 0) {
-                    adminMenuItems = jsonItems;
+        if (adminMenuItems.length === 0) {
+            try {
+                var resJson = await fetch('api/menu.json');
+                if (resJson.ok) {
+                    var jsonItems = await resJson.json();
+                    if (Array.isArray(jsonItems) && jsonItems.length > 0) {
+                        adminMenuItems = jsonItems;
+                    }
                 }
-            }
-        } catch (e) {}
+            } catch (e) {}
+        }
     }
 
     if (!adminMenuItems || adminMenuItems.length === 0) {
