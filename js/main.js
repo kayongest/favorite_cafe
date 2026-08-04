@@ -2481,6 +2481,7 @@ function syncCustomerOrdersWithServer() {
                             if (serverOrd.status && serverOrd.status !== oldStatus) {
                                 localMatch.status = serverOrd.status;
                                 _prevCustomerOrderStatusMap[serverOrd.id] = serverOrd.status;
+                                saveOrdersToStorage();
                                 if (typeof showToast === 'function') {
                                     showToast('🔔 Order #' + serverOrd.id + ' status updated to: ' + serverOrd.status, 'info', 'Kitchen Notification');
                                 }

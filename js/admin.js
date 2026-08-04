@@ -254,14 +254,20 @@ function loadAdminOrders() {
                             });
                         }
                     }
+                    
+                    var dataChanged = JSON.stringify(adminOrders) !== JSON.stringify(data.orders);
+                    
                     _isInitialLoad = false;
                     _prevOrderIds = data.orders.map(function(o) { return o.id; });
                     adminOrders = data.orders;
                     saveAdminOrders();
-                    if (typeof renderOverviewStats === 'function') renderOverviewStats();
-                    if (typeof renderOrdersTable === 'function') renderOrdersTable();
-                    if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
-                    if (typeof renderFullOrdersDispatchBoard === 'function') renderFullOrdersDispatchBoard();
+                    
+                    if (dataChanged) {
+                        if (typeof renderOverviewStats === 'function') renderOverviewStats();
+                        if (typeof renderOrdersTable === 'function') renderOrdersTable();
+                        if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+                        if (typeof renderFullOrdersDispatchBoard === 'function') renderFullOrdersDispatchBoard();
+                    }
                 }
             }).catch(function(e) {});
     } catch(e) {}
