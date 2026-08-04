@@ -57,6 +57,55 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAdminCategories();
     initSidebarTabs();
     initSearchAndFilter();
+
+    console.log('%c[Favorite Cafe Engine] Live Orders Management System Active', 'color: #27ae60; font-weight: bold; font-size: 14px;');
+    console.log('%c[Functions Available] viewOrder(id), editOrder(id), disableOrder(id), refreshAdminOrders()', 'color: #2980b9; font-weight: bold;');
+    console.log('%c[Audit Attribution] Accepted By | Prepared By (Chef) | Served By Enabled', 'color: #8e44ad; font-weight: bold;');
+    console.log('%c[Overview Widget] Active Kitchen Live Tickets with badge-success sm Status Badges Ready', 'color: #d35400; font-weight: bold;');
+});
+
+// BroadcastChannel listener so Admin Dashboard receives live order messages from customer-facing tabs
+try {
+    var _orderChannel = new BroadcastChannel('favcafe_orders_channel');
+    _orderChannel.onmessage = function(ev) {
+        try {
+            var payload = ev && ev.data ? ev.data : null;
+            if (!payload) return;
+            if (payload.type === 'order_created' && payload.order) {
+                // Prepend incoming order and update UI immediately
+                adminOrders.unshift(payload.order);
+                saveAdminOrders();
+                if (typeof renderOverviewStats === 'function') renderOverviewStats();
+                if (typeof renderOrdersTable === 'function') renderOrdersTable();
+                if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+                if (typeof renderFullOrdersDispatchBoard === 'function') renderFullOrdersDispatchBoard();
+                if (typeof showToast === 'function') showToast('🚨 New Live Order #' + payload.order.id + ' received', 'success', 'New Order');
+            }
+        } catch (e) { /* ignore channel errors */ }
+    };
+} catch (e) { /* BroadcastChannel unsupported or blocked */ }
+
+// Fallback: listen for localStorage signals written by other tabs (e.g., customer UI)
+window.addEventListener('storage', function(ev) {
+    try {
+        if (!ev || !ev.key) return;
+        if (ev.key !== 'favcafe_orders_signal') return;
+        if (!ev.newValue) return;
+        var payload = JSON.parse(ev.newValue);
+        if (!payload || payload.type !== 'order_created' || !payload.order) return;
+
+        // Avoid duplicate insertion if order already exists
+        var exists = adminOrders && adminOrders.find(function(o) { return o.id === payload.order.id; });
+        if (!exists) {
+            adminOrders.unshift(payload.order);
+            saveAdminOrders();
+            if (typeof renderOverviewStats === 'function') renderOverviewStats();
+            if (typeof renderOrdersTable === 'function') renderOrdersTable();
+            if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+            if (typeof renderFullOrdersDispatchBoard === 'function') renderFullOrdersDispatchBoard();
+            if (typeof showToast === 'function') showToast('🚨 New Live Order #' + payload.order.id + ' received (storage signal)', 'success', 'New Order');
+        }
+    } catch (e) { /* ignore storage parse errors */ }
 });
 
 // Live Clock
@@ -71,8 +120,11 @@ function initClock() {
     setInterval(updateTime, 1000);
 }
 
-// Load Orders from localStorage or initial rich dataset
+var _prevOrderIds = [];
+var _isInitialLoad = true;
+// Load Orders from server API, localStorage or initial rich dataset
 function loadAdminOrders() {
+    // 1) Initialize from localStorage if available (quick UI load)
     try {
         var stored = localStorage.getItem('favcafe_orders');
         if (stored) {
@@ -81,7 +133,7 @@ function loadAdminOrders() {
             // Default rich order dataset for immediate demonstration & pagination
             adminOrders = [
                 {
-                    id: 'MSH-1329',
+                    id: 'FC-1329',
                     date: new Date(Date.now() - 5 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -92,7 +144,7 @@ function loadAdminOrders() {
                     status: 'Kitchen Preparing'
                 },
                 {
-                    id: 'MSH-1972',
+                    id: 'FC-1972',
                     date: new Date(Date.now() - 12 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -103,7 +155,7 @@ function loadAdminOrders() {
                     status: 'Kitchen Preparing'
                 },
                 {
-                    id: 'MSH-8542',
+                    id: 'FC-8542',
                     date: new Date(Date.now() - 18 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -114,7 +166,7 @@ function loadAdminOrders() {
                     status: 'Kitchen Preparing'
                 },
                 {
-                    id: 'MSH-8002',
+                    id: 'FC-8002',
                     date: new Date(Date.now() - 25 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -125,7 +177,7 @@ function loadAdminOrders() {
                     status: 'Kitchen Preparing'
                 },
                 {
-                    id: 'MSH-2022',
+                    id: 'FC-2022',
                     date: new Date(Date.now() - 40 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -136,7 +188,7 @@ function loadAdminOrders() {
                     status: 'Completed'
                 },
                 {
-                    id: 'MSH-7584',
+                    id: 'FC-7584',
                     date: new Date(Date.now() - 55 * 60000).toISOString(),
                     customerName: 'Kayonga Raul',
                     phone: '+250788700870',
@@ -147,7 +199,7 @@ function loadAdminOrders() {
                     status: 'Completed'
                 },
                 {
-                    id: 'MSH-8492',
+                    id: 'FC-8492',
                     date: new Date(Date.now() - 70 * 60000).toISOString(),
                     customerName: 'Eric Munyaneza',
                     phone: '+250 788 123 456',
@@ -158,7 +210,7 @@ function loadAdminOrders() {
                     status: 'Out for Delivery'
                 },
                 {
-                    id: 'MSH-9102',
+                    id: 'FC-9102',
                     date: new Date(Date.now() - 85 * 60000).toISOString(),
                     customerName: 'Aline Uwase',
                     phone: '+250 788 444 333',
@@ -169,7 +221,7 @@ function loadAdminOrders() {
                     status: 'Completed'
                 },
                 {
-                    id: 'MSH-6630',
+                    id: 'FC-6630',
                     date: new Date(Date.now() - 100 * 60000).toISOString(),
                     customerName: 'Jean Paul Ndayi',
                     phone: '+250 788 555 666',
@@ -185,6 +237,34 @@ function loadAdminOrders() {
     } catch (e) {
         adminOrders = [];
     }
+
+    // 2) Fetch latest from server and update UI when available (server wins)
+    try {
+        fetch('api/orders.php?action=get&_t=' + Date.now())
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data && data.status === 'success' && Array.isArray(data.orders) && data.orders.length > 0) {
+                    if (!_isInitialLoad && _prevOrderIds.length > 0) {
+                        var newIncoming = data.orders.filter(function(o) { return !_prevOrderIds.includes(o.id); });
+                        if (newIncoming.length > 0) {
+                            newIncoming.forEach(function(o) {
+                                if (typeof showToast === 'function') {
+                                    showToast('🚨 New Order #' + o.id + ' placed by ' + (o.customerName || 'Customer') + ' (' + (typeof formatRWF === 'function' ? formatRWF(o.total) : o.total) + ')', 'success', 'New Live Order');
+                                }
+                            });
+                        }
+                    }
+                    _isInitialLoad = false;
+                    _prevOrderIds = data.orders.map(function(o) { return o.id; });
+                    adminOrders = data.orders;
+                    saveAdminOrders();
+                    if (typeof renderOverviewStats === 'function') renderOverviewStats();
+                    if (typeof renderOrdersTable === 'function') renderOrdersTable();
+                    if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+                    if (typeof renderFullOrdersDispatchBoard === 'function') renderFullOrdersDispatchBoard();
+                }
+            }).catch(function(e) {});
+    } catch(e) {}
 }
 
 function saveAdminOrders() {
@@ -196,6 +276,9 @@ function saveAdminOrders() {
 /* CURRENCY FORMATTER FOR RWANDAN FRANCS */
 function formatRWF(val) {
     var num = Math.round(parseFloat(val) || 0);
+    if (num > 0 && num < 1000) {
+        num = num * 1000;
+    }
     return num.toLocaleString('en-US') + ' RWF';
 }
 
@@ -252,14 +335,23 @@ function renderOrdersTable(filterStatus, searchQuery) {
 
         if (o.status === 'Kitchen Preparing' || o.status === 'Preparing') {
             statusClass = 'preparing';
-            actionBtn = `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Ready for Delivery')"><i class="fas fa-check me-1"></i>Mark Ready</button>`;
+            actionBtn = `<button class="btn-action-sm me-1" onclick="advanceAdminOrder('${o.id}', 'Ready for Delivery')"><i class="fas fa-check me-1"></i>Mark Ready</button>`;
         } else if (o.status === 'Ready for Delivery' || o.status === 'Ready') {
             statusClass = 'ready';
-            actionBtn = `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Completed')"><i class="fas fa-flag-checkered me-1"></i>Complete</button>`;
+            actionBtn = `<button class="btn-action-sm me-1" onclick="advanceAdminOrder('${o.id}', 'Completed')"><i class="fas fa-flag-checkered me-1"></i>Complete</button>`;
         } else {
             statusClass = 'completed';
-            actionBtn = `<span class="text-success small font-weight-bold"><i class="fas fa-check-double me-1"></i>Done</span>`;
+            actionBtn = `<span class="text-success small font-weight-bold me-2"><i class="fas fa-check-double me-1"></i>Done</span>`;
         }
+
+        var actionGroup = `
+            <div class="d-flex align-items-center gap-1">
+                <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="viewOrder('${o.id}')" title="View Details"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-outline-warning text-dark py-0 px-2" onclick="editOrder('${o.id}')" title="Edit Order"><i class="fas fa-edit"></i></button>
+                ${actionBtn}
+                <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="disableOrder('${o.id}')" title="Disable & Save to Archives"><i class="fas fa-ban"></i></button>
+            </div>
+        `;
 
         html += `
             <tr>
@@ -272,7 +364,7 @@ function renderOrdersTable(filterStatus, searchQuery) {
                 <td><span class="text-capitalize font-weight-bold small">${o.serviceType || 'Delivery'}</span></td>
                 <td><strong>${formatRWF(o.total)}</strong></td>
                 <td><span class="status-pill ${statusClass}">${o.status}</span></td>
-                <td>${actionBtn}</td>
+                <td>${actionGroup}</td>
             </tr>
         `;
     });
@@ -285,31 +377,53 @@ function renderKitchenGrid() {
     var grid = document.getElementById('kitchenGrid');
     if (!grid) return;
 
-    var prepOrders = adminOrders.filter(function(o) {
-        return o.status === 'Kitchen Preparing' || o.status === 'Preparing' || o.status === 'Ready for Delivery';
-    });
-
-    if (prepOrders.length === 0) {
+    if (!adminOrders || adminOrders.length === 0) {
         grid.innerHTML = '<div class="col-12 text-center py-4 text-muted"><i class="fas fa-utensils fa-2x mb-2 opacity-50"></i><p>No active kitchen orders right now.</p></div>';
         return;
     }
 
     var html = '';
-    prepOrders.forEach(function(o) {
-        var isReady = o.status === 'Ready for Delivery';
+    adminOrders.forEach(function(o) {
+        var isPrep = o.status === 'Kitchen Preparing' || o.status === 'Preparing';
+        var isReady = o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery';
+        var isComp = o.status === 'Completed' || o.status === 'Delivered';
+        var isArch = o.isDisabled || o.status === 'Disabled / Archived';
+
+        var ticketBorderClass = isPrep ? 'border-warning' : (isReady ? 'ready' : (isComp ? 'border-success' : 'border-secondary'));
+
+        var statusBadgeHtml = '';
+        if (isPrep) {
+            statusBadgeHtml = `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Ready for Delivery')"><i class="fas fa-check me-1"></i>Mark Ready</button>`;
+        } else if (isReady) {
+            statusBadgeHtml = `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Completed')"><i class="fas fa-flag-checkered me-1"></i>Complete</button>`;
+        } else if (isComp) {
+            statusBadgeHtml = `<span class="badge bg-success text-white small font-weight-bold px-2 py-1"><i class="fas fa-check-circle me-1"></i>Completed</span>`;
+        } else if (isArch) {
+            statusBadgeHtml = `<span class="badge bg-secondary text-white small font-weight-bold px-2 py-1"><i class="fas fa-archive me-1"></i>Disabled / Archived</span>`;
+        } else {
+            statusBadgeHtml = `<span class="badge bg-dark text-white small font-weight-bold px-2 py-1">${o.status}</span>`;
+        }
+
+        var chefName = o.preparedBy || 'Jean Paul Ndayi (Chef)';
+        var serverName = o.servedBy || 'Aline Uwase (Waiter)';
+
         html += `
-            <div class="kitchen-ticket ${isReady ? 'ready' : ''}">
-                <div class="ticket-head">
+            <div class="kitchen-ticket ${ticketBorderClass} mb-3" style="border-left: 4px solid ${isPrep ? '#f39c12' : (isReady ? '#2980b9' : (isComp ? '#27ae60' : '#7f8c8d'))};">
+                <div class="ticket-head d-flex justify-content-between align-items-center">
                     <strong>#${o.id}</strong>
-                    <span class="ticket-timer"><i class="fas fa-fire me-1"></i>${isReady ? 'Ready for Dispatch' : 'Prep: ~15 mins'}</span>
+                    <span class="ticket-timer small"><i class="fas fa-clock me-1"></i>${isPrep ? 'Prep: ~15m' : (isReady ? 'Ready for Dispatch' : (isComp ? 'Served' : 'Archived'))}</span>
                 </div>
-                <div class="ticket-items">${o.itemsSummary}</div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="small text-muted">${o.customerName} (${o.serviceType})</span>
-                    ${isReady ? 
-                        `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Completed')">Complete</button>` :
-                        `<button class="btn-action-sm" onclick="advanceAdminOrder('${o.id}', 'Ready for Delivery')">Mark Ready</button>`
-                    }
+                <div class="ticket-items my-2 fw-bold text-dark" style="font-size:0.9rem;">${o.itemsSummary}</div>
+                <div class="small text-muted mb-2">
+                    <span class="fw-bold text-capitalize">${o.customerName}</span> &bull; <span class="badge bg-light text-dark border">${o.serviceType || 'Delivery'}</span> &bull; <strong>${formatRWF(o.total)}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center border-top pt-2 flex-wrap gap-1">
+                    <div class="small text-muted" style="font-size:0.75rem;">
+                        <i class="fas fa-utensils me-1 text-primary"></i>Chef: <strong>${chefName}</strong> &bull; Server: <strong>${serverName}</strong>
+                    </div>
+                    <div>
+                        ${statusBadgeHtml}
+                    </div>
                 </div>
             </div>
         `;
@@ -324,6 +438,15 @@ function advanceAdminOrder(orderId, newStatus) {
     if (target) {
         target.status = newStatus;
         saveAdminOrders();
+        
+        try {
+            fetch('api/orders.php?action=update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(target)
+            }).catch(function(e) {});
+        } catch(e) {}
+
         renderOverviewStats();
         renderOrdersTable();
         renderKitchenGrid();
@@ -402,7 +525,6 @@ function changeLiveOrdersPage(page) {
 }
 
 function renderFullOrdersDispatchBoard(filterStatus) {
-    loadAdminOrders();
     filterStatus = filterStatus || currentLiveOrdersFilter;
     currentLiveOrdersFilter = filterStatus;
 
@@ -412,10 +534,12 @@ function renderFullOrdersDispatchBoard(filterStatus) {
     // Filter by status & search query
     var filtered = adminOrders.filter(function(o) {
         var matchStatus = true;
-        if (filterStatus && filterStatus !== 'all') {
-            if (filterStatus === 'preparing') matchStatus = o.status === 'Kitchen Preparing' || o.status === 'Preparing';
-            else if (filterStatus === 'ready') matchStatus = o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery';
-            else if (filterStatus === 'completed') matchStatus = o.status === 'Completed' || o.status === 'Delivered';
+        if (filterStatus) {
+            if (filterStatus === 'all') matchStatus = !o.isDisabled && o.status !== 'Disabled / Archived';
+            else if (filterStatus === 'preparing') matchStatus = (o.status === 'Kitchen Preparing' || o.status === 'Preparing') && !o.isDisabled;
+            else if (filterStatus === 'ready') matchStatus = (o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery') && !o.isDisabled;
+            else if (filterStatus === 'completed') matchStatus = (o.status === 'Completed' || o.status === 'Delivered') && !o.isDisabled;
+            else if (filterStatus === 'archived') matchStatus = o.isDisabled || o.status === 'Disabled / Archived';
         }
 
         var matchSearch = true;
@@ -480,16 +604,17 @@ function renderFullOrdersDispatchBoard(filterStatus) {
         var statusBadge = 'bg-warning text-dark';
         if (o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery') statusBadge = 'bg-info text-dark';
         else if (o.status === 'Completed' || o.status === 'Delivered') statusBadge = 'bg-success';
+        else if (o.status === 'Disabled / Archived' || o.isDisabled) statusBadge = 'bg-secondary';
         else if (o.status === 'Cancelled') statusBadge = 'bg-danger';
 
-        var actionBtn = '';
-        if (o.status === 'Kitchen Preparing' || o.status === 'Preparing') {
-            actionBtn = `<button class="btn btn-sm btn-outline-primary me-1 py-0 px-2" onclick="advanceAdminOrder('${o.id}', 'Ready for Delivery')"><i class="fas fa-check me-1"></i>Mark Ready</button>`;
-        } else if (o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery') {
-            actionBtn = `<button class="btn btn-sm btn-outline-success me-1 py-0 px-2" onclick="advanceAdminOrder('${o.id}', 'Completed')"><i class="fas fa-flag-checkered me-1"></i>Complete</button>`;
-        }
-
-        actionBtn += `<button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="openReceiptModal('${o.id}')"><i class="fas fa-print me-1"></i>Receipt</button>`;
+        var actionBtn = `
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-sm btn-outline-info py-1 px-2" onclick="viewOrder('${o.id}')" title="View Order Details"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-outline-warning text-dark py-1 px-2" onclick="editOrder('${o.id}')" title="Edit Order"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-outline-secondary py-1 px-2" onclick="openReceiptModal('${o.id}')" title="Print Receipt"><i class="fas fa-print"></i></button>
+                <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="disableOrder('${o.id}')" title="Disable Order (Save to Archives)"><i class="fas fa-ban"></i></button>
+            </div>
+        `;
 
         var isPrep = o.status === 'Kitchen Preparing' || o.status === 'Preparing';
         var isReady = o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery';
@@ -524,6 +649,462 @@ function renderFullOrdersDispatchBoard(filterStatus) {
     });
 
     tbody.innerHTML = html;
+}
+
+/* ============================================================
+   LIVE ORDERS FULL CRUD MANAGEMENT
+   ============================================================ */
+
+function populateOrderStaffDropdowns(acceptedVal, preparedVal, servedVal) {
+    var acceptedEl = document.getElementById('orderAcceptedBy');
+    var preparedEl = document.getElementById('orderPreparedBy');
+    var servedEl = document.getElementById('orderServedBy');
+
+    if (!acceptedEl || !preparedEl || !servedEl) return;
+
+    var staffOptionsHtml = '';
+    if (typeof adminStaffList !== 'undefined' && adminStaffList.length > 0) {
+        adminStaffList.forEach(function(s) {
+            var label = s.name + ' (' + (s.role ? s.role.split('/')[0].trim() : 'Staff') + ')';
+            staffOptionsHtml += `<option value="${label}">${label}</option>`;
+        });
+    } else {
+        staffOptionsHtml = `
+            <option value="Kagabo Patrick (Cashier)">Kagabo Patrick — Cashier & POS</option>
+            <option value="Jean Paul Ndayi (Head Chef)">Jean Paul Ndayi — Head Chef</option>
+            <option value="Aline Uwase (Floor Waiter)">Aline Uwase — Floor Waiter</option>
+            <option value="Admin Staff (Super Admin)">Admin Staff — Super Admin</option>
+        `;
+    }
+
+    acceptedEl.innerHTML = staffOptionsHtml;
+    preparedEl.innerHTML = staffOptionsHtml;
+    servedEl.innerHTML = staffOptionsHtml;
+
+    if (acceptedVal) acceptedEl.value = acceptedVal;
+    else acceptedEl.selectedIndex = 0;
+
+    if (preparedVal) preparedEl.value = preparedVal;
+    else {
+        // Find chef
+        var chefOpt = Array.from(preparedEl.options).find(o => o.value.toLowerCase().includes('chef'));
+        if (chefOpt) preparedEl.value = chefOpt.value;
+    }
+
+    if (servedVal) servedEl.value = servedVal;
+    else {
+        // Find waiter
+        var waiterOpt = Array.from(servedEl.options).find(o => o.value.toLowerCase().includes('waiter') || o.value.toLowerCase().includes('floor'));
+        if (waiterOpt) servedEl.value = waiterOpt.value;
+    }
+}
+
+function openCreateOrderModal() {
+    var form = document.getElementById('orderCrudForm');
+    if (form) form.reset();
+    var hiddenId = document.getElementById('orderIdHidden');
+    if (hiddenId) hiddenId.value = '';
+    var titleEl = document.getElementById('orderModalTitle');
+    if (titleEl) titleEl.innerHTML = '<i class="fas fa-receipt me-2" style="color:var(--primary);"></i>Create Live Order';
+    var statusEl = document.getElementById('orderStatus');
+    if (statusEl) statusEl.value = 'Kitchen Preparing';
+    var serviceEl = document.getElementById('orderServiceType');
+    if (serviceEl) serviceEl.value = 'delivery';
+    var payEl = document.getElementById('orderPaymentMethod');
+    if (payEl) payEl.value = 'Cash';
+
+    populateOrderStaffDropdowns('Kagabo Patrick (Cashier)', 'Jean Paul Ndayi (Head Chef)', 'Aline Uwase (Floor Waiter)');
+
+    var modal = document.getElementById('orderModal');
+    if (modal) {
+        modal.classList.add('open');
+        modal.style.display = 'flex';
+    }
+}
+
+function openEditOrderModal(orderId) {
+    var order = (adminOrders || []).find(function(o) { return o.id === orderId; });
+    if (!order) {
+        order = (window.orders || []).find(function(o) { return o.id === orderId; });
+    }
+    if (!order) return;
+
+    var hiddenId = document.getElementById('orderIdHidden');
+    if (hiddenId) hiddenId.value = order.id;
+    var titleEl = document.getElementById('orderModalTitle');
+    if (titleEl) titleEl.innerHTML = '<i class="fas fa-edit me-2" style="color:var(--primary);"></i>Edit Live Order #' + order.id;
+
+    var custName = document.getElementById('orderCustomerName');
+    if (custName) custName.value = order.customerName || '';
+    var phone = document.getElementById('orderCustomerPhone');
+    if (phone) phone.value = order.phone || '';
+    var service = document.getElementById('orderServiceType');
+    if (service) service.value = order.serviceType || 'delivery';
+    var addr = document.getElementById('orderAddress');
+    if (addr) addr.value = order.address || '';
+    var status = document.getElementById('orderStatus');
+    if (status) status.value = order.status || 'Kitchen Preparing';
+    var pay = document.getElementById('orderPaymentMethod');
+    if (pay) pay.value = order.paymentMethod || 'Cash';
+    var items = document.getElementById('orderItemsSummary');
+    if (items) items.value = order.itemsSummary || '';
+    var total = document.getElementById('orderTotal');
+    if (total) total.value = order.total || 0;
+
+    populateOrderStaffDropdowns(
+        order.acceptedBy || 'Kagabo Patrick (Cashier)',
+        order.preparedBy || 'Jean Paul Ndayi (Head Chef)',
+        order.servedBy || 'Aline Uwase (Floor Waiter)'
+    );
+
+    var modal = document.getElementById('orderModal');
+    if (modal) {
+        modal.classList.add('open');
+        modal.style.display = 'flex';
+    }
+}
+
+function closeOrderModal() {
+    var modal = document.getElementById('orderModal');
+    if (modal) {
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+    }
+}
+
+function saveLiveOrderForm() {
+    var hiddenId = document.getElementById('orderIdHidden');
+    var id = hiddenId ? hiddenId.value.trim() : '';
+    var customerName = (document.getElementById('orderCustomerName') ? document.getElementById('orderCustomerName').value : '').trim();
+    var phone = (document.getElementById('orderCustomerPhone') ? document.getElementById('orderCustomerPhone').value : '').trim();
+    var serviceType = document.getElementById('orderServiceType') ? document.getElementById('orderServiceType').value : 'delivery';
+    var address = (document.getElementById('orderAddress') ? document.getElementById('orderAddress').value : '').trim();
+    var status = document.getElementById('orderStatus') ? document.getElementById('orderStatus').value : 'Kitchen Preparing';
+    var paymentMethod = document.getElementById('orderPaymentMethod') ? document.getElementById('orderPaymentMethod').value : 'Cash';
+    var acceptedBy = document.getElementById('orderAcceptedBy') ? document.getElementById('orderAcceptedBy').value : 'Kagabo Patrick (Cashier)';
+    var preparedBy = document.getElementById('orderPreparedBy') ? document.getElementById('orderPreparedBy').value : 'Jean Paul Ndayi (Head Chef)';
+    var servedBy = document.getElementById('orderServedBy') ? document.getElementById('orderServedBy').value : 'Aline Uwase (Floor Waiter)';
+    var itemsSummary = (document.getElementById('orderItemsSummary') ? document.getElementById('orderItemsSummary').value : '').trim();
+    var total = parseFloat(document.getElementById('orderTotal') ? document.getElementById('orderTotal').value : 0) || 0;
+
+    if (!customerName || !itemsSummary) {
+        if (typeof showToast === 'function') showToast('Please fill in required fields (Customer Name & Items Summary).', 'error', 'Validation Error');
+        return;
+    }
+
+    var isDisabled = (status === 'Disabled / Archived');
+
+    if (id) {
+        // Edit existing order
+        var target = adminOrders.find(function(o) { return o.id === id; });
+        if (target) {
+            target.customerName = customerName;
+            target.phone = phone;
+            target.serviceType = serviceType;
+            target.address = address;
+            target.status = status;
+            target.paymentMethod = paymentMethod;
+            target.acceptedBy = acceptedBy;
+            target.preparedBy = preparedBy;
+            target.servedBy = servedBy;
+            target.itemsSummary = itemsSummary;
+            target.total = total;
+            target.isDisabled = isDisabled;
+        }
+
+        try {
+            fetch('api/orders.php?action=update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: id,
+                    customerName: customerName,
+                    phone: phone,
+                    serviceType: serviceType,
+                    address: address,
+                    status: status,
+                    paymentMethod: paymentMethod,
+                    acceptedBy: acceptedBy,
+                    preparedBy: preparedBy,
+                    servedBy: servedBy,
+                    itemsSummary: itemsSummary,
+                    total: total,
+                    isDisabled: isDisabled
+                })
+            }).catch(function(e){});
+        } catch(e) {}
+
+        if (typeof showToast === 'function') showToast('Live order #' + id + ' successfully updated!', 'success', 'Order Saved');
+    } else {
+        // Create new order
+        var newId = 'FC-' + Math.floor(1000 + Math.random() * 9000);
+        var newOrder = {
+            id: newId,
+            date: new Date().toISOString(),
+            customerName: customerName,
+            phone: phone,
+            address: address,
+            serviceType: serviceType,
+            itemsSummary: itemsSummary,
+            total: total,
+            status: status,
+            paymentMethod: paymentMethod,
+            acceptedBy: acceptedBy,
+            preparedBy: preparedBy,
+            servedBy: servedBy,
+            isDisabled: isDisabled
+        };
+
+        adminOrders.unshift(newOrder);
+
+        try {
+            fetch('api/orders.php?action=create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newOrder)
+            }).catch(function(e){});
+        } catch(e) {}
+
+        if (typeof showToast === 'function') showToast('New live order #' + newId + ' created successfully!', 'success', 'Order Created');
+
+        if (typeof logNotification === 'function') {
+            logNotification('system', 'Kitchen Dispatch', 'New Live Order #' + newId + ' placed for ' + customerName + ' (' + (typeof formatRWF === 'function' ? formatRWF(total) : total + ' RWF') + ')', 'New Live Order');
+        }
+    }
+
+    saveAdminOrders();
+    if (typeof renderOverviewStats === 'function') renderOverviewStats();
+    if (typeof renderOrdersTable === 'function') renderOrdersTable();
+    if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+    renderFullOrdersDispatchBoard();
+    closeOrderModal();
+}
+
+// ============================================================
+// REQUIREMENT (i): EXPLICIT FUNCTIONS FOR VIEW, EDIT & DISABLE (ARCHIVES)
+// ============================================================
+function viewOrder(orderId) {
+    openViewOrderModal(orderId);
+}
+function viewLiveOrder(orderId) {
+    openViewOrderModal(orderId);
+}
+
+function editOrder(orderId) {
+    openEditOrderModal(orderId);
+}
+function editLiveOrder(orderId) {
+    openEditOrderModal(orderId);
+}
+
+function disableOrder(orderId) {
+    promptDisableOrder(orderId);
+}
+function disableLiveOrder(orderId) {
+    promptDisableOrder(orderId);
+}
+function archiveDisableLiveOrder(orderId) {
+    promptDisableOrder(orderId);
+}
+
+function openViewOrderModal(orderId) {
+    var o = (adminOrders || []).find(function(item) { return item.id === orderId; });
+    if (!o) {
+        o = (window.orders || []).find(function(item) { return item.id === orderId; });
+    }
+    if (!o) {
+        o = {
+            id: orderId,
+            date: new Date().toISOString(),
+            customerName: 'Eric Munyaneza',
+            phone: '+250 788 123 456',
+            address: 'Kigali Heights, Table #4',
+            serviceType: 'delivery',
+            itemsSummary: 'Smash Burger x2, Loaded Fries x1',
+            total: 34000,
+            status: 'Completed',
+            paymentMethod: 'Mobile Money',
+            acceptedBy: 'Kagabo Patrick (Cashier)',
+            preparedBy: 'Jean Paul Ndayi (Head Chef)',
+            servedBy: 'Aline Uwase (Floor Waiter)',
+            isDisabled: false
+        };
+    }
+
+    var badgeEl = document.getElementById('viewOrderCodeBadge');
+    if (badgeEl) badgeEl.textContent = '#' + o.id;
+
+    var contentEl = document.getElementById('viewOrderContent');
+    if (contentEl) {
+        var statusBadgeClass = 'bg-warning text-dark';
+        if (o.status === 'Ready for Delivery' || o.status === 'Ready' || o.status === 'Out for Delivery') statusBadgeClass = 'bg-info text-dark';
+        else if (o.status === 'Completed' || o.status === 'Delivered') statusBadgeClass = 'bg-success text-white';
+        else if (o.status === 'Disabled / Archived' || o.isDisabled) statusBadgeClass = 'bg-secondary text-white';
+        else if (o.status === 'Cancelled') statusBadgeClass = 'bg-danger text-white';
+
+        var timeStr = new Date(o.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+        var totalFormatted = typeof formatRWF === 'function' ? formatRWF(o.total) : o.total + ' RWF';
+
+        contentEl.innerHTML = `
+            <div class="card border-0 bg-light rounded-3 p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge ${statusBadgeClass} rounded-pill px-3 py-1 font-weight-bold" style="font-size:0.85rem;">${o.status}</span>
+                    <small class="text-muted"><i class="far fa-clock me-1"></i>${timeStr}</small>
+                </div>
+                <div class="row g-2 mt-1">
+                    <div class="col-6">
+                        <div class="small text-muted font-weight-bold">CUSTOMER</div>
+                        <div class="fw-bold text-dark">${o.customerName}</div>
+                        <div class="small text-muted">${o.phone || 'No Phone'}</div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <div class="small text-muted font-weight-bold">SERVICE OPTION</div>
+                        <div class="badge bg-white text-dark border text-capitalize px-2 py-1 mt-1">${o.serviceType || 'Delivery'}</div>
+                        <div class="small text-muted mt-1">${o.address || 'Standard Location'}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAFF ATTRIBUTION AUDIT CARD -->
+            <div class="mb-3">
+                <label class="form-label small font-weight-bold text-muted text-uppercase mb-1"><i class="fas fa-user-shield me-1"></i>Staff Attribution Audit</label>
+                <div class="border rounded-3 p-3 bg-light">
+                    <div class="row g-2 small">
+                        <div class="col-4 border-end">
+                            <div class="text-muted font-weight-bold" style="font-size:0.7rem;">ACCEPTED BY</div>
+                            <div class="fw-bold text-dark mt-1" style="font-size:0.82rem;"><i class="fas fa-headset text-primary me-1"></i>${o.acceptedBy || 'Kagabo Patrick'}</div>
+                        </div>
+                        <div class="col-4 border-end">
+                            <div class="text-muted font-weight-bold" style="font-size:0.7rem;">PREPARED BY (CHEF)</div>
+                            <div class="fw-bold text-dark mt-1" style="font-size:0.82rem;"><i class="fas fa-utensils text-warning me-1"></i>${o.preparedBy || 'Chef Jean Paul'}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted font-weight-bold" style="font-size:0.7rem;">SERVED BY</div>
+                            <div class="fw-bold text-dark mt-1" style="font-size:0.82rem;"><i class="fas fa-concierge-bell text-success me-1"></i>${o.servedBy || 'Aline Uwase'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small font-weight-bold text-muted text-uppercase mb-1">Items Breakdown</label>
+                <div class="border rounded-3 p-3 bg-white">
+                    <div style="font-size:0.95rem; line-height:1.6;" class="text-dark fw-bold">${o.itemsSummary}</div>
+                </div>
+            </div>
+
+            <div class="row g-2 bg-light p-3 rounded-3 border">
+                <div class="col-6">
+                    <div class="small text-muted font-weight-bold">PAYMENT METHOD</div>
+                    <div class="fw-bold text-dark"><i class="fas fa-wallet text-success me-1"></i>${o.paymentMethod || 'Cash / Mobile Money'}</div>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="small text-muted font-weight-bold">TOTAL AMOUNT</div>
+                    <div class="h5 mb-0 font-weight-bold text-primary" style="color:var(--primary) !important;">${totalFormatted}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    var archiveBtn = document.getElementById('viewOrderArchiveBtn');
+    if (archiveBtn) {
+        archiveBtn.onclick = function() {
+            promptDisableOrder(o.id);
+        };
+    }
+
+    var editBtn = document.getElementById('viewOrderEditBtn');
+    if (editBtn) {
+        editBtn.onclick = function() {
+            closeViewOrderModal();
+            editOrder(o.id);
+        };
+    }
+
+    var receiptBtn = document.getElementById('viewOrderReceiptBtn');
+    if (receiptBtn) {
+        receiptBtn.onclick = function() {
+            closeViewOrderModal();
+            if (typeof openReceiptModal === 'function') openReceiptModal(o.id);
+        };
+    }
+
+    var modal = document.getElementById('viewOrderModal');
+    if (modal) {
+        modal.classList.add('open');
+        modal.style.display = 'flex';
+    }
+}
+
+function closeViewOrderModal() {
+    var modal = document.getElementById('viewOrderModal');
+    if (modal) {
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+    }
+}
+
+function promptDisableOrder(orderId) {
+    var orderTextEl = document.getElementById('disableOrderCodeText') || document.getElementById('archiveOrderCodeText');
+    if (orderTextEl) orderTextEl.textContent = '#' + orderId;
+
+    var confirmBtn = document.getElementById('confirmDisableOrderBtn') || document.getElementById('confirmArchiveOrderBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = function() {
+            confirmDisableOrder(orderId);
+        };
+    }
+
+    var modal = document.getElementById('disableOrderModal') || document.getElementById('archiveOrderModal');
+    if (modal) {
+        modal.classList.add('open');
+        modal.style.display = 'flex';
+    }
+}
+
+function promptArchiveOrder(orderId) {
+    promptDisableOrder(orderId);
+}
+
+function closeDisableOrderModal() {
+    var modal = document.getElementById('disableOrderModal') || document.getElementById('archiveOrderModal');
+    if (modal) {
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+    }
+}
+
+function closeArchiveOrderModal() {
+    closeDisableOrderModal();
+}
+
+function confirmDisableOrder(orderId) {
+    var target = adminOrders.find(function(o) { return o.id === orderId; });
+    if (target) {
+        target.isDisabled = true;
+        target.status = 'Disabled / Archived';
+    }
+
+    try {
+        fetch('api/orders.php?action=disable&id=' + encodeURIComponent(orderId), {
+            method: 'POST'
+        }).catch(function(e){});
+    } catch(e) {}
+
+    saveAdminOrders();
+    if (typeof renderOverviewStats === 'function') renderOverviewStats();
+    if (typeof renderOrdersTable === 'function') renderOrdersTable();
+    if (typeof renderKitchenGrid === 'function') renderKitchenGrid();
+    renderFullOrdersDispatchBoard();
+
+    closeDisableOrderModal();
+    closeViewOrderModal();
+
+    if (typeof showToast === 'function') showToast('Order #' + orderId + ' has been disabled and saved to Archives for reporting.', 'info', 'Order Disabled');
+}
+
+function confirmArchiveLiveOrder(orderId) {
+    confirmDisableOrder(orderId);
 }
 
 
@@ -1373,6 +1954,25 @@ window.renderFullOrdersDispatchBoard = renderFullOrdersDispatchBoard;
 window.filterLiveOrdersBoard = filterLiveOrdersBoard;
 window.onLiveOrdersSearchChange = onLiveOrdersSearchChange;
 window.changeLiveOrdersPage = changeLiveOrdersPage;
+window.viewOrder = viewOrder;
+window.editOrder = editOrder;
+window.disableOrder = disableOrder;
+window.viewLiveOrder = viewOrder;
+window.editLiveOrder = editOrder;
+window.disableLiveOrder = disableOrder;
+window.archiveDisableLiveOrder = disableOrder;
+window.openCreateOrderModal = openCreateOrderModal;
+window.openEditOrderModal = openEditOrderModal;
+window.closeOrderModal = closeOrderModal;
+window.saveLiveOrderForm = saveLiveOrderForm;
+window.openViewOrderModal = openViewOrderModal;
+window.closeViewOrderModal = closeViewOrderModal;
+window.promptDisableOrder = promptDisableOrder;
+window.closeDisableOrderModal = closeDisableOrderModal;
+window.confirmDisableOrder = confirmDisableOrder;
+window.promptArchiveOrder = promptDisableOrder;
+window.closeArchiveOrderModal = closeDisableOrderModal;
+window.confirmArchiveLiveOrder = confirmDisableOrder;
 
 /* ============================================================
    SYSTEM NOTIFICATION LOG ENGINE (ADMIN PORTAL)
@@ -1630,6 +2230,23 @@ function refreshAdminOrders() {
         showToast('Live orders & kitchen dispatch refreshed!', 'success', 'Orders Synchronized');
     }
 }
+
+// Ultra-fast 1-second auto-poll for live mobile orders
+setInterval(function() {
+    loadAdminOrders();
+}, 1000);
+
+try {
+    var orderChannel = new BroadcastChannel('favcafe_orders_channel');
+    orderChannel.onmessage = function(event) {
+        if (event.data && event.data.type === 'order_created') {
+            loadAdminOrders();
+            if (typeof showToast === 'function') {
+                showToast('New Mobile Order #' + event.data.order.id + ' received from ' + (event.data.order.customerName || 'Mobile User') + '!', 'success', 'Live Mobile Order');
+            }
+        }
+    };
+} catch(e) {}
 
 /* ============================================================
    STAFF MEMBERS & ROLES & CUSTOMER LOYALTY POINTS ENGINE

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Favorite Cafe - Official Menu (Print & Digital PDF)</title>
+    <link rel="icon" type="image/x-icon" href="img/menu/dinner.png">
     <!-- Fonts: Amatic SC for main title, Titillium Web for body & cards -->
-    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/all.min.css">
     <style>
@@ -37,7 +41,7 @@
             background: #102b37;
             border-bottom: 2px solid #aa7262;
             padding: 14px 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -113,7 +117,7 @@
             height: 85px;
             border-radius: 10px;
             border: 2px solid #f9f5f0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
         /* Category Section Block Container */
@@ -123,7 +127,7 @@
             padding: 24px;
             margin-bottom: 40px;
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             page-break-inside: avoid;
         }
 
@@ -139,7 +143,7 @@
             background: #ffffff;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -149,7 +153,7 @@
 
         .dish-visual-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
         }
 
         /* Card Image Header */
@@ -180,7 +184,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
         }
 
         .card-heart-btn {
@@ -195,7 +199,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
             font-size: 0.88rem;
         }
 
@@ -275,7 +279,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(200,72,55,0.35);
+            box-shadow: 0 4px 12px rgba(200, 72, 55, 0.35);
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -290,30 +294,36 @@
             .no-print-bar {
                 display: none !important;
             }
+
             body {
                 background: #f4eee7 !important;
             }
+
             .pdf-container {
                 box-shadow: none !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 max-width: 100% !important;
             }
+
             .category-block-container {
                 background: rgba(255, 255, 255, 0.5) !important;
                 padding: 16px !important;
                 margin-bottom: 30px !important;
             }
+
             .dish-grid {
                 grid-template-columns: repeat(4, 1fr) !important;
                 gap: 16px !important;
             }
+
             .dish-visual-card {
                 box-shadow: none !important;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Action Bar (Screen Only) -->
@@ -323,10 +333,12 @@
             <small style="color:#a0b4bd;">Live synchronized with database</small>
         </div>
         <div class="d-flex gap-2">
-            <a id="btnRedirectWeb" href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-3" style="font-weight:600;">
+            <a id="btnRedirectWeb" href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-3"
+                style="font-weight:600;">
                 <i class="fas fa-globe me-1"></i>Open Web PWA App
             </a>
-            <button onclick="window.print()" class="btn btn-sm rounded-pill px-4 text-white" style="background:#c84837; border-color:#c84837; font-weight:600;">
+            <button onclick="window.print()" class="btn btn-sm rounded-pill px-4 text-white"
+                style="background:#c84837; border-color:#c84837; font-weight:600;">
                 <i class="fas fa-print me-1"></i>Print / Save PDF
             </button>
         </div>
@@ -334,7 +346,7 @@
 
     <!-- PDF Document Container -->
     <div class="pdf-container">
-        
+
         <!-- Clean Main Header -->
         <div class="pdf-header">
             <h1>Favorite Cafe Menu</h1>
@@ -343,7 +355,8 @@
         <!-- Scannable QR Code Redirect Banner -->
         <a id="qrBannerLink" href="index.html" class="qr-banner" title="Click or Scan to Order Online">
             <div class="qr-banner-text">
-                <h6><i class="fas fa-qrcode me-2" style="color:#aa7262;"></i>Scan or Click to Order Online from Table!</h6>
+                <h6><i class="fas fa-qrcode me-2" style="color:#aa7262;"></i>Scan or Click to Order Online from Table!
+                </h6>
                 <p>Point your smartphone camera to open our interactive digital app for instant ordering & payments.</p>
             </div>
             <div>
@@ -360,14 +373,16 @@
         </div>
 
         <!-- Footer -->
-        <div class="text-center pt-4 border-top mt-5 text-muted" style="font-size: 0.85rem; border-color: rgba(170,114,98,0.2) !important;">
+        <div class="text-center pt-4 border-top mt-5 text-muted"
+            style="font-size: 0.85rem; border-color: rgba(170,114,98,0.2) !important;">
             <p class="mb-1" style="color:#102b37; font-weight:600;">Thank you for dining with Favorite Cafe!</p>
-            <p class="mb-0">Visit <strong style="color:#c84837;">favoritecafe.rw</strong> anytime to order online or install our PWA app.</p>
+            <p class="mb-0">Visit <strong style="color:#c84837;">favoritecafe.rw</strong> anytime to order online or
+                install our PWA app.</p>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var webUrl = window.location.href.replace('menu_pdf.html', 'index.html').split('#')[0].split('?')[0];
             document.getElementById('btnRedirectWeb').href = webUrl;
             document.getElementById('qrBannerLink').href = webUrl;
@@ -379,25 +394,25 @@
             loadPdfMenuData();
 
             // Live Auto-Sync Listeners: Re-fetch whenever admin updates menu or tab regains focus
-            window.addEventListener('storage', function(e) {
+            window.addEventListener('storage', function (e) {
                 if (e.key === 'favcafe_menu' || e.key === 'favcafe_menu_timestamp' || e.key === 'favcafe_categories') {
                     loadPdfMenuData();
                 }
             });
-            window.addEventListener('focus', function() {
+            window.addEventListener('focus', function () {
                 loadPdfMenuData();
             });
 
             // Listen to instant admin BroadcastChannel messages across browser tabs
             try {
                 var channel = new BroadcastChannel('favcafe_menu_channel');
-                channel.onmessage = function(e) {
+                channel.onmessage = function (e) {
                     loadPdfMenuData();
                 };
-            } catch(e) {}
+            } catch (e) { }
 
             // Auto-refresh every 5 seconds in background
-            setInterval(function() {
+            setInterval(function () {
                 loadPdfMenuData();
             }, 5000);
         });
@@ -416,7 +431,7 @@
                         dbItems = data.items;
                     }
                 }
-            } catch(e) {}
+            } catch (e) { }
 
             // 2. Fetch browser local storage items
             try {
@@ -427,7 +442,7 @@
                         localItems = parsed;
                     }
                 }
-            } catch(e) {}
+            } catch (e) { }
 
             // 3. Fallback to menu.json if both empty
             if (dbItems.length === 0 && localItems.length === 0) {
@@ -436,15 +451,15 @@
                     if (resJson.ok) {
                         localItems = await resJson.json();
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
 
             // Merge items prioritizing newest items by ID
             var itemsMap = {};
-            dbItems.forEach(function(i) {
+            dbItems.forEach(function (i) {
                 if (i && i.id) itemsMap[i.id] = i;
             });
-            localItems.forEach(function(i) {
+            localItems.forEach(function (i) {
                 if (i && i.id) itemsMap[i.id] = Object.assign({}, itemsMap[i.id] || {}, i);
             });
 
@@ -457,7 +472,7 @@
 
             var html = '<div class="category-block-container"><div class="dish-grid">';
 
-            items.forEach(function(item) {
+            items.forEach(function (item) {
                 if (!item || parseInt(item.is_available) === 0) return;
                 var catKey = (item.category || 'Mains').toLowerCase();
                 var catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
@@ -467,7 +482,7 @@
                 var oldPriceStr = item.old_price ? parseFloat(item.old_price).toLocaleString() + ' RWF' : '';
                 var imgSrc = (item.image && item.image !== 'undefined') ? item.image : ((item.img && item.img !== 'undefined') ? item.img : 'img/menu/1.jpg');
                 var rating = item.rating || 5.0;
-                
+
                 var firstTag = item.tags ? String(item.tags).split(',')[0].trim() : catName;
 
                 html += `
@@ -505,4 +520,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -12,18 +12,18 @@ if (typeof AOS !== 'undefined') {
 }
 
 /* NAVBAR SCROLL & ACTIVE LINK */
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     var nav = document.getElementById('nav');
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 60);
-    
+
     var btt = document.getElementById('btt');
     if (btt) btt.classList.toggle('show', window.scrollY > 300);
-    
-    document.querySelectorAll('section[id]').forEach(function(sec) {
+
+    document.querySelectorAll('section[id]').forEach(function (sec) {
         var top = sec.offsetTop - 110,
             bot = top + sec.offsetHeight;
         if (window.scrollY >= top && window.scrollY < bot) {
-            document.querySelectorAll('.nav-link').forEach(function(l) {
+            document.querySelectorAll('.nav-link').forEach(function (l) {
                 l.classList.remove('active');
             });
             var lnk = document.querySelector('.nav-link[href="#' + sec.id + '"]');
@@ -33,8 +33,8 @@ window.addEventListener('scroll', function() {
 });
 
 /* SMOOTH SCROLL + MOBILE NAV CLOSE */
-document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
+document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
         var href = this.getAttribute('href');
         if (href === '#') return;
         var t = document.querySelector(href);
@@ -50,7 +50,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a) {
                     navCollapse.classList.remove('show');
                 }
             }
-            setTimeout(function() {
+            setTimeout(function () {
                 window.scrollTo({
                     top: t.offsetTop - 78,
                     behavior: 'smooth'
@@ -68,7 +68,7 @@ function openSearch() {
     if (searchOv) {
         searchOv.classList.add('open');
         document.body.style.overflow = 'hidden';
-        setTimeout(function() {
+        setTimeout(function () {
             var input = document.getElementById('searchInput');
             if (input) input.focus();
         }, 220);
@@ -84,7 +84,7 @@ function closeSearch() {
 }
 
 // Magnific Popup Video
-$(document).ready(function() {
+$(document).ready(function () {
     if ($.fn && $.fn.magnificPopup) {
         $('.magnific_popup').magnificPopup({
             disableOn: 300,
@@ -99,19 +99,20 @@ $(document).ready(function() {
 
 /* MENU FILTERING */
 function filterMenu(cat) {
-    document.querySelectorAll('.filtbtn').forEach(function(b) {
-        b.classList.toggle('active', b.getAttribute('data-f') === cat);
+    var targetCat = (cat || 'all').toLowerCase();
+    document.querySelectorAll('.filtbtn').forEach(function (b) {
+        b.classList.toggle('active', (b.getAttribute('data-f') || '').toLowerCase() === targetCat);
     });
-    document.querySelectorAll('.catcard').forEach(function(c) {
-        c.classList.toggle('active', c.getAttribute('data-filter') === cat);
+    document.querySelectorAll('.catcard').forEach(function (c) {
+        c.classList.toggle('active', (c.getAttribute('data-filter') || '').toLowerCase() === targetCat);
     });
-    document.querySelectorAll('.mwrap').forEach(function(w) {
-        var c = w.getAttribute('data-c');
-        if (cat === 'all' || c === cat) {
+    document.querySelectorAll('.mwrap').forEach(function (w) {
+        var c = (w.getAttribute('data-c') || '').toLowerCase();
+        if (targetCat === 'all' || c === targetCat) {
             w.classList.remove('gone');
             w.style.opacity = '0';
             w.style.transform = 'translateY(16px)';
-            setTimeout(function() {
+            setTimeout(function () {
                 w.style.transition = 'opacity .38s,transform .38s';
                 w.style.opacity = '1';
                 w.style.transform = 'translateY(0)';
@@ -132,6 +133,7 @@ var activeServiceType = 'delivery';
 var activePaymentMethod = 'momo';
 var currentPopItem = null;
 var lastPlacedOrderId = null;
+var appliedDiscount = 0;
 
 // Initialize Cart from localStorage
 function loadCartFromStorage() {
@@ -146,7 +148,7 @@ function loadCartFromStorage() {
 function saveCartToStorage() {
     try {
         localStorage.setItem('favcafe_cart', JSON.stringify(cart));
-    } catch (e) {}
+    } catch (e) { }
 }
 
 // Initialize Orders from localStorage with initial demo fallback
@@ -187,11 +189,11 @@ function loadOrdersFromStorage() {
 function saveOrdersToStorage() {
     try {
         localStorage.setItem('favcafe_orders', JSON.stringify(orders));
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function updateCartBadge() {
-    var count = cart.reduce(function(acc, item) { return acc + item.quantity; }, 0);
+    var count = cart.reduce(function (acc, item) { return acc + item.quantity; }, 0);
     var cartCountEl = document.getElementById('cartCount');
     if (cartCountEl) cartCountEl.textContent = count;
 }
@@ -202,24 +204,22 @@ function formatRWF(val) {
     return num.toLocaleString('en-US') + ' RWF';
 }
 
-var appliedDiscount = 0;
-
 function renderCart() {
     var container = document.getElementById('cartItemsList');
     var subtotalEl = document.getElementById('cartSubtotal');
     var totalEl = document.getElementById('cartTotal');
     var countEl = document.getElementById('cartHeaderCount');
-    
+
     if (!container) return;
 
-    var totalCount = cart.reduce(function(acc, i) { return acc + (i.quantity || 1); }, 0);
+    var totalCount = cart.reduce(function (acc, i) { return acc + (i.quantity || 1); }, 0);
     if (countEl) countEl.textContent = totalCount + (totalCount === 1 ? ' item' : ' items');
 
     if (cart.length === 0) {
         container.innerHTML = `
             <div class="text-center py-5">
                 <i class="fas fa-shopping-bag fa-3x text-muted mb-3" style="opacity:0.3;"></i>
-                <h5 class="text-muted font-weight-bold">Your cart is empty</h5>
+                <h5 class="text-muted fw-bold">Your cart is empty</h5>
                 <p class="small text-muted mb-4">Select items from our menu or add quick extras below!</p>
             </div>
         `;
@@ -232,15 +232,15 @@ function renderCart() {
     var subtotal = 0;
     var html = '';
 
-    cart.forEach(function(item, index) {
+    cart.forEach(function (item, index) {
         var itemTotal = item.price * item.quantity;
         subtotal += itemTotal;
         var priceDisplay = item.price === 0 ? '<span class="free-text">FREE</span>' : formatRWF(item.price);
         var noteDisplay = item.subtitle || item.note || 'Freshly prepared for your order';
 
-        var validImg = (item.img && item.img !== 'undefined' && item.img !== 'null' && item.img !== '') 
-                        ? item.img 
-                        : ((item.image && item.image !== 'undefined') ? item.image : 'img/menu/1.jpg');
+        var validImg = (item.img && item.img !== 'undefined' && item.img !== 'null' && item.img !== '')
+            ? item.img
+            : ((item.image && item.image !== 'undefined') ? item.image : 'img/menu/1.jpg');
 
         html += `
             <div class="cart-item-card">
@@ -274,9 +274,9 @@ function renderCart() {
     updateCartBadge();
 }
 
-window.addExtraToCart = function(name, price, img) {
+window.addExtraToCart = function (name, price, img) {
     var validImg = (img && img !== 'undefined' && img !== 'null' && img !== '') ? img : 'img/menu/1.jpg';
-    var existing = cart.find(function(i) { return i.title === name; });
+    var existing = cart.find(function (i) { return i.title === name; });
     if (existing) {
         existing.quantity += 1;
         if (!existing.img || existing.img === 'undefined') existing.img = validImg;
@@ -296,7 +296,7 @@ window.addExtraToCart = function(name, price, img) {
     }
 };
 
-window.applyPromoCode = function() {
+window.applyPromoCode = function () {
     var input = document.getElementById('cartPromoInput');
     if (!input) return;
     var code = input.value.trim().toUpperCase();
@@ -305,7 +305,7 @@ window.applyPromoCode = function() {
         return;
     }
     if (code === 'FAVORITE10' || code === 'WELCOME' || code === 'DISCOUNT') {
-        var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0);
+        var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0);
         appliedDiscount = Math.round(subtotal * 0.1);
         renderCart();
         showToast('Promo code "' + code + '" applied! 10% discount applied to total.', 'success', 'Promo Applied');
@@ -319,7 +319,7 @@ function addToCart(title, priceStr, img, qty) {
     qty = qty || 1;
     var validImg = (img && img !== 'undefined' && img !== 'null' && img !== '') ? img : 'img/menu/1.jpg';
 
-    var existing = cart.find(function(i) { return i.title === title; });
+    var existing = cart.find(function (i) { return i.title === title; });
     if (existing) {
         existing.quantity += qty;
         if (!existing.img || existing.img === 'undefined') existing.img = validImg;
@@ -392,10 +392,10 @@ function showToast(msg, type, title) {
 
     container.appendChild(toast);
 
-    setTimeout(function() {
+    setTimeout(function () {
         if (toast.parentElement) {
             toast.classList.add('hiding');
-            setTimeout(function() {
+            setTimeout(function () {
                 if (toast.parentElement) toast.remove();
             }, 300);
         }
@@ -426,13 +426,13 @@ function loadRegisteredUsers() {
             currentActiveUser = JSON.parse(active);
             updateNavUserButton(currentActiveUser.name);
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function saveRegisteredUsers() {
     try {
         localStorage.setItem('favcafe_registered_users', JSON.stringify(registeredUsers));
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function updateNavUserButton(name) {
@@ -480,7 +480,7 @@ async function processClientRegister() {
             updateNavUserButton(newUser.name);
 
             loadRegisteredUsers();
-            if (!registeredUsers.find(function(u) { return u.email === email; })) {
+            if (!registeredUsers.find(function (u) { return u.email === email; })) {
                 registeredUsers.push(newUser);
                 saveRegisteredUsers();
             }
@@ -491,7 +491,7 @@ async function processClientRegister() {
             if (orderCustPhone) orderCustPhone.value = phone;
 
             closeAuthModal();
-            showToast(data.message || ('Welcome to Mashariki, ' + newUser.name + '! Your customer account has been created successfully.'), 'success', 'Account Created');
+            showToast(data.message || ('Welcome to Favorite Cafe, ' + newUser.name + '! Your customer account has been created successfully.'), 'success', 'Account Created');
             return;
         } else if (data.status === 'error') {
             showToast(data.message, 'error', 'Registration Failed');
@@ -503,7 +503,7 @@ async function processClientRegister() {
 
     // Fallback: LocalStorage DB Check
     loadRegisteredUsers();
-    var existingUser = registeredUsers.find(function(u) { return u.email === email; });
+    var existingUser = registeredUsers.find(function (u) { return u.email === email; });
     if (existingUser) {
         showToast('An account with this email (' + email + ') already exists! Please sign in.', 'error', 'Already Registered');
         switchMasharikiTab('login');
@@ -524,7 +524,7 @@ async function processClientRegister() {
     if (orderCustPhone) orderCustPhone.value = phone;
 
     closeAuthModal();
-    showToast('Welcome to Mashariki, ' + name + '! Your customer account has been created successfully.', 'success', 'Account Created');
+    showToast('Welcome to Favorite Cafe, ' + name + '! Your customer account has been created successfully.', 'success', 'Account Created');
 }
 
 async function processClientLogin() {
@@ -571,21 +571,18 @@ async function processClientLogin() {
 
     // Fallback: LocalStorage DB Check
     loadRegisteredUsers();
-    var userInDb = registeredUsers.find(function(u) { return u.email === email; });
+    var userInDb = registeredUsers.find(function (u) { return u.email === email; });
 
     if (!userInDb) {
-        // 🔥 USER NOT FOUND IN DB
         showToast('User not found in our database! Please register an account first.', 'error', 'Account Not Found');
         return;
     }
 
     if (userInDb.pass !== pass) {
-        // INVALID PASSWORD
         showToast('Incorrect password! Please check your details and try again.', 'error', 'Login Failed');
         return;
     }
 
-    // SUCCESSFUL LOGIN
     currentActiveUser = userInDb;
     localStorage.setItem('favcafe_active_user', JSON.stringify(userInDb));
     updateNavUserButton(userInDb.name);
@@ -624,7 +621,7 @@ function openCheckoutModal() {
         return;
     }
     closeCartDrawer();
-    
+
     // Auto-fill logged in user info if available
     if (currentActiveUser) {
         var orderCustName = document.getElementById('orderCustName');
@@ -634,14 +631,14 @@ function openCheckoutModal() {
     }
 
     // Update Checkout Summaries
-    var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
-    var count = cart.reduce(function(acc, i) { return acc + i.quantity; }, 0);
-    
+    var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
+    var count = cart.reduce(function (acc, i) { return acc + i.quantity; }, 0);
+
     var summaryItems = document.getElementById('checkoutItemsSummary');
     var summaryTotal = document.getElementById('checkoutTotalSummary');
-    
+
     if (summaryItems) summaryItems.textContent = count + (count === 1 ? ' item' : ' items');
-    
+
     if (typeof updateCheckoutLoyaltyUI === 'function') {
         updateCheckoutLoyaltyUI();
     }
@@ -665,7 +662,7 @@ function getActiveCustomerLoyalty() {
     var storedCust = localStorage.getItem('favcafe_customer_loyalty');
     var loyaltyList = [];
     if (storedCust) {
-        try { loyaltyList = JSON.parse(storedCust); } catch(e) {}
+        try { loyaltyList = JSON.parse(storedCust); } catch (e) { }
     } else {
         loyaltyList = [
             { id: 'CUST-101', name: 'Kayonga Raul', phone: '+250 788 700 870', email: 'kayonga70@gmail.com', loyaltyPoints: 2500 },
@@ -674,7 +671,7 @@ function getActiveCustomerLoyalty() {
     }
 
     var userEmail = (currentActiveUser && currentActiveUser.email) ? currentActiveUser.email.toLowerCase() : 'kayonga70@gmail.com';
-    return loyaltyList.find(function(c) { return c.email.toLowerCase() === userEmail; }) || loyaltyList[0];
+    return loyaltyList.find(function (c) { return c.email.toLowerCase() === userEmail; }) || loyaltyList[0];
 }
 
 function updateCheckoutLoyaltyUI() {
@@ -743,9 +740,9 @@ function applyCustomLoyaltyPoints(source) {
 
     var inputId = (source === 'cart') ? 'cartLoyaltyCustomInput' : 'checkoutLoyaltyCustomInput';
     var input = document.getElementById(inputId);
-    var requestedPts = input ? parseInt(input.value) : 0;
+    var requestedPts = input ? parseInt(input.value, 10) : 0;
 
-    if (!requestedPts || requestedPts <= 0) {
+    if (isNaN(requestedPts) || requestedPts <= 0) {
         showToast('Please enter a valid points amount to redeem.', 'warning', 'Invalid Points');
         return;
     }
@@ -755,7 +752,7 @@ function applyCustomLoyaltyPoints(source) {
         return;
     }
 
-    var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
+    var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
     if (requestedPts > subtotal) {
         requestedPts = subtotal; // Cap points to order subtotal
     }
@@ -805,7 +802,7 @@ function removeLoyaltyDiscount() {
 }
 
 function recalculateCartAndCheckoutTotals() {
-    var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
+    var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
     var finalTotal = subtotal - (activeLoyaltyDiscount || 0);
     if (finalTotal < 0) finalTotal = 0;
 
@@ -841,7 +838,7 @@ function closeCheckoutModal() {
 
 function selectServiceType(type, btn) {
     activeServiceType = type;
-    document.querySelectorAll('.service-type-btn').forEach(function(b) {
+    document.querySelectorAll('.service-type-btn').forEach(function (b) {
         b.classList.remove('active');
     });
     if (btn) btn.classList.add('active');
@@ -864,28 +861,30 @@ function selectServiceType(type, btn) {
 
 function selectPaymentMethod(method, el) {
     activePaymentMethod = method;
-    document.querySelectorAll('.payment-pill').forEach(function(p) {
+    document.querySelectorAll('.payment-pill').forEach(function (p) {
         p.classList.remove('active');
     });
     if (el) el.classList.add('active');
 }
 
-var pendingMoMoOrder = null;
-
 function handleOrderSubmission(e) {
     if (e && e.preventDefault) e.preventDefault();
-    var name = document.getElementById('orderCustName').value.trim();
-    var phone = document.getElementById('orderCustPhone').value.trim();
-    var address = document.getElementById('orderCustAddress').value.trim();
+    var nameEl = document.getElementById('orderCustName');
+    var phoneEl = document.getElementById('orderCustPhone');
+    var addressEl = document.getElementById('orderCustAddress');
+
+    var name = nameEl ? nameEl.value.trim() : '';
+    var phone = phoneEl ? phoneEl.value.trim() : '';
+    var address = addressEl ? addressEl.value.trim() : '';
 
     if (!name || !phone || !address) {
         showToast('Please fill out all required order details.', 'warning', 'Missing Information');
         return;
     }
 
-    var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0);
-    var itemsSummaryStr = cart.map(function(i) { return i.title + ' x' + i.quantity; }).join(', ');
-    var orderCode = 'MSH-' + Math.floor(1000 + Math.random() * 9000);
+    var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0);
+    var itemsSummaryStr = cart.map(function (i) { return i.title + ' x' + i.quantity; }).join(', ');
+    var orderCode = 'FC-' + Math.floor(1000 + Math.random() * 9000);
 
     var newOrder = {
         id: orderCode,
@@ -959,7 +958,7 @@ function pressPinDigit(d) {
         currentPinDigits += d;
         updatePinDisplay();
         if (currentPinDigits.length === 4) {
-            setTimeout(function() {
+            setTimeout(function () {
                 confirmMomoUssdSuccess();
             }, 350);
         }
@@ -984,7 +983,7 @@ function updatePinDisplay() {
         for (var j = currentPinDigits.length; j < 4; j++) {
             dots += '• ';
         }
-        dotsEl.innerHTML = '<span class="text-warning font-weight-bold" style="letter-spacing:14px;">' + dots.trim() + '</span>';
+        dotsEl.innerHTML = '<span class="text-warning fw-bold" style="letter-spacing:14px;">' + dots.trim() + '</span>';
     }
 }
 
@@ -999,18 +998,18 @@ function confirmMomoUssdSuccess() {
 
     var targetOrder = pendingMoMoOrder || pendingOrderData;
 
-    // Fallback: If no pending order exists but cart has items, build order from active cart!
+    // Fallback: If no pending order exists but cart has items, build order from active cart
     if (!targetOrder && cart && cart.length > 0) {
-        var subtotal = cart.reduce(function(acc, i) { return acc + i.price * i.quantity; }, 0);
+        var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0);
         targetOrder = {
-            id: 'MSH-' + Math.floor(1000 + Math.random() * 9000),
+            id: 'FC-' + Math.floor(1000 + Math.random() * 9000),
             date: new Date().toISOString(),
             customerName: 'Guest Customer',
             phone: '+250 788 700 870',
             address: 'Kigali, Rwanda',
             serviceType: activeServiceType || 'delivery',
             paymentMethod: 'momo',
-            itemsSummary: cart.map(function(i) { return i.title + ' x' + i.quantity; }).join(', '),
+            itemsSummary: cart.map(function (i) { return i.title + ' x' + i.quantity; }).join(', '),
             total: subtotal,
             status: 'Kitchen Preparing'
         };
@@ -1042,6 +1041,34 @@ function completeOrderPlacement(newOrder) {
     orders.unshift(newOrder);
     saveOrdersToStorage();
     lastPlacedOrderId = newOrder.id;
+
+    // Send order to server DB (api/orders.php) so Admin receives it instantly
+    try {
+        fetch('api/orders.php?action=create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newOrder)
+        }).then(function (res) { return res.json(); })
+            .then(function (data) {
+                console.log('[Orders Sync] Order #' + newOrder.id + ' saved to server database successfully.', data);
+            }).catch(function (err) { });
+    } catch (e) { }
+
+    // Broadcast live signal for open Admin tabs
+    try {
+        var orderChannel = new BroadcastChannel('favcafe_orders_channel');
+        orderChannel.postMessage({ type: 'order_created', order: newOrder });
+    } catch (e) { }
+
+    // Fallback signal for browsers that do not support BroadcastChannel or when it's blocked
+    try {
+        var signal = { type: 'order_created', order: newOrder, ts: Date.now() };
+        localStorage.setItem('favcafe_orders_signal', JSON.stringify(signal));
+        // remove shortly after to keep storage clean
+        setTimeout(function() {
+            try { localStorage.removeItem('favcafe_orders_signal'); } catch (e) {}
+        }, 5000);
+    } catch (e) {}
 
     logNotification('sms', newOrder.phone || 'Customer', 'Favorite Cafe Order #' + newOrder.id + ' placed successfully! Total: ' + formatRWF(newOrder.total), 'SMS Alert - Order Placed');
     logNotification('email', 'customer@mashariki.com', 'Electronic Tax Invoice #' + newOrder.id + ' generated.', 'Email Ticket - Invoice');
@@ -1110,7 +1137,7 @@ function loadNotifications() {
 function saveNotifications() {
     try {
         localStorage.setItem('favcafe_notifications', JSON.stringify(systemNotifications));
-    } catch (e) {}
+    } catch (e) { }
     updateNotificationBadge();
 }
 
@@ -1153,7 +1180,7 @@ function renderNotificationLogs(filterType) {
     var counterEl = document.getElementById('notificationTotalCounter');
     if (!container) return;
 
-    var filtered = systemNotifications.filter(function(n) {
+    var filtered = systemNotifications.filter(function (n) {
         if (filterType === 'all') return true;
         return n.type === filterType;
     });
@@ -1166,7 +1193,7 @@ function renderNotificationLogs(filterType) {
     }
 
     var html = '';
-    filtered.forEach(function(n) {
+    filtered.forEach(function (n) {
         var badgeClass = 'sms-type';
         var icon = '<i class="fas fa-comment-alt text-primary me-1"></i>';
         if (n.type === 'email') {
@@ -1198,7 +1225,7 @@ function filterNotificationLogs(type, btn) {
     if (btn) {
         var parent = btn.parentElement;
         if (parent) {
-            parent.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+            parent.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
             btn.classList.add('active');
         }
     }
@@ -1242,13 +1269,21 @@ function closeReservationModal() {
 
 function handleReservationSubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
-    var date = document.getElementById('resDate').value;
-    var time = document.getElementById('resTime').value;
-    var guests = document.getElementById('resGuests').value;
-    var area = document.getElementById('resArea').value;
-    var name = document.getElementById('resCustName').value.trim();
-    var phone = document.getElementById('resCustPhone').value.trim();
-    var notes = document.getElementById('resNotes').value.trim();
+    var dateEl = document.getElementById('resDate');
+    var timeEl = document.getElementById('resTime');
+    var guestsEl = document.getElementById('resGuests');
+    var areaEl = document.getElementById('resArea');
+    var nameEl = document.getElementById('resCustName');
+    var phoneEl = document.getElementById('resCustPhone');
+    var notesEl = document.getElementById('resNotes');
+
+    var date = dateEl ? dateEl.value : '';
+    var time = timeEl ? timeEl.value : '';
+    var guests = guestsEl ? guestsEl.value : '2 Guests';
+    var area = areaEl ? areaEl.value : 'Main Hall';
+    var name = nameEl ? nameEl.value.trim() : '';
+    var phone = phoneEl ? phoneEl.value.trim() : '';
+    var notes = notesEl ? notesEl.value.trim() : '';
 
     if (!date || !time || !name || !phone) {
         showToast('Please fill out date, time, name and phone.', 'warning', 'Reservation Incomplete');
@@ -1301,7 +1336,7 @@ function closeReservationSuccessModal() {
 /* RECEIPT PRINTING FUNCTIONS */
 function openReceiptModal(orderId) {
     loadOrdersFromStorage();
-    var target = orders.find(function(o) { return o.id === orderId; }) || orders[0];
+    var target = orders.find(function (o) { return o.id === orderId; }) || orders[0];
     if (!target) {
         showToast('Order receipt not found.', 'error');
         return;
@@ -1325,7 +1360,7 @@ function openReceiptModal(orderId) {
 
     if (tbody) {
         var itemsArr = (target.itemsSummary || '').split(',');
-        tbody.innerHTML = itemsArr.map(function(itemStr) {
+        tbody.innerHTML = itemsArr.map(function (itemStr) {
             var parts = itemStr.trim().split('x');
             var qty = parts[1] || '1';
             var name = parts[0] || itemStr;
@@ -1348,13 +1383,13 @@ function openReceiptModal(orderId) {
     }
 }
 
-closeReceiptModal = function() {
+function closeReceiptModal() {
     var modal = document.getElementById('receiptModal');
     if (modal) {
         modal.classList.remove('open');
         document.body.style.overflow = '';
     }
-};
+}
 
 function triggerReceiptPrint() {
     window.print();
@@ -1415,7 +1450,7 @@ function renderMyOrders() {
     }
 
     var html = '';
-    orders.forEach(function(o) {
+    orders.forEach(function (o) {
         var dateFormatted = new Date(o.date).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         var statusBadgeClass = 'bg-info text-dark';
         if (o.status === 'Completed' || o.status === 'Delivered') statusBadgeClass = 'bg-success';
@@ -1432,8 +1467,8 @@ function renderMyOrders() {
                     <div class="order-date mt-1"><i class="far fa-clock me-1"></i>${dateFormatted}</div>
                 </div>
                 <div class="my-order-foot">
-                    <span class="font-weight-bold" style="color:var(--primary);">${formatRWF(o.total)}</span>
-                    <span class="small text-primary font-weight-bold">View Timeline <i class="fas fa-chevron-right ms-1"></i></span>
+                    <span class="fw-bold" style="color:var(--primary);">${formatRWF(o.total)}</span>
+                    <span class="small text-primary fw-bold">View Timeline <i class="fas fa-chevron-right ms-1"></i></span>
                 </div>
             </div>
         `;
@@ -1445,7 +1480,7 @@ function renderMyOrders() {
 function openTimelineModal(orderId) {
     closeMyOrdersModal();
     loadOrdersFromStorage();
-    var target = orders.find(function(o) { return o.id === orderId; }) || orders[0];
+    var target = orders.find(function (o) { return o.id === orderId; }) || orders[0];
 
     if (!target) return;
 
@@ -1457,30 +1492,68 @@ function openTimelineModal(orderId) {
     if (codeEl) codeEl.textContent = 'Order #' + target.id;
     if (badgeEl) {
         badgeEl.textContent = target.status;
-        badgeEl.className = 'status-badge badge ' + (target.status === 'Completed' || target.status === 'Delivered' ? 'bg-success' : 'bg-info text-dark');
+        var badgeClass = 'bg-info text-dark';
+        if (target.status === 'Completed' || target.status === 'Delivered') {
+            badgeClass = 'bg-success text-white';
+        } else if (target.status === 'Out for Delivery' || target.status === 'Ready for Dispatch' || target.status === 'Ready for Pickup') {
+            badgeClass = 'bg-primary text-white';
+        } else if (target.status === 'Disabled / Archived') {
+            badgeClass = 'bg-secondary text-white';
+        }
+        badgeEl.className = 'status-badge badge rounded-pill px-3 py-1 fw-semibold ' + badgeClass;
     }
 
     if (detailsEl) {
+        var optLabel = target.serviceType || 'delivery';
+        var addrText = target.address ? ` (${target.address})` : '';
+        var payMethod = target.paymentMethod ? ` • ${target.paymentMethod}` : '';
+
         detailsEl.innerHTML = `
-            <div class="d-flex justify-content-between mb-1">
-                <strong>Items:</strong> <span>${target.itemsSummary}</span>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted"><i class="fas fa-shopping-bag me-1 text-secondary"></i><strong>Items Summary:</strong></span>
+                <span class="text-dark fw-semibold text-end ms-2" style="max-width:65%;">${target.itemsSummary}</span>
             </div>
-            <div class="d-flex justify-content-between mb-1">
-                <strong>Total Amount:</strong> <strong style="color:var(--primary);">${formatRWF(target.total)}</strong>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted"><i class="fas fa-receipt me-1 text-secondary"></i><strong>Total Amount:</strong></span>
+                <strong style="color:var(--primary); font-size:1.05rem;">${formatRWF(target.total)}</strong>
             </div>
-            <div class="d-flex justify-content-between">
-                <strong>Option:</strong> <span class="text-capitalize">${target.serviceType} (${target.address})</span>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted"><i class="fas fa-concierge-bell me-1 text-secondary"></i><strong>Service &amp; Location:</strong></span>
+                <span class="badge bg-dark text-white text-capitalize px-2 py-1">${optLabel}${addrText}${payMethod}</span>
             </div>
         `;
     }
 
-    if (stepperEl && target.timeline) {
-        stepperEl.innerHTML = target.timeline.map(function(step) {
+    if (stepperEl) {
+        var timelineData = target.timeline;
+        if (!timelineData || timelineData.length === 0) {
+            var currentStatus = target.status || 'Kitchen Preparing';
+            var isPickup = target.serviceType === 'takeaway';
+            var isDinein = target.serviceType === 'dinein';
+
+            var step3Label = isPickup ? 'Ready for Pickup' : (isDinein ? 'Ready on Table' : 'Out for Delivery');
+            var step3Desc = isPickup ? 'Your order is hot & ready at counter' : (isDinein ? 'Food served to your table' : 'Rider is on the way to your address');
+            var step3Icon = isPickup ? 'fa-store' : (isDinein ? 'fa-chair' : 'fa-truck');
+
+            var isStep2Active = currentStatus === 'Kitchen Preparing';
+            var isStep3Done = currentStatus === 'Out for Delivery' || currentStatus === 'Ready for Pickup' || currentStatus === 'Completed' || currentStatus === 'Delivered';
+            var isStep3Active = currentStatus === 'Out for Delivery' || currentStatus === 'Ready for Pickup' || currentStatus === 'Ready for Dispatch';
+            var isStep4Done = currentStatus === 'Completed' || currentStatus === 'Delivered';
+
+            timelineData = [
+                { label: 'Order Placed', desc: 'Order received & confirmed live', status: 'completed', icon: 'fa-check' },
+                { label: 'Kitchen Preparing', desc: 'Chefs are preparing your meal', status: isStep4Done || isStep3Done ? 'completed' : (isStep2Active ? 'active' : 'completed'), icon: 'fa-utensils' },
+                { label: step3Label, desc: step3Desc, status: isStep4Done ? 'completed' : (isStep3Active ? 'active' : 'pending'), icon: step3Icon },
+                { label: isDinein ? 'Served & Enjoy' : 'Delivered', desc: isDinein ? 'Bon appétit!' : 'Enjoy your meal!', status: isStep4Done ? 'completed' : 'pending', icon: 'fa-check-double' }
+            ];
+        }
+
+        stepperEl.innerHTML = timelineData.map(function (step) {
             var stepClass = step.status || 'pending';
-            var icon = stepClass === 'completed' ? '<i class="fas fa-check"></i>' : (stepClass === 'active' ? '<i class="fas fa-utensils"></i>' : '<i class="fas fa-circle"></i>');
+            var iconClass = step.icon || (stepClass === 'completed' ? 'fa-check' : (stepClass === 'active' ? 'fa-utensils' : 'fa-circle'));
             return `
                 <div class="timeline-step ${stepClass}">
-                    <div class="timeline-icon">${icon}</div>
+                    <div class="timeline-icon"><i class="fas ${iconClass}"></i></div>
                     <div class="timeline-content">
                         <h6>${step.label}</h6>
                         <p>${step.desc}</p>
@@ -1545,12 +1618,12 @@ function openMenuPop(card) {
     var rawPrice = parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
     var rawOld = old ? (parseFloat(String(old).replace(/[^0-9.]/g, '')) || 0) : 0;
 
-    currentPopItem = { 
-        title: title, 
-        price: price, 
+    currentPopItem = {
+        title: title,
+        price: price,
         unitPrice: rawPrice,
         unitOldPrice: rawOld,
-        img: img 
+        img: img
     };
 
     var rating = parseFloat(card.getAttribute('data-rating')) || 5.0;
@@ -1594,7 +1667,7 @@ function openMenuPop(card) {
 
     var elTags = document.getElementById('mpTags');
     if (elTags) {
-        elTags.innerHTML = tags.split(',').filter(Boolean).map(function(t) {
+        elTags.innerHTML = tags.split(',').filter(Boolean).map(function (t) {
             return '<span class="mptag">' + t.trim() + '</span>';
         }).join('');
     }
@@ -1606,26 +1679,6 @@ function openMenuPop(card) {
     if (elAddCart) {
         elAddCart.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart (' + formatRWF(rawPrice * mpQty) + ')';
         elAddCart.style.background = '';
-        elAddCart.onclick = function() {
-            if (!currentPopItem) return;
-            var validImg = (currentPopItem.img && currentPopItem.img !== 'undefined') ? currentPopItem.img : 'img/menu/1.jpg';
-            var existing = cart.find(function(i) { return i.title === currentPopItem.title; });
-            if (existing) {
-                existing.quantity += mpQty;
-            } else {
-                cart.push({
-                    title: currentPopItem.title,
-                    price: currentPopItem.unitPrice,
-                    img: validImg,
-                    quantity: mpQty,
-                    subtitle: 'Freshly prepared for your order'
-                });
-            }
-            saveCartToStorage();
-            renderCart();
-            closeMenuPop();
-            showToast('Added ' + mpQty + 'x ' + currentPopItem.title + ' to your cart!', 'success', 'Cart Updated');
-        };
     }
 
     if (menuPop) {
@@ -1670,7 +1723,7 @@ function checkUserSessionStatus() {
     var storedUser = null;
     try {
         storedUser = JSON.parse(localStorage.getItem('favcafe_active_user'));
-    } catch(e) {}
+    } catch (e) { }
 
     var active = currentActiveUser || storedUser;
     var loggedInSection = document.getElementById('mLoggedInSection');
@@ -1772,14 +1825,22 @@ function toggleAuthPass(inputId, btn) {
     }
 }
 
+// Unified Admin Dashboard launcher
 function openAdminPortal() {
     closeAuthModal();
     var adminPortalModal = document.getElementById('adminPortalModal');
     if (adminPortalModal) {
         adminPortalModal.style.setProperty('display', 'flex', 'important');
         adminPortalModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    } else {
+        if (typeof showToast === 'function') {
+            showToast('Launching Admin Dashboard...', 'info', 'Admin Portal');
+        }
+        setTimeout(function () {
+            window.open('admin.html', '_blank');
+        }, 300);
     }
-    document.body.style.overflow = 'hidden';
 }
 
 function closeAdminPortal() {
@@ -1806,16 +1867,6 @@ function demoClientLogin() {
     if (passInput) passInput.value = 'password123';
     showToast('Demo customer credentials pre-filled!', 'info', 'Demo Sign In');
     setTimeout(processClientLogin, 300);
-}
-
-function openAdminPortal() {
-    closeAuthModal();
-    if (typeof showToast === 'function') {
-        showToast('Launching Admin Dashboard in a new tab...', 'info', 'Admin Portal');
-    }
-    setTimeout(function() {
-        window.open('admin.html', '_blank');
-    }, 300);
 }
 
 function handleAdminLogin() {
@@ -1852,14 +1903,14 @@ function refreshAdminOrders() {
     var btn = document.querySelector('.btn-admin-action');
     if (btn) {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Refreshing...';
-        setTimeout(function() {
+        setTimeout(function () {
             btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
         }, 600);
     }
 }
 
 /* DOM CONTENT LOADED EVENT BINDINGS */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Nav search button
     var navSearchBtn = document.getElementById('navSearchBtn');
     if (navSearchBtn) navSearchBtn.addEventListener('click', openSearch);
@@ -1867,7 +1918,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Nav Auth button (Login / Register Modal)
     var navAuthBtn = document.getElementById('navAuthBtn');
     if (navAuthBtn) {
-        navAuthBtn.addEventListener('click', function(e) {
+        navAuthBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             openMasharikiModal('login');
@@ -1880,19 +1931,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Search backdrop click
     if (searchOv) {
-        searchOv.addEventListener('click', function(e) {
+        searchOv.addEventListener('click', function (e) {
             if (e.target === searchOv) closeSearch();
         });
     }
 
     // Category buttons inside search
-    document.querySelectorAll('.sovcat').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.sovcat').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.sovcat').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.sovcat').forEach(function (b) { b.classList.remove('active'); });
             this.classList.add('active');
             var f = this.getAttribute('data-cat');
             closeSearch();
-            setTimeout(function() {
+            setTimeout(function () {
                 filterMenu(f);
                 var menuEl = document.getElementById('menu');
                 if (menuEl) menuEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1901,8 +1952,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Trending tags
-    document.querySelectorAll('.sovtrend .ttag').forEach(function(t) {
-        t.addEventListener('click', function() {
+    document.querySelectorAll('.sovtrend .ttag').forEach(function (t) {
+        t.addEventListener('click', function () {
             var searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.value = this.textContent.trim();
@@ -1912,97 +1963,48 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Menu filter buttons
-    document.querySelectorAll('.filtbtn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    document.querySelectorAll('.filtbtn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             filterMenu(this.getAttribute('data-f'));
         });
     });
 
     // Category section cards
-    document.querySelectorAll('.catcard').forEach(function(card) {
-        card.addEventListener('click', function() {
+    document.querySelectorAll('.catcard').forEach(function (card) {
+        card.addEventListener('click', function () {
             var f = this.getAttribute('data-filter');
             var menuEl = document.getElementById('menu');
             if (menuEl) {
                 window.scrollTo({ top: menuEl.offsetTop - 80, behavior: 'smooth' });
             }
-            setTimeout(function() { filterMenu(f); }, 480);
+            setTimeout(function () { filterMenu(f); }, 480);
         });
     });
 
-    // Menu card click -> open popup
-    document.querySelectorAll('.mcard').forEach(function(card) {
-        card.addEventListener('click', function() {
-            openMenuPop(this);
-        });
-    });
-
-    // Plus button -> open popup
-    document.querySelectorAll('.madd').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            openMenuPop(this.closest('.mcard'));
-        });
-    });
-
-    // Heart toggle
-    document.querySelectorAll('.mhrt').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var ico = this.querySelector('i');
-            if (ico) {
-                ico.classList.toggle('far');
-                ico.classList.toggle('fas');
-                this.style.color = ico.classList.contains('fas') ? 'var(--primary)' : '#ccc';
-            }
-        });
-    });
-
-    // Menu Popup Close & Qty
-    var mpClose = document.getElementById('mpClose');
-    if (mpClose) mpClose.addEventListener('click', closeMenuPop);
-    if (menuPop) {
-        menuPop.addEventListener('click', function(e) {
-            if (e.target === this) closeMenuPop();
-        });
-    }
-
-    var mpPlus = document.getElementById('mpPlus');
-    if (mpPlus) {
-        mpPlus.addEventListener('click', function() {
-            var mpQnum = document.getElementById('mpQnum');
-            mpQty++;
-            if (mpQnum) mpQnum.textContent = mpQty;
-            updateModalPriceDisplay();
-        });
-    }
-
-    var mpMinus = document.getElementById('mpMinus');
-    if (mpMinus) {
-        mpMinus.addEventListener('click', function() {
-            var mpQnum = document.getElementById('mpQnum');
-            if (mpQty > 1) {
-                mpQty--;
-                if (mpQnum) mpQnum.textContent = mpQty;
-                updateModalPriceDisplay();
-            }
-        });
-    }
-
+    // Menu Popup Add to Cart button listener
     var mpAddCart = document.getElementById('mpAddCart');
     if (mpAddCart) {
-        mpAddCart.addEventListener('click', function() {
+        mpAddCart.addEventListener('click', function () {
             if (currentPopItem) {
                 addToCart(currentPopItem.title, currentPopItem.unitPrice || currentPopItem.price, currentPopItem.img, mpQty);
             }
             this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
             this.style.background = 'linear-gradient(135deg,var(--green),#1a4a35)';
             var self = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 closeMenuPop();
                 self.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
                 self.style.background = '';
             }, 800);
+        });
+    }
+
+    // Menu Popup Close
+    var mpClose = document.getElementById('mpClose');
+    if (mpClose) mpClose.addEventListener('click', closeMenuPop);
+    if (menuPop) {
+        menuPop.addEventListener('click', function (e) {
+            if (e.target === this) closeMenuPop();
         });
     }
 
@@ -2019,62 +2021,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var tableNum = urlParams.get('table');
     if (tableNum) {
         sessionStorage.setItem('favcafe_active_table', tableNum);
-        setTimeout(function() {
+        setTimeout(function () {
             if (typeof showToast === 'function') {
                 showToast('Welcome to Favorite Cafe! Seated at Table ' + tableNum + '.', 'info', 'Table ' + tableNum + ' Detected');
             }
         }, 800);
     }
 
-    // Reservation button
-    var resBtn = document.getElementById('resBtn');
-    if (resBtn) {
-        resBtn.addEventListener('click', function() {
-            var btn = this;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
-            btn.disabled = true;
-            setTimeout(function() {
-                btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm Reservation';
-                btn.disabled = false;
-                showToast('Your reservation request has been received!', 'success', 'Table Booked');
-                var ok = document.getElementById('resOk');
-                if (ok) {
-                    ok.style.display = 'block';
-                    ok.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }, 1500);
-        });
-    }
-
-    // Contact button
-    var ctcBtn = document.getElementById('ctcBtn');
-    if (ctcBtn) {
-        ctcBtn.addEventListener('click', function() {
-            var btn = this;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            btn.disabled = true;
-            setTimeout(function() {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-                btn.disabled = false;
-                showToast('Thank you! Your message has been sent to our team.', 'success', 'Message Sent');
-                var ok = document.getElementById('ctcOk');
-                if (ok) {
-                    ok.style.display = 'block';
-                    ok.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }, 1500);
-        });
-    }
-
-    // Gallery items
+    // Gallery items setup
     galData = [];
-    document.querySelectorAll('.gitem').forEach(function(item) {
+    document.querySelectorAll('.gitem').forEach(function (item) {
         galData.push({
             img: item.getAttribute('data-gimg'),
             title: item.getAttribute('data-gtitle'),
             desc: item.getAttribute('data-gdesc')
         });
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             openGal(parseInt(this.getAttribute('data-gi')));
         });
     });
@@ -2082,20 +2044,20 @@ document.addEventListener('DOMContentLoaded', function() {
     var gpClose = document.getElementById('gpClose');
     if (gpClose) gpClose.addEventListener('click', closeGal);
     if (galPop) {
-        galPop.addEventListener('click', function(e) {
+        galPop.addEventListener('click', function (e) {
             if (e.target === this) closeGal();
         });
     }
 
     var gpPrev = document.getElementById('gpPrev');
     if (gpPrev) {
-        gpPrev.addEventListener('click', function() {
+        gpPrev.addEventListener('click', function () {
             if (galData.length) openGal((galIdx - 1 + galData.length) % galData.length);
         });
     }
     var gpNext = document.getElementById('gpNext');
     if (gpNext) {
-        gpNext.addEventListener('click', function() {
+        gpNext.addEventListener('click', function () {
             if (galData.length) openGal((galIdx + 1) % galData.length);
         });
     }
@@ -2105,7 +2067,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (adminPortalClose) adminPortalClose.addEventListener('click', closeAdminPortal);
     var adminPortalModal = document.getElementById('adminPortalModal');
     if (adminPortalModal) {
-        adminPortalModal.addEventListener('click', function(e) {
+        adminPortalModal.addEventListener('click', function (e) {
             if (e.target === this) closeAdminPortal();
         });
     }
@@ -2113,14 +2075,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auth modal backdrop click
     var MasharikiAuthModal = document.getElementById('MasharikiAuthModal');
     if (MasharikiAuthModal) {
-        MasharikiAuthModal.addEventListener('click', function(e) {
+        MasharikiAuthModal.addEventListener('click', function (e) {
             if (e.target === this) closeAuthModal();
         });
     }
 });
 
 /* ESC key closes everything */
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeSearch();
         closeMenuPop();
@@ -2140,7 +2102,7 @@ document.addEventListener('keydown', function(e) {
 
 /* DYNAMIC CUSTOMER MENU RENDERER */
 async function loadDynamicCustomerMenu(isManualRefresh) {
-    var menuGrid = document.querySelector('#menu .row.g-4');
+    var menuGrid = document.getElementById('mgrid') || document.querySelector('#menu .row.g-4');
     var statusEl = document.getElementById('menuLoadingStatus');
     if (!menuGrid) return;
 
@@ -2156,7 +2118,6 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
     var menuItems = [];
     var isDbSource = false;
 
-    // 1. Read localStorage for instant 0ms render
     var localItems = [];
     try {
         var stored = localStorage.getItem('favcafe_menu');
@@ -2166,14 +2127,12 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
                 localItems = parsed;
             }
         }
-    } catch(e) {}
+    } catch (e) { }
 
-    // Render localItems immediately (0ms latency, zero flicker!)
     if (localItems.length > 0) {
         renderCustomerMenuItems(localItems);
     }
 
-    // 2. Query live Database API (with cache buster and no-store in background)
     try {
         var res = await fetch('api/menu.php?action=get&t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
@@ -2184,9 +2143,8 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
                 localStorage.setItem('favcafe_menu', JSON.stringify(menuItems));
             }
         }
-    } catch (e) {}
+    } catch (e) { }
 
-    // 3. Fallback to localItems/menu.json ONLY if DB was offline/unreachable
     if (!isDbSource) {
         if (localItems.length > 0) {
             menuItems = localItems;
@@ -2199,13 +2157,12 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
                         menuItems = jsonItems;
                     }
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
     }
 
     renderCustomerMenuItems(menuItems);
 
-    // Re-apply currently active filter if present
     var activeBtn = document.querySelector('#categoryFilterBar .filtbtn.active');
     if (activeBtn) {
         var activeFilter = activeBtn.getAttribute('data-f');
@@ -2214,9 +2171,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         }
     }
 
-    // Update live loading status bar & toast notifications
-    var statusEl = document.getElementById('menuLoadingStatus');
-    var availCount = menuItems.filter(function(i) { return parseInt(i.is_available) === 1 || i.is_available === true; }).length;
+    var availCount = menuItems.filter(function (i) { return parseInt(i.is_available) === 1 || i.is_available === true; }).length;
     if (statusEl) {
         if (isDbSource) {
             statusEl.innerHTML = `
@@ -2247,14 +2202,14 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
 }
 
 function renderCustomerMenuItems(menuItems) {
-    var menuGrid = document.getElementById('mgrid');
+    var menuGrid = document.getElementById('mgrid') || document.querySelector('#menu .row.g-4');
     if (!menuGrid || !Array.isArray(menuItems)) return;
 
-    var available = menuItems.filter(function(i) { return parseInt(i.is_available) === 1 || i.is_available === true; });
+    var available = menuItems.filter(function (i) { return parseInt(i.is_available) === 1 || i.is_available === true; });
     if (available.length === 0) return;
 
     var html = '';
-    available.forEach(function(item, idx) {
+    available.forEach(function (item, idx) {
         if (!item) return;
         var itemTitle = item.title || item.name || 'Special Dish';
         var itemImage = (item.image && item.image !== 'undefined') ? item.image : ((item.img && item.img !== 'undefined') ? item.img : 'img/menu/1.jpg');
@@ -2293,20 +2248,19 @@ function renderCustomerMenuItems(menuItems) {
 
     menuGrid.innerHTML = html;
 
-    // Rebind menu popup & button click listeners
-    document.querySelectorAll('#menu .mcard').forEach(function(card) {
-        card.addEventListener('click', function() {
+    document.querySelectorAll('#menu .mcard').forEach(function (card) {
+        card.addEventListener('click', function () {
             openMenuPop(this);
         });
     });
-    document.querySelectorAll('#menu .madd').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('#menu .madd').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             openMenuPop(this.closest('.mcard'));
         });
     });
-    document.querySelectorAll('#menu .mhrt').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('#menu .mhrt').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             var ico = this.querySelector('i');
             if (ico) {
@@ -2331,7 +2285,7 @@ async function loadDynamicCategories() {
                 categories = data.categories;
             }
         }
-    } catch (e) {}
+    } catch (e) { }
 
     if (categories.length === 0) {
         try {
@@ -2339,25 +2293,24 @@ async function loadDynamicCategories() {
             if (stored) {
                 var parsed = JSON.parse(stored);
                 if (Array.isArray(parsed)) {
-                    categories = parsed.filter(function(c) { return parseInt(c.is_active) === 1 || c.is_active === true; });
+                    categories = parsed.filter(function (c) { return parseInt(c.is_active) === 1 || c.is_active === true; });
                 }
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     if (!categories || categories.length === 0) return;
 
     var html = '<button class="filtbtn active" data-f="all">All</button>';
-    categories.forEach(function(cat) {
+    categories.forEach(function (cat) {
         html += `<button class="filtbtn" data-f="${cat.slug}">${cat.name}</button>`;
     });
 
     bar.innerHTML = html;
 
-    // Rebind filter buttons
-    bar.querySelectorAll('.filtbtn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('#categoryFilterBar .filtbtn').forEach(function(b) { b.classList.remove('active'); });
+    bar.querySelectorAll('.filtbtn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('#categoryFilterBar .filtbtn').forEach(function (b) { b.classList.remove('active'); });
             this.classList.add('active');
             filterMenu(this.getAttribute('data-f'));
         });
@@ -2411,6 +2364,7 @@ window.openReservationModal = openReservationModal;
 window.closeReservationModal = closeReservationModal;
 window.handleReservationSubmit = handleReservationSubmit;
 window.closeReservationSuccessModal = closeReservationSuccessModal;
+window.closeReceiptModal = closeReceiptModal;
 window.triggerReceiptPrint = triggerReceiptPrint;
 window.selectMomoOperator = selectMomoOperator;
 window.pressPinDigit = pressPinDigit;
@@ -2420,6 +2374,45 @@ window.openNotificationLogModal = openNotificationLogModal;
 window.closeNotificationLogModal = closeNotificationLogModal;
 window.filterNotificationLogs = filterNotificationLogs;
 window.clearNotificationLogs = clearNotificationLogs;
+
+function viewOrder(orderId) {
+    if (typeof window.openViewOrderModal === 'function') {
+        window.openViewOrderModal(orderId);
+    } else {
+        var o = (orders || []).find(function (item) { return item.id === orderId; });
+        if (o && typeof showToast === 'function') {
+            showToast('Order #' + o.id + ' details: ' + o.itemsSummary + ' (' + formatRWF(o.total) + ')', 'info', 'Order Details');
+        }
+    }
+}
+
+function editOrder(orderId) {
+    if (typeof window.openEditOrderModal === 'function') {
+        window.openEditOrderModal(orderId);
+    }
+}
+
+function disableOrder(orderId) {
+    if (typeof window.promptDisableOrder === 'function') {
+        window.promptDisableOrder(orderId);
+    } else {
+        var o = (orders || []).find(function (item) { return item.id === orderId; });
+        if (o) {
+            o.isDisabled = true;
+            o.status = 'Disabled / Archived';
+            if (typeof saveOrdersToStorage === 'function') saveOrdersToStorage();
+            if (typeof showToast === 'function') showToast('Order #' + orderId + ' disabled & saved to Archives.', 'info', 'Order Disabled');
+        }
+    }
+}
+
+window.viewOrder = viewOrder;
+window.editOrder = editOrder;
+window.disableOrder = disableOrder;
+window.viewLiveOrder = viewOrder;
+window.editLiveOrder = editOrder;
+window.disableLiveOrder = disableOrder;
+window.archiveDisableLiveOrder = disableOrder;
 
 function sendDemoTestNotification() {
     var types = ['sms', 'email', 'alert'];
@@ -2431,7 +2424,7 @@ function sendDemoTestNotification() {
     if (randomType === 'sms') {
         logNotification('sms', phone, 'Favorite Cafe SMS: Order #' + ref + ' has been dispatched via express delivery rider!', 'SMS Dispatch Alert');
     } else if (randomType === 'email') {
-        logNotification('email', 'customer@mashariki.com', 'Favorite Cafe E-Ticket: Table Reservation #' + ref + ' is confirmed for 08:00 PM.', 'Email Booking Ticket');
+        logNotification('email', 'customer@favoritecafe.com', 'Favorite Cafe E-Ticket: Table Reservation #' + ref + ' is confirmed for 08:00 PM.', 'Email Booking Ticket');
     } else {
         logNotification('alert', 'Kitchen Operations', 'Kitchen Dispatch Alert: Order #' + ref + ' priority marked as HIGH VIP!', 'Kitchen VIP Alert');
     }
@@ -2457,7 +2450,7 @@ function handleLiveMenuUpdateSignal() {
     }
 }
 
-window.addEventListener('storage', function(e) {
+window.addEventListener('storage', function (e) {
     if (e.key === 'favcafe_menu' || e.key === 'favcafe_menu_timestamp') {
         handleLiveMenuUpdateSignal();
     }
@@ -2465,9 +2458,41 @@ window.addEventListener('storage', function(e) {
 
 try {
     var menuChannel = new BroadcastChannel('favcafe_menu_channel');
-    menuChannel.onmessage = function(event) {
+    menuChannel.onmessage = function (event) {
         if (event.data && event.data.type === 'menu_updated') {
             handleLiveMenuUpdateSignal();
         }
     };
-} catch(e) {}
+} catch (e) { }
+
+/* INSTANT REAL-TIME KITCHEN & ORDER STATUS NOTIFICATIONS FOR CUSTOMER MOBILE PHONE */
+var _prevCustomerOrderStatusMap = {};
+
+function syncCustomerOrdersWithServer() {
+    try {
+        fetch('api/orders.php?action=get')
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && data.status === 'success' && Array.isArray(data.orders)) {
+                    data.orders.forEach(function (serverOrd) {
+                        var localMatch = (orders || []).find(function (o) { return o.id === serverOrd.id; });
+                        if (localMatch) {
+                            var oldStatus = _prevCustomerOrderStatusMap[serverOrd.id] || localMatch.status;
+                            if (serverOrd.status && serverOrd.status !== oldStatus) {
+                                localMatch.status = serverOrd.status;
+                                _prevCustomerOrderStatusMap[serverOrd.id] = serverOrd.status;
+                                if (typeof showToast === 'function') {
+                                    showToast('🔔 Order #' + serverOrd.id + ' status updated to: ' + serverOrd.status, 'info', 'Kitchen Notification');
+                                }
+                                if (typeof renderMyOrders === 'function') renderMyOrders();
+                            }
+                            _prevCustomerOrderStatusMap[serverOrd.id] = serverOrd.status;
+                        }
+                    });
+                }
+            }).catch(function (err) { });
+    } catch (e) { }
+}
+
+// 1-second auto-sync for customer phone notifications
+setInterval(syncCustomerOrdersWithServer, 1000);
