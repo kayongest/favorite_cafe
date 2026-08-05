@@ -2003,7 +2003,7 @@ function loadNotifications() {
                 {
                     id: 'NOTIF-2',
                     type: 'email',
-                    recipient: 'customer@mashariki.com',
+                    recipient: 'customer@favoritecafe.com',
                     title: 'Email Sent - Booking Confirmed',
                     message: 'Table Reservation #RES-8492 is confirmed for 07:30 PM (Main Hall).',
                     time: new Date(Date.now() - 35 * 60000).toISOString()
@@ -2139,7 +2139,7 @@ function sendDemoTestNotification() {
     if (randomType === 'sms') {
         logNotification('sms', phone, 'Favorite Cafe SMS: Order #' + ref + ' has been dispatched via express delivery rider!', 'SMS Dispatch Alert');
     } else if (randomType === 'email') {
-        logNotification('email', 'customer@mashariki.com', 'Favorite Cafe E-Ticket: Table Reservation #' + ref + ' is confirmed for 08:00 PM.', 'Email Booking Ticket');
+        logNotification('email', 'customer@favoritecafe.com', 'Favorite Cafe E-Ticket: Table Reservation #' + ref + ' is confirmed for 08:00 PM.', 'Email Booking Ticket');
     } else {
         logNotification('alert', 'Kitchen Operations', 'Kitchen Dispatch Alert: Order #' + ref + ' priority marked as HIGH VIP!', 'Kitchen VIP Alert');
     }
@@ -2267,7 +2267,7 @@ function loadStaffAndLoyaltyData() {
             adminStaffList = JSON.parse(storedStaff);
         } else {
             adminStaffList = [
-                { id: 1, name: 'Admin Staff', code: 'admin_Mashariki', phone: '+250 788 000 111', role: 'Super Admin', permissions: 'Full Access (All Modules)', status: 'Active' },
+                { id: 1, name: 'Admin Staff', code: 'admin_Favorite Cafe', phone: '+250 788 000 111', role: 'Super Admin', permissions: 'Full Access (All Modules)', status: 'Active' },
                 { id: 2, name: 'Jean Paul Ndayi', code: 'chef_jp', phone: '+250 788 222 333', role: 'Head Chef / Kitchen Manager', permissions: 'Kitchen Queue & Orders', status: 'Active' },
                 { id: 3, name: 'Aline Uwase', code: 'waiter_aline', phone: '+250 788 444 555', role: 'Floor Manager / Waiter', permissions: 'Table Dining Tracker', status: 'Active' },
                 { id: 4, name: 'Kagabo Patrick', code: 'cashier_pat', phone: '+250 788 666 777', role: 'Cashier & POS Billing', permissions: 'Checkout & Receipts', status: 'Active' }

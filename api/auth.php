@@ -1,6 +1,6 @@
 <?php
 /* ============================================================
-   MASHARIKI RESTAURANT - AUTHENTICATION API ENDPOINT
+   FAVORITE CAFE - AUTHENTICATION API ENDPOINT
    ============================================================ */
 require_once __DIR__ . '/db.php';
 
@@ -46,7 +46,7 @@ if ($action === 'register') {
         $userId = $pdo->lastInsertId();
         echo json_encode([
             'status' => 'success',
-            'message' => "Welcome to Mashariki, $fullName! Your customer account has been created successfully.",
+            'message' => "Welcome to Favorite Cafe, $fullName! Your customer account has been created successfully.",
             'user' => [
                 'id' => $userId,
                 'full_name' => $fullName,

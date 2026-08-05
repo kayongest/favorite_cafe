@@ -422,7 +422,7 @@
          window.demoClientLogin = function () {
             var email = document.getElementById('mClientEmail');
             var pass = document.getElementById('mClientPass');
-            if (email) email.value = 'customer@mashariki.com';
+            if (email) email.value = 'customer@favoritecafe.com';
             if (pass) pass.value = 'password123';
             if (typeof window.showToast === 'function') {
                window.showToast('Demo customer credentials loaded!', 'info', 'Demo Sign In');
@@ -436,7 +436,7 @@
          window.demoAdminLogin = function () {
             var user = document.getElementById('mAdminUser');
             var pass = document.getElementById('mAdminPass');
-            if (user) user.value = 'admin_Mashariki';
+            if (user) user.value = 'admin_Favorite Cafe';
             if (pass) pass.value = 'admin2026';
             if (typeof window.showToast === 'function') {
                window.showToast('Demo admin credentials loaded!', 'info', 'Admin Access');
@@ -942,7 +942,7 @@
    <button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 
    <!-- ============================================================
-   Mashariki AUTH MODAL  —  clean, reliable
+   Favorite Cafe AUTH MODAL  —  clean, reliable
    ============================================================ -->
    <div id="MasharikiAuthModal">
       <div class="auth-modal-sm-box">
@@ -1048,7 +1048,7 @@
             <form onsubmit="event.preventDefault(); handleAdminLogin();">
                <div class="auth-input-group">
                   <label><i class="fas fa-id-badge me-1" style="color:var(--primary);"></i>Admin Staff ID</label>
-                  <input type="text" id="mAdminUser" placeholder="admin_Mashariki" required />
+                  <input type="text" id="mAdminUser" placeholder="admin_Favorite Cafe" required />
                </div>
                <div class="auth-input-group">
                   <label><i class="fas fa-key me-1" style="color:var(--primary);"></i>Password</label>
@@ -1077,7 +1077,7 @@
             <div class="d-flex align-items-center gap-3">
                <div class="admin-logo-ico"><i class="fas fa-utensils"></i></div>
                <div>
-                  <h4>Mashariki <span>Admin Portal</span></h4>
+                  <h4>Favorite Cafe <span>Admin Portal</span></h4>
                   <span class="admin-status-badge"><i class="fas fa-circle text-success me-1"></i> Live Dashboard &bull;
                      Kitchen Connected</span>
                </div>
@@ -1613,7 +1613,7 @@
             <i class="fas fa-calendar-check"></i>
          </div>
          <h3 style="font-family:'Titillium Web',sans-serif;color:var(--dark);">Table Reserved!</h3>
-         <p class="text-muted small">We look forward to hosting you at Mashariki Restaurant.</p>
+         <p class="text-muted small">We look forward to hosting you at Favorite Cafe Restaurant.</p>
 
          <div class="bg-light p-3 rounded-3 my-3 text-start small">
             <div class="d-flex justify-content-between mb-1">

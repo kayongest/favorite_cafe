@@ -3,7 +3,7 @@
 Remove all hardcoded demo accounts, maintain real user accounts, and implement a full **Menu CRUD System** (Create, Read, Update, Delete) in the Admin Dashboard with real-time sync to the main restaurant website.
 
 ## 1. Demo Accounts Cleanup
-- Remove hardcoded demo seed accounts (`customer@mashariki.com`, `eric@mashariki.com`, `raul@mashariki.com`) from `js/main.js`, `js/admin.js`, and `api/auth.php`.
+- Remove hardcoded demo seed accounts (`customer@favoritecafe.com`, `eric@favoritecafe.com`, `raul@favoritecafe.com`) from `js/main.js`, `js/admin.js`, and `api/auth.php`. 
 - Maintain real user accounts created via registration in MySQL `users` table and `localStorage`.
 - Update login verification so only real registered accounts can sign in.
 

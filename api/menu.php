@@ -1,6 +1,6 @@
 <?php
 /* ============================================================
-   MASHARIKI RESTAURANT - MENU CRUD API ENDPOINT (MySQL + File DB Engine)
+   FAVORITE CAFE - MENU CRUD API ENDPOINT (MySQL + File DB Engine)
    ============================================================ */
 require_once __DIR__ . '/db.php';
 

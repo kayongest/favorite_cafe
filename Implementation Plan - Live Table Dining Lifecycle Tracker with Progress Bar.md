@@ -49,7 +49,7 @@ Track dine-in table progress in real-time from the moment guests are **Seated** 
 - Add styles for Table Tracker cards, animated progress bars, stage badges, and duration timers.
 
 ### [MODIFY] [js/admin.js](file:///c:/xampp/htdocs/restaurante/js/admin.js)
-- Add Table state management (`mashariki_tables`), stage transitions, live duration calculation, and automatic progress bar percentage rendering.
+- Add Table state management (`favoritecafe_tables`), stage transitions, live duration calculation, and automatic progress bar percentage rendering.
 
 ### [MODIFY] [js/main.js](file:///c:/xampp/htdocs/restaurante/js/main.js)
 - Sync Dine-In table progress bar in customer timeline modal.

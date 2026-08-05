@@ -14,7 +14,7 @@ All 3 features have been successfully built, integrated, and verified!
 ## 📲 2. Mobile Money (MTN MoMo vs Airtel Money) Gateway
 - **Dual Brand Operator Selection**: Choose between **MTN Mobile Money** (Yellow `#ffcc00`) and **Airtel Money** (Red `#e50914`).
 - **Interactive USSD PIN Pad Simulator (`#momoUssdModal`)**:
-  - Displays USSD phone prompt (`Pay [RWF] to Mashariki Restaurant Ltd`).
+  - Displays USSD phone prompt (`Pay [RWF] to Favorite Cafe Ltd`).
   - Interactive **4-digit PIN keypad** (`0-9`, `Backspace`, `Approve`).
   - PIN dot display (`● ● ● ●`).
   - On approval, logs SMS & Email confirmation and generates thermal receipt.

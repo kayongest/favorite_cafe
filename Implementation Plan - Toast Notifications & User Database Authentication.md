@@ -16,7 +16,7 @@ Replace browser `alert()` popups with custom Toast Notifications, and implement 
 - **Registration Flow**:
   - Validates full name, email, phone, and password.
   - Checks if email is already registered -> displays Error Toast ("Account with this email already exists!").
-  - On success -> registers user in DB, updates navbar user account button, and shows Success Toast ("Welcome to Mashariki, [Name]! Account created successfully.").
+  - On success -> registers user in DB, updates navbar user account button, and shows Success Toast ("Welcome to Favorite Cafe, [Name]! Account created successfully.").
 - **Login Flow**:
   - Checks entered email and password against registered users in DB.
   - If email is NOT found -> displays Error Toast ("User not found. Please register an account first.").
@@ -40,7 +40,7 @@ Replace browser `alert()` popups with custom Toast Notifications, and implement 
 - Implement `showToast(msg, type, title)` function.
 - Update `handleClientRegister()` to save user credentials into registered user DB store.
 - Update `handleClientLogin()` to query DB store; if user not found -> show Error Toast ("User not found").
-- Pre-populate default demo accounts (`customer@mashariki.com`, `eric@mashariki.com`).
+- Pre-populate default demo accounts (`customer@favoritecafe.com`, `eric@favoritecafe.com`).
 - Replace all `alert()` calls across cart, checkout, admin, reservations with `showToast()`.
 
 ---
@@ -50,4 +50,4 @@ Replace browser `alert()` popups with custom Toast Notifications, and implement 
 ### Manual Verification
 1. **Toast Notification Test**: Trigger login, registration, cart item additions, and admin actions to verify toast popups appear gracefully in top-right corner and auto-dismiss.
 2. **User Not Found Test**: Enter an unregistered email (e.g. `unknown@test.com`) into Login modal and click Sign In. Verify Error Toast appears: "User not found. Please register an account first."
-3. **Registration & Login Test**: Register a new account (e.g. `raul@mashariki.com`), verify Success Toast, then log out and log in with those credentials to verify success.
+3. **Registration & Login Test**: Register a new account (e.g. `raul@favoritecafe.com`), verify Success Toast, then log out and log in with those credentials to verify success.

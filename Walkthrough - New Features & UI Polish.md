@@ -1,6 +1,6 @@
 # Walkthrough - New Features & UI Polish
 
-We have successfully tested and launched all new features and UI refinements for **Mashariki Restaurant Platform**!
+We have successfully tested and launched all new features and UI refinements for **Favorite Cafe Platform**!
 
 ---
 

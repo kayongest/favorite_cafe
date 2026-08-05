@@ -1,6 +1,6 @@
 # Implementation Plan - Cart with Checkout & My Orders Navbar Integration
 
-Add a fully-functional Cart system with Checkout flow and a "My Orders" management modal directly in the navbar of Mashariki Restaurant.
+Add a fully-functional Cart system with Checkout flow and a "My Orders" management modal directly in the navbar of Favorite Cafe Restaurant.
 
 ## Proposed Features & User Experience
 

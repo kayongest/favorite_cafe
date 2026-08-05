@@ -1,5 +1,5 @@
 /* ============================================================
-   Mashariki RESTAURANT - MAIN JS
+   Favorite Cafe RESTAURANT - MAIN JS
    ============================================================ */
 
 // 1. AOS Animation Initialization
@@ -1071,7 +1071,7 @@ function completeOrderPlacement(newOrder) {
     } catch (e) {}
 
     logNotification('sms', newOrder.phone || 'Customer', 'Favorite Cafe Order #' + newOrder.id + ' placed successfully! Total: ' + formatRWF(newOrder.total), 'SMS Alert - Order Placed');
-    logNotification('email', 'customer@mashariki.com', 'Electronic Tax Invoice #' + newOrder.id + ' generated.', 'Email Ticket - Invoice');
+    logNotification('email', 'customer@favoritecafe.com', 'Electronic Tax Invoice #' + newOrder.id + ' generated.', 'Email Ticket - Invoice');
 
     // Clear Cart
     cart = [];
@@ -1112,7 +1112,7 @@ function loadNotifications() {
                 {
                     id: 'NOTIF-2',
                     type: 'email',
-                    recipient: 'customer@mashariki.com',
+                    recipient: 'customer@favoritecafe.com',
                     title: 'Email Sent - Booking Confirmed',
                     message: 'Table Reservation #RES-8492 is confirmed for 07:30 PM (Main Hall).',
                     time: new Date(Date.now() - 35 * 60000).toISOString()
@@ -1863,7 +1863,7 @@ function handleClientLogin() {
 function demoClientLogin() {
     var emailInput = document.getElementById('mClientEmail');
     var passInput = document.getElementById('mClientPass');
-    if (emailInput) emailInput.value = 'customer@mashariki.com';
+    if (emailInput) emailInput.value = 'customer@favoritecafe.com';
     if (passInput) passInput.value = 'password123';
     showToast('Demo customer credentials pre-filled!', 'info', 'Demo Sign In');
     setTimeout(processClientLogin, 300);
@@ -1876,7 +1876,7 @@ function handleAdminLogin() {
 function demoAdminLogin() {
     var userInput = document.getElementById('mAdminUser');
     var passInput = document.getElementById('mAdminPass');
-    if (userInput) userInput.value = 'admin_Mashariki';
+    if (userInput) userInput.value = 'admin_Favorite Cafe';
     if (passInput) passInput.value = 'admin2026';
     setTimeout(openAdminPortal, 300);
 }

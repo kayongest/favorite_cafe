@@ -6,7 +6,7 @@ Create a state-of-the-art, full-page Admin Dashboard page (`admin.html`) inspire
 
 ### 1. Modern Dashboard Layout & Navigation
 - **Sidebar Navigation** (Dark Theme `#102B37` with accent color highlights):
-  - Brand branding (`Mashariki Admin`)
+  - Brand branding (`Favorite Cafe Admin`)
   - Navigation Sections:
     - 📊 **Overview**: KPI stat cards, sales overview, recent orders table, top dishes.
     - 📦 **Live Orders**: Real-time kitchen & delivery management board with status filters (`All`, `Preparing`, `Ready`, `Delivered`).

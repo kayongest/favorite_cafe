@@ -1,6 +1,6 @@
 <?php
 /* ============================================================
-   MASHARIKI RESTAURANT - IMAGE FILE UPLOAD API ENDPOINT
+   FAVORITE CAFE - IMAGE FILE UPLOAD API ENDPOINT
    ============================================================ */
 header('Content-Type: application/json');
 
