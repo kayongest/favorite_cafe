@@ -1870,7 +1870,16 @@ function demoClientLogin() {
 }
 
 function handleAdminLogin() {
-    openAdminPortal();
+    var user = document.getElementById('mAdminUser');
+    var pass = document.getElementById('mAdminPass');
+    if (user && pass && user.value.trim() && pass.value.trim()) {
+        showToast('Admin staff access granted! Opening Dashboard...', 'success', 'Admin Portal');
+        setTimeout(function() {
+            window.location.href = 'admin.html';
+        }, 600);
+    } else {
+        showToast('Please enter Admin Staff ID and Password.', 'warning', 'Admin Login');
+    }
 }
 
 function demoAdminLogin() {
@@ -1878,7 +1887,8 @@ function demoAdminLogin() {
     var passInput = document.getElementById('mAdminPass');
     if (userInput) userInput.value = 'admin_Favorite Cafe';
     if (passInput) passInput.value = 'admin2026';
-    setTimeout(openAdminPortal, 300);
+    showToast('Demo admin credentials loaded!', 'info', 'Admin Access');
+    setTimeout(handleAdminLogin, 600);
 }
 
 function advanceOrderStatus(rowId, newStatus) {
