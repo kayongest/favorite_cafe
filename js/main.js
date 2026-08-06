@@ -2313,6 +2313,7 @@ async function loadDynamicCategories() {
 
     var html = '<button class="filtbtn active" data-f="all">All</button>';
     categories.forEach(function (cat) {
+        if (cat.slug.toLowerCase() === 'uncategorized') return;
         html += `<button class="filtbtn" data-f="${cat.slug}">${cat.name}</button>`;
     });
 

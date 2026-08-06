@@ -2886,13 +2886,102 @@ window.closeTableQrModal = closeTableQrModal;
 window.updateQrStandPreview = updateQrStandPreview;
 window.printTableQrStand = printTableQrStand;
 
+/* ============================================================
+   PDF MENU UPLOAD
+   ============================================================ */
+function uploadPdfMenu() {
+    var fileInput = document.getElementById('pdfMenuUploadInput');
+    var btn = document.getElementById('pdfMenuUploadBtn');
 
+    if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Please select a PDF file first.', 'warning', 'No File Selected');
+        return;
+    }
 
+    var file = fileInput.files[0];
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        showToast('Only PDF files are allowed.', 'error', 'Invalid Format');
+        return;
+    }
 
+    var originalBtnHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+    btn.disabled = true;
 
+    var formData = new FormData();
+    formData.append('pdf_menu', file);
 
+    fetch('api/upload_pdf.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showToast(data.message, 'success', 'Upload Complete');
+            fileInput.value = '';
+        } else {
+            showToast(data.message, 'error', 'Upload Failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error uploading PDF:', error);
+        showToast('A network error occurred while uploading.', 'error', 'Upload Error');
+    })
+    .finally(() => {
+        btn.innerHTML = originalBtnHtml;
+        btn.disabled = false;
+    });
+}
+window.uploadPdfMenu = uploadPdfMenu;
 
+/* ============================================================
+   CSV MENU BULK IMPORT
+   ============================================================ */
+function uploadCsvMenu() {
+    var fileInput = document.getElementById('csvMenuUploadInput');
+    var btn = document.getElementById('csvMenuUploadBtn');
 
+    if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Please select a CSV file first.', 'warning', 'No File Selected');
+        return;
+    }
 
+    var file = fileInput.files[0];
+    if (file.type !== 'text/csv' && !file.name.toLowerCase().endsWith('.csv')) {
+        showToast('Only CSV files are allowed.', 'error', 'Invalid Format');
+        return;
+    }
 
+    var originalBtnHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Importing...';
+    btn.disabled = true;
 
+    var formData = new FormData();
+    formData.append('csv_menu', file);
+
+    fetch('api/upload_csv.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showToast(data.message, 'success', 'Import Complete');
+            fileInput.value = '';
+            // Refresh admin menu table
+            if (typeof loadAdminCategories === 'function') loadAdminCategories();
+        } else {
+            showToast(data.message, 'error', 'Import Failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error importing CSV:', error);
+        showToast('A network error occurred while importing.', 'error', 'Import Error');
+    })
+    .finally(() => {
+        btn.innerHTML = originalBtnHtml;
+        btn.disabled = false;
+    });
+}
+window.uploadCsvMenu = uploadCsvMenu;

@@ -1,0 +1,4 @@
+title,category,price,description,is_available,image
+"Classic Burger","Burgers",5000,"A classic beef burger with cheese.",1,"img/menu/burger.png"
+"Coca Cola","Drinks",1000,"Chilled can of Coca Cola.",1,"img/menu/coke.png"
+"Avocado Salad","Salads",3500,"Fresh avocado salad with vinaigrette.",1,"img/menu/salad.png"
