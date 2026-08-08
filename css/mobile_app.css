@@ -254,6 +254,37 @@ body {
 }
 
 /* 2-Column Grid (Menu & Recommended) */
+/* Category Chips (Menu Tab) */
+.category-chips {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 5px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.category-chips::-webkit-scrollbar {
+    display: none;
+}
+.chip {
+    padding: 8px 18px;
+    background: var(--white);
+    border: 1px solid #e0e6ed;
+    border-radius: 20px;
+    color: var(--gray);
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.chip.active {
+    background: var(--teal);
+    color: var(--white);
+    border-color: var(--teal);
+    box-shadow: 0 4px 10px rgba(68, 36, 6, 0.2);
+}
+
 .item-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

@@ -69,8 +69,13 @@
         <!-- 2. Menu View -->
         <div id="view-menu" class="tab-view" style="padding: 0 1.5rem;">
             <!-- Search Input -->
-            <div class="search-bar mb-4">
+            <div class="search-bar mb-3">
                 <input type="search" id="menuSearchInput" class="form-control w-100" placeholder="Search menu..." style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" oninput="executeSearch()">
+            </div>
+            
+            <!-- Category Chips -->
+            <div id="menuCategoryChips" class="category-chips mb-4">
+                <!-- Dynamically populated -->
             </div>
             <div class="item-grid" id="menuGrid">
                 <!-- Dynamic from JS -->

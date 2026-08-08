@@ -6,6 +6,7 @@ let currentUser = null;
 let menuItems = [];
 let cart = [];
 let favorites = [];
+let activeCategory = 'All';
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -19,6 +20,7 @@ async function initApp() {
     
     renderHomeCategories();
     renderHomeRecommended();
+    renderMenuCategories();
     renderMenuGrid();
     renderFavoriteGrid();
     
@@ -129,6 +131,26 @@ function renderHomeRecommended() {
     });
 }
 
+function renderMenuCategories() {
+    const container = document.getElementById('menuCategoryChips');
+    if (!container) return;
+    
+    // Get unique categories and prepend 'All'
+    const categories = ['All', ...new Set(menuItems.map(item => item.category || 'Other'))];
+    
+    container.innerHTML = '';
+    categories.forEach(cat => {
+        const isActive = cat === activeCategory ? 'active' : '';
+        container.innerHTML += `<div class="chip ${isActive}" onclick="filterByCategory('${cat}')">${cat}</div>`;
+    });
+}
+
+function filterByCategory(cat) {
+    activeCategory = cat;
+    renderMenuCategories(); // Re-render to update active state
+    executeSearch(); // Apply filter
+}
+
 function renderMenuGrid(itemsToRender = null) {
     const container = document.getElementById('menuGrid');
     container.innerHTML = '';
@@ -140,7 +162,13 @@ function renderMenuGrid(itemsToRender = null) {
 
 function executeSearch() {
     const query = document.getElementById('menuSearchInput').value.toLowerCase();
-    const filtered = menuItems.filter(item => item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+    
+    const filtered = menuItems.filter(item => {
+        const matchesQuery = item.title.toLowerCase().includes(query) || (item.category && item.category.toLowerCase().includes(query));
+        const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+        return matchesQuery && matchesCategory;
+    });
+    
     renderMenuGrid(filtered);
 }
 
