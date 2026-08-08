@@ -1836,6 +1836,13 @@
             if (trigger) {
                e.preventDefault();
                var tab = trigger.getAttribute('data-auth-modal') || 'login';
+               
+               // Redirect to dedicated mobile auth flow on small screens
+               if (window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent)) {
+                  window.location.href = 'mobile_auth.html';
+                  return;
+               }
+
                if (typeof window.openMasharikiModal === 'function') {
                   window.openMasharikiModal(tab);
                } else {

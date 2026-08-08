@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Favorite Cafe - Mobile App</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/mobile_app.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="app-header">
+        <div class="header-left">
+            <img src="img/avatar.jpg" alt="User" class="user-avatar" id="headerAvatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=00aba9&color=fff'" onclick="toggleSidebar()">
+            <span class="header-title" id="headerTitle"></span>
+        </div>
+        <div class="header-right">
+            <span class="price-badge" id="headerPrice">$0</span>
+            <div class="cart-icon" onclick="switchTab('order')">
+                <i class="fas fa-shopping-basket"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- 1. Home View -->
+        <div id="view-home" class="tab-view active">
+            <!-- Promo Banner -->
+            <div class="promo-banner" style="margin: 0 1.5rem 2rem;">
+                <h2>Order Salmon Steak Today</h2>
+                <p>And Save Up To</p>
+                <div class="discount">35%</div>
+                <img src="img/menu/6.jpg" alt="Promo" class="promo-img" onerror="this.src='img/menu/1.jpg'">
+                <div class="dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div style="padding: 0 1.5rem;">
+                <div class="section-header">
+                    <h3>We offer</h3>
+                    <a href="#" class="view-all" onclick="switchTab('menu')">View all <i class="fas fa-chevron-right text-xs mt-1 ml-1"></i></a>
+                </div>
+                <div class="horizontal-scroll mb-4" id="homeCategories">
+                    <!-- Dynamic from JS -->
+                </div>
+
+                <!-- Recommended -->
+                <h3 class="mb-3 font-weight-500">Recommended for you</h3>
+                <div class="item-grid" id="homeRecommended">
+                    <!-- Dynamic from JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Menu View -->
+        <div id="view-menu" class="tab-view" style="padding: 0 1.5rem;">
+            <div class="item-grid" id="menuGrid">
+                <!-- Dynamic from JS -->
+            </div>
+        </div>
+
+        <!-- 3. Cart / Order View -->
+        <div id="view-order" class="tab-view" style="padding: 0 1.5rem;">
+            <div id="cartContainer">
+                <!-- Dynamic Cart Items -->
+            </div>
+            
+            <div class="cart-summary mt-4" id="cartSummary" style="display: none;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-gray">Subtotal</span>
+                    <span class="fw-bold" id="cartSubtotal">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-gray">Delivery</span>
+                    <span class="fw-bold text-teal">Free</span>
+                </div>
+                <div class="d-flex justify-content-between mt-3 pt-3" style="border-top: 1px dashed #ccc;">
+                    <span class="fw-bold">Total</span>
+                    <span class="fw-bold" id="cartTotal" style="font-size: 1.2rem;">$0.00</span>
+                </div>
+                <button class="btn-checkout w-100 mt-4" onclick="checkout()">Checkout</button>
+            </div>
+            
+            <div id="emptyCart" class="text-center mt-5" style="display: none;">
+                <div class="cat-icon bg-teal-light mx-auto mb-3" style="width:80px; height:80px; font-size:2rem; margin: 0 auto; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+                    <i class="fas fa-shopping-basket text-teal"></i>
+                </div>
+                <h3 class="text-dark">Your cart is empty</h3>
+                <p class="text-gray mt-2">Add some delicious items from our menu!</p>
+                <button class="btn-checkout mt-4 px-4" style="width:auto;" onclick="switchTab('menu')">Browse Menu</button>
+            </div>
+        </div>
+
+        <!-- 4. Favorite View -->
+        <div id="view-favorite" class="tab-view" style="padding: 0 1.5rem;">
+            <div class="item-grid" id="favoriteGrid">
+                <!-- Dynamic from JS -->
+            </div>
+        </div>
+
+        <!-- 5. Notification View -->
+        <div id="view-notification" class="tab-view" style="padding: 0 1.5rem;">
+            
+            <div class="notif-card">
+                <div class="notif-header">
+                    <div class="notif-icon bg-teal"><i class="fas fa-check"></i></div>
+                    <span class="notif-title">Order Out for Delivery</span>
+                </div>
+                <div class="notif-body">
+                    Your order (#12345) is out for delivery. Keep an eye out for our friendly delivery partner.
+                </div>
+                <div class="notif-footer">
+                    <span class="notif-date">Feb 26 at 12:36 pm</span>
+                    <span class="notif-action">Mark as read</span>
+                </div>
+            </div>
+
+            <div class="notif-card">
+                <div class="notif-header">
+                    <div class="notif-icon bg-red"><i class="fas fa-gift"></i></div>
+                    <span class="notif-title">Limited-Time Deal</span>
+                </div>
+                <div class="notif-body">
+                    Get 20% off on all Pasta items today! Use code PASTA20 at checkout.
+                </div>
+                <div class="notif-footer">
+                    <span class="notif-date">Feb 25 at 09:00 am</span>
+                    <span class="notif-action">Mark as read</span>
+                </div>
+            </div>
+
+            <div class="notif-card">
+                <div class="notif-header">
+                    <div class="notif-icon bg-teal"><i class="fas fa-check"></i></div>
+                    <span class="notif-title">Reservation Confirmed</span>
+                </div>
+                <div class="notif-body">
+                    Your table for 2 is reserved for Friday at 7:00 PM. We look forward to hosting you!
+                </div>
+                <div class="notif-footer">
+                    <span class="notif-date">Feb 24 at 10:15 am</span>
+                    <span class="notif-action">Mark as read</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('menu', this)">
+            <i class="fas fa-search"></i>
+            <span>Menu</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('order', this)">
+            <i class="fas fa-shopping-basket"></i>
+            <span>Order</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('favorite', this)">
+            <i class="far fa-heart"></i>
+            <span>Favorite</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('notification', this)">
+            <i class="far fa-bell"></i>
+            <span>Notification</span>
+        </div>
+    </nav>
+
+    <!-- Sidebar Profile Modal -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="img/avatar.jpg" alt="User" id="sidebarAvatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=00aba9&color=fff'">
+            <div>
+                <div class="name" id="sidebarName">Jordan Hebert</div>
+                <div class="email" id="sidebarEmail">jordanhebert@mail.com</div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item">
+                <span>Personal information</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>My orders</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>My orders empty</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>Promocodes & gift cards</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>Promocodes Empty</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>Onboarding</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+                <span>Notifications</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="menu-item">
+                <span>Face ID</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="menu-item mt-3">
+                <span>Support center</span>
+            </div>
+            <div class="menu-item danger mt-2" onclick="logout()">
+                <span>Sign out</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast -->
+    <div id="appToast" class="app-toast">Message</div>
+
+    <!-- Scripts -->
+    <script src="js/mobile_app.js"></script>
+</body>
+</html>

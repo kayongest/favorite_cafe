@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Favorite Cafe - Mobile App</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/mobile_auth.css">
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="mobileToastContainer" class="toast-container"></div>
+
+    <!-- Screen 1: Splash Screen -->
+    <div id="splashScreen" class="screen active splash-bg">
+        <div class="logo-container">
+            <h1>Fav<span class="logo-icon"><i class="fas fa-concierge-bell"></i></span>rite </h1>
+            <h1>Cafe</h1>
+        </div>
+        <div class="sunburst"></div> 
+    </div>
+
+    <!-- Screen 2: Onboarding -->
+    <div id="onboardingScreen" class="screen">
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-slide active" id="slide1">
+                <img src="https://illustrations.popsy.co/amber/app-launch.svg" alt="All your favorites">
+                <h2>All your favorites</h2>
+                <p>Get all your loved foods in one place,<br>you just place the order we do the rest</p>
+            </div>
+            <div class="carousel-slide" id="slide2">
+                <img src="img/menu/OrderFromChefs.svg" alt="Order from chosen chef">
+                <h2>Order from chosen chef</h2>
+                <p>Get all your loved foods in one place,<br>you just place the order we do the rest</p>
+            </div>
+            <div class="carousel-slide" id="slide3">
+                <img src="img/menu/freeDelivery.svg" alt="Free delivery offers">
+                <h2>Free delivery offers</h2>
+                <p>Get all your loved foods in one place,<br>you just place the order we do the rest</p>
+            </div>
+        </div>
+        <div class="dots-container" id="dotsContainer">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+        <div class="onboarding-actions">
+            <button class="btn-primary w-100" id="onboardingNextBtn">NEXT</button>
+            <button class="btn-text" id="onboardingSkipBtn">Skip</button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Sign Up -->
+    <div id="signupScreen" class="screen dark-bg">
+        <div class="header">
+            <button class="back-btn" onclick="showScreen('onboardingScreen')"><i class="fas fa-chevron-left"></i></button>
+            <div class="header-text">
+                <h2>Sign Up</h2>
+                <p>Please sign up to get started</p>
+            </div>
+        </div>
+        <div class="form-container">
+            <form id="signupForm" onsubmit="event.preventDefault(); mobileProcessClientRegister();">
+                <div class="input-group">
+                    <label>NAME</label>
+                    <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input type="email" id="regEmail" placeholder="example@gmail.com" required>
+                </div>
+                <div class="input-group">
+                    <label>PASSWORD</label>
+                    <div class="password-input">
+                        <input type="password" id="regPass" placeholder="••••••••" required>
+                        <i class="fas fa-eye-slash toggle-password" onclick="togglePassword(this, 'regPass')"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>RE-TYPE PASSWORD</label>
+                    <div class="password-input">
+                        <input type="password" id="regPassConfirm" placeholder="••••••••" required>
+                        <i class="fas fa-eye-slash toggle-password" onclick="togglePassword(this, 'regPassConfirm')"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-100 mt-4">SIGN UP</button>
+                <!-- <div class="social-login mt-4">
+                    <p class="text-center text-sm text-gray">Or</p>
+                    <div class="social-icons">
+                        <button type="button" class="social-btn facebook"><i class="fab fa-gmail"></i></button>
+                        <button type="button" class="social-btn twitter"><i class="fab fa-twitter"></i></button>
+                        <button type="button" class="social-btn apple"><i class="fab fa-apple"></i></button>
+                    </div>
+                </div> -->
+                <p class="text-center mt-4 text-gray bottom-text">Already have an account? <a href="#" onclick="showScreen('loginScreen')" class="text-primary fw-bold">LOG IN</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Screen 4: Log In -->
+    <div id="loginScreen" class="screen dark-bg">
+        <div class="header">
+            <button class="back-btn" onclick="showScreen('onboardingScreen')"><i class="fas fa-chevron-left"></i></button>
+            <div class="header-text">
+                <h2>Log In</h2>
+                <p>Please sign in to your existing account</p>
+            </div>
+        </div>
+        <div class="form-container">
+            <form id="loginForm" onsubmit="event.preventDefault(); mobileProcessClientLogin();">
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input type="email" id="loginEmail" placeholder="example@gmail.com" required>
+                </div>
+                <div class="input-group mb-1">
+                    <label>PASSWORD</label>
+                    <div class="password-input">
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                        <i class="fas fa-eye-slash toggle-password" onclick="togglePassword(this, 'loginPass')"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        <span class="check-label">Remember me</span>
+                    </label>
+                    <a href="#" class="text-primary text-sm fw-bold" onclick="showScreen('forgotPasswordScreen')">Forgot Password</a>
+                </div>
+                <button type="submit" class="btn-primary w-100">LOG IN</button>
+                
+                <p class="text-center mt-4 text-gray bottom-text">Don't have an account? <a href="#" onclick="showScreen('signupScreen')" class="text-primary fw-bold">SIGN UP</a></p>
+                <!-- <div class="social-login mt-3">
+                    <p class="text-center text-sm text-gray mb-3">Or</p>
+                    <div class="social-icons">
+                        <button type="button" class="social-btn gmail"><i class="fab fa-gmail"></i></button>
+                    </div>
+                </div> -->
+            </form>
+        </div>
+    </div>
+
+    <!-- Screen 5: Forgot Password -->
+    <div id="forgotPasswordScreen" class="screen dark-bg">
+        <div class="header">
+            <button class="back-btn" onclick="showScreen('loginScreen')"><i class="fas fa-chevron-left"></i></button>
+            <div class="header-text">
+                <h2>Forgot Password</h2>
+                <p>Please sign in to your existing account</p>
+            </div>
+        </div>
+        <div class="form-container">
+            <form id="forgotForm" onsubmit="event.preventDefault(); showMobileToast('Reset link sent!', 'success'); setTimeout(()=>showScreen('loginScreen'), 1500);">
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input type="email" placeholder="example@gmail.com" required>
+                </div>
+                <button type="submit" class="btn-primary w-100 mt-4">SEND CODE</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Auth JS Logic -->
+    <script>
+        // Screen Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active', 'slide-in-right'));
+            const screen = document.getElementById(screenId);
+            screen.classList.add('active');
+            if(screenId !== 'splashScreen' && screenId !== 'onboardingScreen') {
+                screen.classList.add('slide-in-right');
+            }
+        }
+
+        // Onboarding Carousel Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
+        const nextBtn = document.getElementById('onboardingNextBtn');
+        
+        function updateCarousel() {
+            if(currentSlide >= slides.length) {
+                // If past last slide, go to Get Started (SignUp or Login)
+                showScreen('loginScreen');
+                return;
+            }
+            
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === currentSlide) s.classList.add('active');
+            });
+            dots.forEach((d, i) => {
+                d.classList.remove('active');
+                if (i === currentSlide) d.classList.add('active');
+            });
+            
+            if (currentSlide === slides.length - 1) {
+                nextBtn.innerText = "GET STARTED";
+            } else {
+                nextBtn.innerText = "NEXT";
+            }
+        }
+
+        document.getElementById('onboardingNextBtn').addEventListener('click', () => {
+            currentSlide++;
+            updateCarousel();
+        });
+
+        document.getElementById('onboardingSkipBtn').addEventListener('click', () => {
+            showScreen('loginScreen');
+        });
+
+        // Splash Screen auto-transition
+        setTimeout(() => {
+            showScreen('onboardingScreen');
+        }, 2000);
+
+        // Password Toggle
+        function togglePassword(icon, inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
+
+        // Toast Notification System
+        function showMobileToast(message, type = 'success') {
+            const container = document.getElementById('mobileToastContainer');
+            const toast = document.createElement('div');
+            toast.className = `mobile-toast toast-${type}`;
+            
+            const iconClass = type === 'success' ? 'fa-check-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle');
+            
+            toast.innerHTML = `
+                <i class="fas ${iconClass}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => { toast.classList.add('show'); }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        // API Authentication Logic matching index.html
+        async function mobileProcessClientLogin() {
+            var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            var pass = document.getElementById('loginPass').value.trim();
+
+            if (!email || !pass) {
+                showMobileToast('Please enter both email and password.', 'warning');
+                return;
+            }
+
+            try {
+                var res = await fetch('api/auth.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: pass })
+                });
+                var data = await res.json();
+                
+                if (data.status === 'success') {
+                    var userObj = { name: data.user.full_name || email.split('@')[0], email: email, phone: data.user.phone || '', pass: pass };
+                    localStorage.setItem('favcafe_active_user', JSON.stringify(userObj));
+                    showMobileToast('Login successful! Redirecting...', 'success');
+                    setTimeout(() => { window.location.href = 'mobile_app.html'; }, 1000);
+                    return;
+                } else if (data.status === 'error') {
+                    showMobileToast(data.message, 'error');
+                    return;
+                }
+            } catch (e) {
+                console.log('[Auth API] Offline mode fallback');
+            }
+
+            // Fallback Local Storage logic
+            var registeredUsers = JSON.parse(localStorage.getItem('favcafe_users') || '[]');
+            var userInDb = registeredUsers.find(function (u) { return u.email === email; });
+
+            if (!userInDb) {
+                showMobileToast('User not found. Please register.', 'error');
+                return;
+            }
+            if (userInDb.pass !== pass) {
+                showMobileToast('Incorrect password.', 'error');
+                return;
+            }
+
+            localStorage.setItem('favcafe_active_user', JSON.stringify(userInDb));
+            showMobileToast('Login successful! Redirecting...', 'success');
+            setTimeout(() => { window.location.href = 'mobile_app.html'; }, 1000);
+        }
+
+        async function mobileProcessClientRegister() {
+            var name = document.getElementById('regName').value.trim();
+            var email = document.getElementById('regEmail').value.trim().toLowerCase();
+            var pass = document.getElementById('regPass').value.trim();
+            var confirmPass = document.getElementById('regPassConfirm').value.trim();
+
+            if (pass !== confirmPass) {
+                showMobileToast('Passwords do not match!', 'error');
+                return;
+            }
+
+            try {
+                var res = await fetch('api/auth.php?action=register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: name, email: email, phone: '', password: pass })
+                });
+                var data = await res.json();
+                
+                if (data.status === 'success') {
+                    var newUser = { name: data.user.full_name || name, email: email, phone: '', pass: pass };
+                    localStorage.setItem('favcafe_active_user', JSON.stringify(newUser));
+                    showMobileToast('Registration successful! Redirecting...', 'success');
+                    setTimeout(() => { window.location.href = 'mobile_app.html'; }, 1000);
+                    return;
+                } else if (data.status === 'error') {
+                    showMobileToast(data.message, 'error');
+                    return;
+                }
+            } catch (e) {
+                console.log('[Auth API] Offline mode fallback');
+            }
+
+            // Fallback Local Storage logic
+            var registeredUsers = JSON.parse(localStorage.getItem('favcafe_users') || '[]');
+            if (registeredUsers.find(function (u) { return u.email === email; })) {
+                showMobileToast('Email already registered. Please sign in.', 'warning');
+                return;
+            }
+
+            var newUser = { name: name, email: email, phone: '', pass: pass };
+            registeredUsers.push(newUser);
+            localStorage.setItem('favcafe_users', JSON.stringify(registeredUsers));
+            localStorage.setItem('favcafe_active_user', JSON.stringify(newUser));
+            
+            showMobileToast('Registration successful! Redirecting...', 'success');
+            setTimeout(() => { window.location.href = 'mobile_app.html'; }, 1000);
+        }
+    </script>
+</body>
+</html>
