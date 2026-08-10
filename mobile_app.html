@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Favorite Cafe - Mobile App</title>
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/mobile_app.css?v=3.0">
 </head>
+
 <body>
 
     <!-- Header Section -->
     <header class="app-header">
         <div class="header-left">
-            <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 1.4rem; color: var(--dark); cursor: pointer; padding-right: 5px;"></i>
+            <i class="fas fa-bars" onclick="toggleSidebar()"
+                style="font-size: 1.4rem; color: var(--dark); cursor: pointer; padding-right: 5px;"></i>
             <span class="header-title" id="headerTitle"></span>
         </div>
         <div class="header-right">
@@ -40,7 +44,8 @@
                     <h2 id="promoTitle">Order Salmon Steak Today</h2>
                     <p id="promoSubtitle">And Save Up To</p>
                     <div class="discount" id="promoDiscount">35%</div>
-                    <img src="img/menu/6.jpg" alt="Promo" class="promo-img" id="promoImg" onerror="this.src='img/menu/1.jpg'">
+                    <img src="img/menu/6.jpg" alt="Promo" class="promo-img" id="promoImg"
+                        onerror="this.src='img/menu/1.jpg'">
                 </div>
                 <div class="dots" id="promoDots">
                     <div class="dot active"></div>
@@ -53,7 +58,8 @@
             <div style="padding: 0 1.5rem;">
                 <div class="section-header">
                     <h3>We offer</h3>
-                    <a href="#" class="view-all" onclick="switchTab('menu')">View all <i class="fas fa-chevron-right text-xs mt-1 ml-1"></i></a>
+                    <a href="#" class="view-all" onclick="switchTab('menu')">View all <i
+                            class="fas fa-chevron-right text-xs mt-1 ml-1"></i></a>
                 </div>
                 <div class="horizontal-scroll mb-4" id="homeCategories">
                     <!-- Dynamic from JS -->
@@ -71,11 +77,14 @@
         <div id="view-menu" class="tab-view" style="padding: 0 1.5rem;">
             <!-- Search Input -->
             <div class="search-bar mt-4 mb-3" style="position: relative; width: 100%;">
-               <i class="fas fa-search search-icon"></i>
-               <input type="text" id="menuSearchInput" placeholder="Search menu..." oninput="executeSearch(); document.getElementById('clearSearch').style.display = this.value ? 'block' : 'none';">
-               <i class="fas fa-times" id="clearSearch" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); display: none; cursor: pointer;" onclick="document.getElementById('menuSearchInput').value=''; executeSearch(); this.style.display='none';"></i>
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="menuSearchInput" placeholder="Search menu..."
+                    oninput="executeSearch(); document.getElementById('clearSearch').style.display = this.value ? 'block' : 'none';">
+                <i class="fas fa-times" id="clearSearch"
+                    style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); display: none; cursor: pointer;"
+                    onclick="document.getElementById('menuSearchInput').value=''; executeSearch(); this.style.display='none';"></i>
             </div>
-            
+
             <!-- Category Chips -->
             <div id="menuCategoryChips" class="category-chips mb-4">
                 <!-- Dynamically populated -->
@@ -90,7 +99,7 @@
             <div id="cartContainer">
                 <!-- Dynamic Cart Items -->
             </div>
-            
+
             <div class="cart-summary mt-4" id="cartSummary" style="display: none;">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-gray">Subtotal</span>
@@ -106,14 +115,16 @@
                 </div>
                 <button class="btn-checkout w-100 mt-4" onclick="checkout()">Checkout</button>
             </div>
-            
+
             <div id="emptyCart" class="text-center mt-5" style="display: none;">
-                <div class="cat-icon bg-teal-light mx-auto mb-3" style="width:80px; height:80px; font-size:2rem; margin: 0 auto; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+                <div class="cat-icon bg-teal-light mx-auto mb-3"
+                    style="width:80px; height:80px; font-size:2rem; margin: 0 auto; display:flex; justify-content:center; align-items:center; border-radius:50%;">
                     <i class="fas fa-shopping-basket text-teal"></i>
                 </div>
                 <h3 class="text-dark">Your cart is empty</h3>
                 <p class="text-gray mt-2">Add some delicious items from our menu!</p>
-                <button class="btn-checkout mt-4 px-4" style="width:auto;" onclick="switchTab('menu')">Browse Menu</button>
+                <button class="btn-checkout mt-4 px-4" style="width:auto;" onclick="switchTab('menu')">Browse
+                    Menu</button>
             </div>
         </div>
 
@@ -126,7 +137,7 @@
 
         <!-- 5. Notification View -->
         <div id="view-notification" class="tab-view" style="padding: 0 1.5rem;">
-            
+
             <div class="notif-card">
                 <div class="notif-header">
                     <div class="notif-icon bg-teal"><i class="fas fa-check"></i></div>
@@ -172,27 +183,41 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
+        <!-- Home -->
         <div class="nav-item active" onclick="switchTab('home', this)">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </div>
+
+        <!-- Menu -->
         <div class="nav-item" onclick="switchTab('menu', this)">
             <i class="fas fa-search"></i>
             <span>Menu</span>
         </div>
+
+        <!-- Order with Cart Badge -->
         <div class="nav-item" onclick="switchTab('order', this)">
-            <i class="fas fa-shopping-cart"></i>
+            <!-- NEW WRAPPER -->
+            <div class="icon-wrapper">
+                <i class="fas fa-shopping-cart"></i>
+                <!-- The JS will automatically toggle display: flex/none -->
+                <span class="nav-badge" id="cartBadge" style="display:none;">0</span>
+            </div>
             <span>Order</span>
         </div>
+
+        <!-- Favorite -->
         <div class="nav-item" onclick="switchTab('favorite', this)">
             <i class="far fa-heart"></i>
             <span>Favorite</span>
         </div>
+
+        <!-- Notification with Badge -->
         <div class="nav-item" onclick="switchTab('notification', this)">
             <i class="far fa-bell"></i>
-            <span>Notification</span>
+            <span>Notify</span>
+            <span class="nav-badge" id="notifBadge" style="display:none;">3</span>
         </div>
     </nav>
 
@@ -263,4 +288,5 @@
     <!-- Scripts -->
     <script src="js/mobile_app.js?v=3.0"></script>
 </body>
+
 </html>

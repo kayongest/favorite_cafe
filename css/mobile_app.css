@@ -533,20 +533,389 @@ body {
     cursor: pointer;
 }
 
-/* Bottom Nav */
+/* ============================================================
+   BOTTOM NAVIGATION BAR - Complete Styles
+   ============================================================ */
+
 .bottom-nav {
     position: fixed;
-    bottom: -6px;
+    bottom: 20px;
     left: 20px;
     right: 20px;
-    height: 70px;
-    background: var(--white);
-    border-radius: 20px;
+    height: 72px;
+    background: var(--white, #ffffff);
+    border-radius: 24px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    z-index: 100;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 15px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    padding: 0 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+
+/* Container to hold the icon and badge together */
+.bottom-nav .nav-item .icon-wrapper {
+    position: relative;
+    /* This anchors the absolute badge to the ICON, not the whole nav item */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Bottom Nav Item */
+.bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    min-width: 52px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* Icons */
+.bottom-nav .nav-item i {
+    font-size: 1.35rem;
+    color: #999;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+/* Labels */
+.bottom-nav .nav-item span {
+    font-size: var(--text-xxs, 0.625rem);
+    font-weight: 600;
+    color: #999;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+}
+
+/* Active State */
+.bottom-nav .nav-item.active {
+    transform: translateY(-4px);
+}
+
+.bottom-nav .nav-item.active i {
+    color: var(--primary, #AA7262);
+    font-size: 1.5rem;
+    transform: scale(1.05);
+}
+
+.bottom-nav .nav-item.active span {
+    color: var(--primary, #AA7262);
+    font-weight: 700;
+}
+
+/* Hover Effect */
+.bottom-nav .nav-item:hover i {
+    color: var(--primary, #AA7262);
+    transform: translateY(-2px);
+}
+
+.bottom-nav .nav-item:hover span {
+    color: var(--primary, #AA7262);
+}
+
+/* Active Indicator Line */
+.bottom-nav .nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: var(--primary, #AA7262);
+    border-radius: 0 0 4px 4px;
+    animation: slideIndicator 0.3s ease;
+}
+
+@keyframes slideIndicator {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: 20px;
+        opacity: 1;
+    }
+}
+
+/* Badge on Nav Items */
+.bottom-nav .nav-item .nav-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid var(--white, #ffffff);
+    animation: popBadge 0.3s ease;
+}
+
+@keyframes popBadge {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+/* ----- Responsive Adjustments ----- */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .bottom-nav {
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        height: 66px;
+        border-radius: 20px;
+        padding: 0 4px;
+    }
+
+    .bottom-nav .nav-item {
+        padding: 4px 10px;
+        min-width: 44px;
+    }
+
+    .bottom-nav .nav-item i {
+        font-size: 1.2rem;
+    }
+
+    .bottom-nav .nav-item.active i {
+        font-size: 1.3rem;
+    }
+
+    .bottom-nav .nav-item span {
+        font-size: 0.55rem;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+    .bottom-nav {
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        height: 60px;
+        border-radius: 18px;
+        padding: 0 2px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .bottom-nav .nav-item {
+        padding: 4px 8px;
+        min-width: 38px;
+        gap: 1px;
+    }
+
+    .bottom-nav .nav-item i {
+        font-size: 1.05rem;
+    }
+
+    .bottom-nav .nav-item.active i {
+        font-size: 1.15rem;
+    }
+
+    .bottom-nav .nav-item span {
+        font-size: 0.5rem;
+        letter-spacing: 0.2px;
+    }
+
+    .bottom-nav .nav-item.active {
+        transform: translateY(-3px);
+    }
+
+    .bottom-nav .nav-item.active::after {
+        width: 16px;
+        height: 2.5px;
+    }
+
+    @keyframes slideIndicator {
+        from {
+            width: 0;
+            opacity: 0;
+        }
+
+        to {
+            width: 16px;
+            opacity: 1;
+        }
+    }
+
+    .bottom-nav .nav-item .nav-badge {
+        font-size: 0.45rem;
+        min-width: 14px;
+        height: 14px;
+        top: -4px;
+        right: -4px;
+    }
+}
+
+/* Very Small Phones (<= 360px) */
+@media (max-width: 380px) {
+    .bottom-nav {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        height: 56px;
+        border-radius: 16px;
+    }
+
+    .bottom-nav .nav-item {
+        padding: 3px 6px;
+        min-width: 32px;
+    }
+
+    .bottom-nav .nav-item i {
+        font-size: 0.95rem;
+    }
+
+    .bottom-nav .nav-item.active i {
+        font-size: 1.05rem;
+    }
+
+    .bottom-nav .nav-item span {
+        font-size: 0.45rem;
+    }
+
+    .bottom-nav .nav-item .nav-badge {
+        font-size: 0.4rem;
+        min-width: 12px;
+        height: 12px;
+        top: -5px;
+        right: -5px;
+        border-width: 1.5px;
+    }
+}
+
+/* ----- Dark Mode Support ----- */
+@media (prefers-color-scheme: dark) {
+    .bottom-nav {
+        background: #1a1a2e;
+        border-color: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .bottom-nav .nav-item i {
+        color: #888;
+    }
+
+    .bottom-nav .nav-item span {
+        color: #888;
+    }
+
+    .bottom-nav .nav-item.active i {
+        color: var(--secondary, #DF9C83);
+    }
+
+    .bottom-nav .nav-item.active span {
+        color: var(--secondary, #DF9C83);
+    }
+
+    .bottom-nav .nav-item.active::after {
+        background: var(--secondary, #DF9C83);
+    }
+
+    .bottom-nav .nav-item .nav-badge {
+        border-color: #1a1a2e;
+    }
+}
+
+/* ----- Accessibility ----- */
+@media (prefers-reduced-motion: reduce) {
+    .bottom-nav .nav-item {
+        transition: none;
+    }
+
+    .bottom-nav .nav-item i {
+        transition: none;
+    }
+
+    .bottom-nav .nav-item span {
+        transition: none;
+    }
+
+    .bottom-nav .nav-item.active::after {
+        animation: none;
+    }
+
+    .bottom-nav .nav-item .nav-badge {
+        animation: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .bottom-nav {
+        border: 2px solid #000;
+    }
+
+    .bottom-nav .nav-item.active {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .bottom-nav .nav-item.active::after {
+        background: #000;
+    }
+}
+
+/* ----- Safe Area Support (Notch Phones) ----- */
+@supports (padding: max(0px)) {
+    .bottom-nav {
+        padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+    }
+}
+
+/* ----- Touch Feedback ----- */
+.bottom-nav .nav-item:active {
+    transform: scale(0.92);
+}
+
+.bottom-nav .nav-item.active:active {
+    transform: scale(0.92) translateY(-2px);
+}
+
+/* ----- Glassmorphism Effect (Optional) ----- */
+.bottom-nav.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+    .bottom-nav.glass {
+        background: rgba(26, 26, 46, 0.7);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
 }
 
 .nav-item {
