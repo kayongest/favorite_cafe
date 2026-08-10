@@ -483,16 +483,18 @@ function initSidebarTabs() {
             });
 
             var targetSec = document.getElementById('tab-' + tabId);
-            if (targetSec) targetSec.classList.add('active');
+            if (targetSec) targetSec.style.display = 'block';
 
             if (tabId === 'orders') {
-                renderFullOrdersDispatchBoard();
+                if (typeof renderOrdersTable === 'function') renderOrdersTable();
             } else if (tabId === 'reservations') {
-                renderAdminReservations();
+                renderReservationsTable();
             } else if (tabId === 'tables') {
                 renderAdminTablesTracker();
             } else if (tabId === 'users') {
                 renderStaffAndLoyaltyTables();
+            } else if (tabId === 'promos') {
+                renderAdminPromosGrid();
             }
         });
     });
@@ -2985,3 +2987,138 @@ function uploadCsvMenu() {
     });
 }
 window.uploadCsvMenu = uploadCsvMenu;
+
+/* ============================================================
+   PROMOS & BANNERS CRUD
+   ============================================================ */
+var adminPromos = [];
+
+function loadAdminPromos() {
+    var stored = localStorage.getItem('favcafe_promos');
+    if (stored) {
+        adminPromos = JSON.parse(stored);
+    } else {
+        adminPromos = [
+            { id: 1, title: "Order Salmon Steak Today", subtitle: "And Save Up To", discount: "35%", img: "img/menu/6.jpg" },
+            { id: 2, title: "Fresh Salads", subtitle: "Healthy & Green", discount: "20%", img: "img/menu/1.jpg" },
+            { id: 3, title: "Coffee & Pastries", subtitle: "Morning Special", discount: "15%", img: "img/menu/4.jpg" }
+        ];
+        saveAdminPromos();
+    }
+}
+
+function saveAdminPromos() {
+    localStorage.setItem('favcafe_promos', JSON.stringify(adminPromos));
+}
+
+function renderAdminPromosGrid() {
+    loadAdminPromos();
+    var grid = document.getElementById('adminPromosGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    if (adminPromos.length === 0) {
+        grid.innerHTML = '<div class="col-12 text-center text-muted py-5">No promos found. Add one above.</div>';
+        return;
+    }
+    
+    adminPromos.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'col-md-6 col-lg-4';
+        card.innerHTML = `
+            <div class="admin-card border h-100 d-flex flex-column" style="overflow:hidden;">
+                <div style="height:150px; background:url('${p.img}') center/cover; position:relative;">
+                    <div style="position:absolute; top:10px; right:10px; background:var(--primary); color:white; padding:2px 8px; border-radius:10px; font-weight:bold;">${p.discount}</div>
+                </div>
+                <div class="p-3 flex-grow-1">
+                    <div class="text-muted small">${p.subtitle}</div>
+                    <h5 class="mb-3">${p.title}</h5>
+                </div>
+                <div class="p-3 border-top d-flex justify-content-end gap-2 bg-light">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="editPromo(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deletePromo(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openPromoModal() {
+    document.getElementById('promoForm').reset();
+    document.getElementById('promoId').value = '';
+    document.getElementById('promoModalTitle').innerHTML = '<i class="fas fa-bullhorn me-2" style="color:var(--primary);"></i>Add New Promo';
+    
+    var modal = document.getElementById('promoModal');
+    if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closePromoModal() {
+    var modal = document.getElementById('promoModal');
+    if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}
+
+function editPromo(id) {
+    loadAdminPromos();
+    var p = adminPromos.find(x => x.id === id);
+    if (!p) return;
+    
+    document.getElementById('promoId').value = p.id;
+    document.getElementById('promoTitle').value = p.title;
+    document.getElementById('promoSubtitle').value = p.subtitle;
+    document.getElementById('promoDiscount').value = p.discount;
+    document.getElementById('promoImg').value = p.img;
+    
+    document.getElementById('promoModalTitle').innerHTML = '<i class="fas fa-bullhorn me-2" style="color:var(--primary);"></i>Edit Promo';
+    
+    var modal = document.getElementById('promoModal');
+    if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function deletePromo(id) {
+    if (confirm("Are you sure you want to delete this promo?")) {
+        adminPromos = adminPromos.filter(x => x.id !== id);
+        saveAdminPromos();
+        renderAdminPromosGrid();
+        showToast("Promo deleted successfully.", "success");
+    }
+}
+
+function savePromoItem(event) {
+    event.preventDefault();
+    var id = document.getElementById('promoId').value;
+    var title = document.getElementById('promoTitle').value;
+    var subtitle = document.getElementById('promoSubtitle').value;
+    var discount = document.getElementById('promoDiscount').value;
+    var img = document.getElementById('promoImg').value;
+    
+    if (id) {
+        var idx = adminPromos.findIndex(x => x.id === parseInt(id));
+        if (idx > -1) {
+            adminPromos[idx] = { id: parseInt(id), title: title, subtitle: subtitle, discount: discount, img: img };
+            showToast("Promo updated successfully.", "success");
+        }
+    } else {
+        var newId = adminPromos.length > 0 ? Math.max(...adminPromos.map(x => x.id)) + 1 : 1;
+        adminPromos.push({ id: newId, title: title, subtitle: subtitle, discount: discount, img: img });
+        showToast("Promo added successfully.", "success");
+    }
+    
+    saveAdminPromos();
+    closePromoModal();
+    renderAdminPromosGrid();
+}
+window.openPromoModal = openPromoModal;
+window.closePromoModal = closePromoModal;
+window.editPromo = editPromo;
+window.deletePromo = deletePromo;
+window.savePromoItem = savePromoItem;

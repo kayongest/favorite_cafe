@@ -12,20 +12,21 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/mobile_app.css">
+    <link rel="stylesheet" href="css/mobile_app.css?v=3.0">
 </head>
 <body>
 
     <!-- Header Section -->
     <header class="app-header">
         <div class="header-left">
-            <div class="user-avatar-initials" id="headerAvatar" onclick="toggleSidebar()">U</div>
+            <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 1.4rem; color: var(--dark); cursor: pointer; padding-right: 5px;"></i>
             <span class="header-title" id="headerTitle"></span>
         </div>
         <div class="header-right">
-            <span class="price-badge" id="headerPrice">0 RWF</span>
+            <span class="badge bg-danger" id="headerPrice">0.00 RWF</span>
             <div class="cart-icon" onclick="switchTab('order')">
-                <i class="fas fa-shopping-basket"></i>
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
             </div>
         </div>
     </header>
@@ -69,8 +70,10 @@
         <!-- 2. Menu View -->
         <div id="view-menu" class="tab-view" style="padding: 0 1.5rem;">
             <!-- Search Input -->
-            <div class="search-bar mb-3">
-                <input type="search" id="menuSearchInput" class="form-control w-100" placeholder="Search menu..." style="padding:10px 15px; border-radius:8px; border:1px solid #ccc; font-size:1rem;" oninput="executeSearch()">
+            <div class="search-bar mt-4 mb-3" style="position: relative; width: 100%;">
+               <i class="fas fa-search search-icon"></i>
+               <input type="text" id="menuSearchInput" placeholder="Search menu..." oninput="executeSearch(); document.getElementById('clearSearch').style.display = this.value ? 'block' : 'none';">
+               <i class="fas fa-times" id="clearSearch" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); display: none; cursor: pointer;" onclick="document.getElementById('menuSearchInput').value=''; executeSearch(); this.style.display='none';"></i>
             </div>
             
             <!-- Category Chips -->
@@ -180,7 +183,7 @@
             <span>Menu</span>
         </div>
         <div class="nav-item" onclick="switchTab('order', this)">
-            <i class="fas fa-shopping-basket"></i>
+            <i class="fas fa-shopping-cart"></i>
             <span>Order</span>
         </div>
         <div class="nav-item" onclick="switchTab('favorite', this)">
@@ -196,56 +199,59 @@
     <!-- Sidebar Profile Modal -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header" style="background: linear-gradient(135deg, var(--dark), var(--teal)); color: white; display:flex; align-items:center; gap:15px;">
-            <div class="user-avatar-initials" id="sidebarAvatar" style="width: 60px; height: 60px; font-size: 1.5rem; border: 3px solid white;">U</div>
-            <div>
+        <div class="sidebar-header">
+            <i class="fas fa-times close-sidebar" onclick="toggleSidebar()"></i>
+            <div class="sidebar-profile-info">
+                <div class="user-avatar-initials" id="sidebarAvatar">U</div>
                 <div class="name" id="sidebarName">Jordan Hebert</div>
-                <div class="email" id="sidebarEmail">jordanhebert@mail.com</div>
+                <div class="email" id="sidebarEmail">@jordanhebert</div>
+            </div>
+            <div class="sidebar-stats">
+                <div class="stat-item">
+                    <span class="stat-value">24</span>
+                    <span class="stat-label">Orders</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">Favorites</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">450</span>
+                    <span class="stat-label">Points</span>
+                </div>
             </div>
         </div>
         <div class="sidebar-menu">
-            <div class="menu-item">
+            <div class="menu-item" onclick="toggleSidebar()">
+                <i class="fas fa-user menu-icon"></i>
                 <span>Personal information</span>
-                <i class="fas fa-chevron-right"></i>
             </div>
-            <div class="menu-item">
+            <div class="menu-item" onclick="toggleSidebar()">
+                <i class="fas fa-box menu-icon"></i>
                 <span>My orders</span>
-                <i class="fas fa-chevron-right"></i>
             </div>
-            <div class="menu-item">
-                <span>My orders empty</span>
-                <i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="menu-item">
+            <div class="menu-item" onclick="toggleSidebar()">
+                <i class="fas fa-gift menu-icon"></i>
                 <span>Promocodes & gift cards</span>
-                <i class="fas fa-chevron-right"></i>
             </div>
             <div class="menu-item">
-                <span>Promocodes Empty</span>
-                <i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="menu-item">
-                <span>Onboarding</span>
-                <i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="menu-item">
+                <i class="fas fa-bell menu-icon"></i>
                 <span>Notifications</span>
-                <label class="switch">
+                <label class="switch" style="margin-left: auto;">
                     <input type="checkbox" checked>
                     <span class="slider"></span>
                 </label>
             </div>
-            <div class="menu-item">
-                <span>Face ID</span>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
+            <div class="menu-item" style="opacity: 0.7;">
+                <i class="fas fa-info-circle menu-icon"></i>
+                <span>About this App</span>
             </div>
-            <div class="menu-item mt-3">
-                <span>Support center</span>
+            <div class="menu-item" style="opacity: 0.7;">
+                <i class="fas fa-cog menu-icon"></i>
+                <span>Settings</span>
             </div>
-            <div class="menu-item danger mt-2" onclick="logout()">
+            <div class="menu-item mt-2" onclick="logout()" style="border-bottom: none;">
+                <i class="fas fa-sign-out-alt menu-icon"></i>
                 <span>Sign out</span>
             </div>
         </div>
@@ -255,6 +261,6 @@
     <div id="appToast" class="app-toast">Message</div>
 
     <!-- Scripts -->
-    <script src="js/mobile_app.js"></script>
+    <script src="js/mobile_app.js?v=3.0"></script>
 </body>
 </html>

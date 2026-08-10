@@ -2508,3 +2508,14 @@ function syncCustomerOrdersWithServer() {
 
 // 1-second auto-sync for customer phone notifications
 setInterval(syncCustomerOrdersWithServer, 1000);
+
+// Close hamburger menu on outside click
+document.addEventListener('click', function(event) {
+    const navMenu = document.getElementById('navmenu');
+    const toggler = document.querySelector('.navbar-toggler');
+    if (navMenu && navMenu.classList.contains('show') && toggler) {
+        if (!navMenu.contains(event.target) && !toggler.contains(event.target)) {
+            toggler.click();
+        }
+    }
+});
