@@ -1,7 +1,7 @@
 <div style="font-family: 'Titillium Web', sans-serif; background-color: #f4eee7; color: #2d2320; padding: 40px;">
     
 <div style="text-align: center; margin-bottom: 40px;">
-    <h1 style="font-family: 'Amatic SC', cursive; font-size: 3.2rem; color: #102b37; text-transform: uppercase; letter-spacing: 2px; margin: 0;">Order Lifecycle Design</h1>
+    <h1 style="font-family: 'Amatic SC', cursive; font-size: 3.2rem; color: #442406; text-transform: uppercase; letter-spacing: 2px; margin: 0;">Order Lifecycle Design</h1>
     <p style="color: #857570; font-size: 1.1rem; margin-top: 10px;">End-to-End Flow from Customer Cravings to Kitchen Fulfillment</p>
 </div>
 
@@ -11,25 +11,25 @@
     </h3>
     <ul style="list-style: none; padding-left: 0;">
         <li style="margin-bottom: 15px;">
-            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #102b37; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">1</span> Registration & Login:</strong><br>
+            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #442406; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">1</span> Registration & Login:</strong><br>
             <span style="color: #556b73; margin-left: 38px; display: block;">The customer enters the app. New users register via a quick form (Name, Phone, Email) backed by local storage or a `users` DB table. Returning users log in to see their past history and saved addresses.</span>
         </li>
         <li style="margin-bottom: 15px;">
-            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #102b37; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">2</span> Menu Discovery & Order Placement:</strong><br>
+            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #442406; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">2</span> Menu Discovery & Order Placement:</strong><br>
             <span style="color: #556b73; margin-left: 38px; display: block;">Browsing the dynamic database-driven menu (styled like our PDF menu), the customer adds items to the cart. They proceed to checkout, selecting Dine-In, Takeaway, or Delivery.</span>
         </li>
         <li style="margin-bottom: 15px;">
-            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #102b37; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">3</span> Payment & Receipt:</strong><br>
+            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #442406; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">3</span> Payment & Receipt:</strong><br>
             <span style="color: #556b73; margin-left: 38px; display: block;">Customer selects Cash, Card, or Mobile Money (MoMo). Upon submission, a unique Order ID (e.g., <code>FC-3825</code>) is generated. A digital receipt is shown and optionally sent via SMS/Email. The order goes live in the DB.</span>
         </li>
         <li style="margin-bottom: 15px;">
-            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #102b37; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">4</span> Real-Time Tracking:</strong><br>
+            <strong><span style="display:inline-block; width: 24px; height: 24px; background: #442406; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 10px;">4</span> Real-Time Tracking:</strong><br>
             <span style="color: #556b73; margin-left: 38px; display: block;">The customer views a live timeline (Order Placed ➔ Preparing ➔ Ready/Dispatch ➔ Completed) that auto-updates without refreshing the page.</span>
         </li>
     </ul>
 </div>
 
-<div style="background: #102b37; color: white; border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px;">
+<div style="background: #442406; color: white; border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px;">
     <h3 style="color: #d8745d; border-bottom: 2px dashed #aa7262; padding-bottom: 10px; margin-bottom: 20px;">
         <i class="fas fa-concierge-bell me-2"></i> 2. The Kitchen / Admin Fulfillment
     </h3>
@@ -50,7 +50,7 @@
 </div>
 
 <div style="margin-top: 40px;">
-    <h3 style="color: #102b37; text-align: center; font-family: 'Amatic SC', cursive; font-size: 2.2rem;">System Architecture Diagram</h3>
+    <h3 style="color: #442406; text-align: center; font-family: 'Amatic SC', cursive; font-size: 2.2rem;">System Architecture Diagram</h3>
     
 ```mermaid
 sequenceDiagram

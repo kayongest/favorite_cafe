@@ -3,7 +3,7 @@
    ============================================================ */
 :root {
   --admin-dark: #0f172a;
-  --admin-sidebar: #102B37;
+  --admin-sidebar: #442406;
   --admin-sidebar-hover: #1e3a47;
   --primary: #AA7262;
   --secondary: #355c6e;
@@ -838,7 +838,7 @@ input:checked + .slider:before {
 
 .modal-standard-header {
   padding: 18px 24px;
-  background: #102b37;
+  background: #442406;
   color: #ffffff;
   display: flex;
   align-items: center;

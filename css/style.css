@@ -5,7 +5,7 @@
 :root {
   --primary: #AA7262;
   --secondary: #355c6e;
-  --dark: #102B37;
+  --dark: #442406;
   --slate: #444654;
   --green: #2d6a4f;
   --cream: #FDF8F5;
@@ -3543,7 +3543,7 @@ footer {
 .btn-nav-cart {
   position: relative;
   background: var(--cream2, #F6ECE6);
-  color: var(--dark, #102B37);
+  color: var(--dark, #442406);
   border: 1.5px solid var(--secondary, #355c6e);
   padding: 8px 14px;
   border-radius: 40px;
@@ -3958,14 +3958,14 @@ form#checkoutForm {
 }
 
 .service-type-btn.active {
-  background: #102b37 !important;
+  background: #442406 !important;
   color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(16, 43, 55, 0.25) !important;
 }
 
 .service-type-btn:hover:not(.active) {
   background: rgba(16, 43, 55, 0.06) !important;
-  color: #102b37 !important;
+  color: #442406 !important;
 }
 
 .modal-standard-box form::-webkit-scrollbar,
@@ -3992,7 +3992,7 @@ form#checkoutForm::-webkit-scrollbar-thumb:hover {
 
 .modal-standard-header {
   padding: 18px 24px;
-  background: #102b37;
+  background: #442406;
   color: #ffffff;
   display: flex;
   align-items: center;

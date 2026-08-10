@@ -2102,7 +2102,7 @@ function renderNotificationLogs(filterType) {
         html += `
             <div class="p-3 mb-2 bg-light rounded-3 shadow-sm" style="${borderStyle}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <strong style="color:#102b37; font-size:0.92rem;">${icon} ${n.title}</strong>
+                    <strong style="color:#442406; font-size:0.92rem;">${icon} ${n.title}</strong>
                     <span class="badge bg-secondary font-monospace" style="font-size:0.7rem;">${dateStr}</span>
                 </div>
                 <div class="small text-muted mb-1">Recipient: <code class="bg-white px-2 py-0.5 rounded text-dark" style="border:1px solid #e2e8f0;">${n.recipient}</code></div>
@@ -2866,7 +2866,7 @@ function printTableQrStand() {
             <style>
                 body { font-family: 'Titillium Web', sans-serif; text-align: center; padding: 40px; margin: 0; }
                 .card { border: 3px double #d9230f; padding: 40px; border-radius: 16px; max-width: 450px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-                h1 { font-family: 'Titillium Web', sans-serif; color: #102b37; margin-bottom: 4px; font-size: 2.2rem; text-transform: uppercase; font-weight: 700; }
+                h1 { font-family: 'Titillium Web', sans-serif; color: #442406; margin-bottom: 4px; font-size: 2.2rem; text-transform: uppercase; font-weight: 700; }
                 p { color: #555; margin-bottom: 20px; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; }
                 img { width: 220px; height: 220px; border-radius: 12px; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
                 .footer-text { margin-top: 24px; font-weight: 700; color: #111; font-size: 1.1rem; }

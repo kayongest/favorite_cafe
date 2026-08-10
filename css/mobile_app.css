@@ -7,7 +7,7 @@
     /* Dark Brown/Orange used for primary accent */
     --teal-light: rgba(68, 36, 6, 0.1);
     --teal-dark: #2a1603;
-    --dark: #102b37;
+    --dark: #442406;
     /* Dark Slate Blue */
     --gray: #7a929e;
     --light-bg: #f4f8f9;
@@ -226,7 +226,7 @@ body {
 
 /* Home - Promo Banner */
 .promo-banner {
-    background: linear-gradient(135deg, #102b37, #215166);
+    background: linear-gradient(135deg, #442406, #215166);
     border-radius: 13px;
     padding: 2rem 1.5rem;
     color: var(--white);
@@ -978,7 +978,7 @@ body {
 }
 
 .sidebar-header {
-    background: linear-gradient(135deg, #102b37, #215166);
+    background: linear-gradient(135deg, #442406, #215166);
     /* Slate blue gradient */
     padding: 2.5rem 1.5rem 1.5rem;
     position: relative;
@@ -1193,7 +1193,7 @@ input:checked+.slider:before {
 }
 
 .btn-checkout {
-    background: linear-gradient(135deg, #102b37, #215166);
+    background: linear-gradient(135deg, #442406, #215166);
     color: var(--white);
     border: none;
     padding: 5px;

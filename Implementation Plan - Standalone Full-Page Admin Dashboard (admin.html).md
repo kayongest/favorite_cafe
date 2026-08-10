@@ -5,7 +5,7 @@ Create a state-of-the-art, full-page Admin Dashboard page (`admin.html`) inspire
 ## Key Features & Layout Architecture
 
 ### 1. Modern Dashboard Layout & Navigation
-- **Sidebar Navigation** (Dark Theme `#102B37` with accent color highlights):
+- **Sidebar Navigation** (Dark Theme `#442406` with accent color highlights):
   - Brand branding (`Favorite Cafe Admin`)
   - Navigation Sections:
     - 📊 **Overview**: KPI stat cards, sales overview, recent orders table, top dishes.
