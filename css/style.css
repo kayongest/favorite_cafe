@@ -4,7 +4,7 @@
 
 :root {
   --primary: #AA7262;
-  --secondary: #DF9C83;
+  --secondary: #355c6e;
   --dark: #102B37;
   --slate: #444654;
   --green: #2d6a4f;
@@ -3544,7 +3544,7 @@ footer {
   position: relative;
   background: var(--cream2, #F6ECE6);
   color: var(--dark, #102B37);
-  border: 1.5px solid var(--secondary, #DF9C83);
+  border: 1.5px solid var(--secondary, #355c6e);
   padding: 8px 14px;
   border-radius: 40px;
   font-size: 0.85rem;
@@ -3557,7 +3557,7 @@ footer {
 }
 
 .btn-nav-cart:hover {
-  background: var(--secondary, #DF9C83);
+  background: var(--secondary, #355c6e);
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(223, 156, 131, 0.4);
@@ -4017,7 +4017,7 @@ form#checkoutForm::-webkit-scrollbar-thumb:hover {
 
 .modal-standard-header h4 i,
 .modal-standard-header h5 i {
-  color: #df9c83 !important;
+  color: #355c6e !important;
   font-size: 1.15rem;
 }
 

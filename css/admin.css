@@ -6,7 +6,7 @@
   --admin-sidebar: #102B37;
   --admin-sidebar-hover: #1e3a47;
   --primary: #AA7262;
-  --secondary: #DF9C83;
+  --secondary: #355c6e;
   --slate-bg: #f8fafc;
   --card-bg: #ffffff;
   --border-color: #e2e8f0;
@@ -861,7 +861,7 @@ input:checked + .slider:before {
 }
 
 .modal-standard-header h4 i, .modal-standard-header h5 i {
-  color: #df9c83 !important;
+  color: #355c6e !important;
   font-size: 1.15rem;
 }
 

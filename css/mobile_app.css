@@ -227,8 +227,7 @@ body {
 /* Home - Promo Banner */
 .promo-banner {
     background: linear-gradient(135deg, #102b37, #215166);
-    /* Slate blue gradient */
-    border-radius: 24px;
+    border-radius: 13px;
     padding: 2rem 1.5rem;
     color: var(--white);
     position: relative;
@@ -721,12 +720,12 @@ body {
 /* Mobile Phones */
 @media (max-width: 480px) {
     .bottom-nav {
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
-        height: 60px;
+        bottom: -5px;
+        left: -12px;
+        right: -15px;
+        height: 72px;
         border-radius: 18px;
-        padding: 0 2px;
+        padding: 10px 10px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
     }
 
@@ -833,15 +832,15 @@ body {
     }
 
     .bottom-nav .nav-item.active i {
-        color: var(--secondary, #DF9C83);
+        color: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item.active span {
-        color: var(--secondary, #DF9C83);
+        color: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item.active::after {
-        background: var(--secondary, #DF9C83);
+        background: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item .nav-badge {
