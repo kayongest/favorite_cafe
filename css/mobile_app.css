@@ -634,11 +634,11 @@ body {
 .bottom-nav .nav-item.active::after {
     content: '';
     position: absolute;
-    top: -8px;
+    top: -2px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
-    height: 5px;
+    width: 20px;
+    height: 3px;
     background: var(--primary, #AA7262);
     border-radius: 0 0 4px 4px;
     animation: slideIndicator 0.3s ease;
@@ -818,7 +818,7 @@ body {
 /* ----- Dark Mode Support ----- */
 @media (prefers-color-scheme: dark) {
     .bottom-nav {
-        background: #5b4936;
+        background: #1a1a2e;
         border-color: rgba(255, 255, 255, 0.05);
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
@@ -832,19 +832,19 @@ body {
     }
 
     .bottom-nav .nav-item.active i {
-        color: #fff;
+        color: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item.active span {
-        color: var(--secondary, #fafafa);
+        color: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item.active::after {
-        background: #fff;
+        background: var(--secondary, #355c6e);
     }
 
     .bottom-nav .nav-item .nav-badge {
-        border-color: #5b4936;
+        border-color: #1a1a2e;
     }
 }
 
