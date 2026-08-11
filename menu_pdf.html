@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Cafe - Official Menu (Print & Digital PDF)</title>
+    <link rel="icon" type="image/x-icon" href="img/menu/dinner.png">
+    <!-- Fonts: Amatic SC for main title, Titillium Web for body & cards -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        :root {
+            --primary: #aa7262;
+            --primary-dark: #8c5b4d;
+            --terracotta: #d8745d;
+            --terracotta-dark: #c84837;
+            --dark: #442406;
+            --bg-warm: #f4eee7;
+            --card-container-bg: rgba(255, 255, 255, 0.4);
+            --text-main: #2d2320;
+            --text-muted: #857570;
+        }
+
+        body {
+            font-family: 'Titillium Web', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-warm);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Action Bar for Screen Viewers */
+        .no-print-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #442406;
+            border-bottom: 2px solid #aa7262;
+            padding: 14px 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-print-bar h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-container {
+            max-width: 1350px;
+            margin: 0 auto;
+            padding: 40px 20px 60px 20px;
+        }
+
+        /* Clean Top Header */
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pdf-header h1 {
+            font-family: 'Titillium Web', sans-serif;
+            font-weight: 700;
+            font-size: 3.2rem;
+            color: #442406;
+            margin: 0;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        /* QR Redirect Banner (Screen & Print Helper) */
+        .qr-banner {
+            background: #ffffff;
+            border: 2px dashed #aa7262;
+            border-radius: 18px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 15px rgba(16, 43, 55, 0.04);
+            transition: 0.3s;
+        }
+
+        .qr-banner:hover {
+            border-color: #442406;
+            box-shadow: 0 6px 20px rgba(16, 43, 55, 0.1);
+        }
+
+        .qr-banner-text h6 {
+            font-weight: 700;
+            color: #442406;
+            margin-bottom: 4px;
+            font-size: 1.1rem;
+        }
+
+        .qr-banner-text p {
+            font-size: 0.88rem;
+            margin: 0;
+            color: #556b73;
+        }
+
+        .qr-code-img {
+            width: 85px;
+            height: 85px;
+            border-radius: 10px;
+            border: 2px solid #f9f5f0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Category Section Block Container */
+        .category-block-container {
+            background: var(--card-container-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            page-break-inside: avoid;
+        }
+
+        /* Grid inside category container: 4 items per row */
+        .dish-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Visual Card Style */
+        .dish-visual-card {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            page-break-inside: avoid;
+        }
+
+        .dish-visual-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Card Image Header */
+        .card-img-wrapper {
+            position: relative;
+            height: 165px;
+            width: 100%;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-top-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #d8745d;
+            color: #1e293b;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-heart-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #b46b5a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+            font-size: 0.88rem;
+        }
+
+        /* Card Content Body */
+        .card-body-content {
+            padding: 16px 18px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-cat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #d8745d;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .card-dish-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2d2320;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .card-dish-desc {
+            font-size: 0.82rem;
+            color: #948580;
+            margin-bottom: 16px;
+            flex: 1;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .card-dish-footer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .price-main {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #b44332;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        .price-old {
+            font-size: 0.78rem;
+            color: #a0908b;
+            text-decoration: line-through;
+            margin-left: 6px;
+        }
+
+        .star-rating {
+            font-size: 0.76rem;
+            color: #d8745d;
+            margin-top: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .card-add-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #c84837;
+            color: #ffffff;
+            border: none;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(200, 72, 55, 0.35);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .card-add-btn:hover {
+            transform: scale(1.08);
+            background: #b03828;
+        }
+
+        /* Print Adjustments */
+        @media print {
+            .no-print-bar {
+                display: none !important;
+            }
+
+            body {
+                background: #f4eee7 !important;
+            }
+
+            .pdf-container {
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .category-block-container {
+                background: rgba(255, 255, 255, 0.5) !important;
+                padding: 16px !important;
+                margin-bottom: 30px !important;
+            }
+
+            .dish-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 16px !important;
+            }
+
+            .dish-visual-card {
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Action Bar (Screen Only) -->
+    <div class="no-print-bar">
+        <div>
+            <h5><i class="fas fa-mug-hot me-2" style="color:#aa7262;"></i>Favorite Cafe Visual Menu</h5>
+            <small style="color:#a0b4bd;">Live synchronized with database</small>
+        </div>
+        <div class="d-flex gap-2">
+            <a id="btnRedirectWeb" href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-3"
+                style="font-weight:600;">
+                <i class="fas fa-globe me-1"></i>Open Web PWA App
+            </a>
+            <button onclick="window.print()" class="btn btn-sm rounded-pill px-4 text-white"
+                style="background:#c84837; border-color:#c84837; font-weight:600;">
+                <i class="fas fa-print me-1"></i>Print / Save PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- PDF Document Container -->
+    <div class="pdf-container">
+
+        <!-- Clean Main Header -->
+        <div class="pdf-header">
+            <img src="img/logo.png" alt="Favorite Cafe Logo" style="height: 120px; margin-bottom: 15px; object-fit: contain;">
+            <h1>Favorite Cafe Menu</h1>
+        </div>
+
+        <!-- Scannable QR Code Redirect Banner -->
+        <a id="qrBannerLink" href="index.html" class="qr-banner" title="Click or Scan to Order Online">
+            <div class="qr-banner-text">
+                <h6><i class="fas fa-qrcode me-2" style="color:#aa7262;"></i>Scan or Click to Order Online from Table!
+                </h6>
+                <p>Point your smartphone camera to open our interactive digital app for instant ordering & payments.</p>
+            </div>
+            <div>
+                <img id="pdfQrImage" class="qr-code-img" src="" alt="Scan to Order Online">
+            </div>
+        </a>
+
+        <!-- Dynamic Visual Menu Container -->
+        <div id="pdfMenuContent">
+            <div class="text-center py-5">
+                <div class="spinner-border" role="status" style="color:#c84837;"></div>
+                <p class="mt-2 text-muted">Loading live cafe menu...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-4 border-top mt-5 text-muted"
+            style="font-size: 0.85rem; border-color: rgba(170,114,98,0.2) !important;">
+            <p class="mb-1" style="color:#442406; font-weight:600;">Thank you for dining with Favorite Cafe!</p>
+            <p class="mb-0">Visit <strong style="color:#c84837;">favoritecafe.rw</strong> anytime to order online or
+                install our PWA app.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var webUrl = window.location.href.replace('menu_pdf.html', 'index.html').split('#')[0].split('?')[0];
+            document.getElementById('btnRedirectWeb').href = webUrl;
+            document.getElementById('qrBannerLink').href = webUrl;
+
+            // Generate scannable QR Code using QuickChart API
+            var qrApi = 'https://quickchart.io/qr?text=' + encodeURIComponent(webUrl) + '&size=180&margin=1';
+            document.getElementById('pdfQrImage').src = qrApi;
+
+            loadPdfMenuData();
+
+            // Live Auto-Sync Listeners: Re-fetch whenever admin updates menu or tab regains focus
+            window.addEventListener('storage', function (e) {
+                if (e.key === 'favcafe_menu' || e.key === 'favcafe_menu_timestamp' || e.key === 'favcafe_categories') {
+                    loadPdfMenuData();
+                }
+            });
+            window.addEventListener('focus', function () {
+                loadPdfMenuData();
+            });
+
+            // Listen to instant admin BroadcastChannel messages across browser tabs
+            try {
+                var channel = new BroadcastChannel('favcafe_menu_channel');
+                channel.onmessage = function (e) {
+                    loadPdfMenuData();
+                };
+            } catch (e) { }
+
+            // Auto-refresh every 5 seconds in background
+            setInterval(function () {
+                loadPdfMenuData();
+            }, 5000);
+        });
+
+        async function loadPdfMenuData() {
+            var contentEl = document.getElementById('pdfMenuContent');
+            var dbItems = [];
+            var localItems = [];
+
+            // 1. Fetch live server database items
+            try {
+                var res = await fetch('api/menu.php?action=get&t=' + Date.now());
+                if (res.ok) {
+                    var data = await res.json();
+                    if (data && data.status === 'success' && Array.isArray(data.items)) {
+                        dbItems = data.items;
+                    }
+                }
+            } catch (e) { }
+
+            // 2. Fetch browser local storage items
+            try {
+                var stored = localStorage.getItem('favcafe_menu');
+                if (stored) {
+                    var parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        localItems = parsed;
+                    }
+                }
+            } catch (e) { }
+
+            // 3. Fallback to menu.json if both empty
+            if (dbItems.length === 0 && localItems.length === 0) {
+                try {
+                    var resJson = await fetch('api/menu.json?t=' + Date.now());
+                    if (resJson.ok) {
+                        localItems = await resJson.json();
+                    }
+                } catch (e) { }
+            }
+
+            // Merge items prioritizing newest items by ID
+            var itemsMap = {};
+            dbItems.forEach(function (i) {
+                if (i && i.id) itemsMap[i.id] = i;
+            });
+            localItems.forEach(function (i) {
+                if (i && i.id) itemsMap[i.id] = Object.assign({}, itemsMap[i.id] || {}, i);
+            });
+
+            var items = Object.values(itemsMap);
+
+            if (!items || items.length === 0) {
+                contentEl.innerHTML = '<div class="alert alert-warning text-center">No menu items found.</div>';
+                return;
+            }
+
+            var html = '<div class="category-block-container"><div class="dish-grid">';
+
+            items.forEach(function (item) {
+                if (!item || parseInt(item.is_available) === 0) return;
+                var catKey = (item.category || 'Mains').toLowerCase();
+                var catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
+
+                var title = item.title || item.name || 'Special Dish';
+                var priceStr = parseFloat(item.price).toLocaleString() + ' RWF';
+                var oldPriceStr = item.old_price ? parseFloat(item.old_price).toLocaleString() + ' RWF' : '';
+                var imgSrc = (item.image && item.image !== 'undefined') ? item.image : ((item.img && item.img !== 'undefined') ? item.img : 'img/menu/1.jpg');
+                var rating = item.rating || 5.0;
+
+                var firstTag = item.tags ? String(item.tags).split(',')[0].trim() : catName;
+
+                html += `
+                    <div class="dish-visual-card">
+                        <div class="card-img-wrapper">
+                            <img src="${imgSrc}" alt="${title}" onerror="this.onerror=null; this.src='img/menu/1.jpg';">
+                            <div class="card-top-badge"><i class="fas fa-star" style="font-size:0.7rem;"></i> ${firstTag}</div>
+                        </div>
+                        <div class="card-body-content">
+                            <div class="card-cat-label">${catName}</div>
+                            <div class="card-dish-title">${title}</div>
+                            <div class="card-dish-desc">${item.description || ''}</div>
+                            <div class="card-dish-footer">
+                                <div>
+                                    <div>
+                                        <span class="price-main">${priceStr}</span>
+                                        ${oldPriceStr ? `<span class="price-old">${oldPriceStr}</span>` : ''}
+                                    </div>
+                                    <div class="star-rating"><i class="fas fa-star"></i> <span>${rating}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '   </div>';
+            html += '</div>';
+
+            contentEl.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>

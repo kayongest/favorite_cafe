@@ -1,0 +1,22 @@
+{
+  "name": "Favorite Cafe - Modern Coffee & Bistro",
+  "short_name": "FavoriteCafe",
+  "description": "Order delicious coffee, snacks, and bistro meals with live order tracking and MoMo payments.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#d3a04c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "img/category/1.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "img/category/1.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

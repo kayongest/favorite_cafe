@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Cafe - System Flow</title>
+    <link rel="icon" type="image/x-icon" href="img/menu/dinner.png">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        :root {
+            --primary: #aa7262;
+            --primary-dark: #8c5b4d;
+            --terracotta: #d8745d;
+            --dark: #442406;
+            --bg-warm: #f4eee7;
+            --card-container-bg: rgba(255, 255, 255, 0.4);
+            --text-main: #2d2320;
+            --text-muted: #857570;
+        }
+
+        body {
+            font-family: 'Titillium Web', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-warm);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pdf-header h1 {
+            font-weight: 700;
+            font-size: 3.5rem;
+            color: var(--dark);
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .pdf-header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: -5px;
+        }
+
+        /* Wizard Container */
+        .wizard-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(16, 43, 55, 0.08);
+            padding: 40px;
+            position: relative;
+        }
+
+        /* Step Indicators */
+        .step-indicators {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        /* Connecting Line */
+        .step-indicators::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e2e8f0;
+            transform: translateY(-50%);
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .step-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: var(--primary);
+            transform: translateY(-50%);
+            z-index: 1;
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .step-dot {
+            width: 45px;
+            height: 45px;
+            background: #ffffff;
+            border: 3px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #94a3b8;
+            z-index: 2;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .step-dot:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .step-dot.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(170, 114, 98, 0.4);
+        }
+
+        .step-dot.completed {
+            border-color: var(--primary);
+            background: #ffffff;
+            color: var(--primary);
+        }
+        
+        .step-dot.admin-step.active, .step-dot.admin-step.completed {
+            border-color: var(--dark);
+        }
+        .step-dot.admin-step.active {
+            background: var(--dark);
+            box-shadow: 0 0 15px rgba(16, 43, 55, 0.4);
+        }
+        .step-dot.admin-step.completed {
+            color: var(--dark);
+        }
+
+        /* Content Area */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+            text-align: center;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-icon-large {
+            font-size: 4rem;
+            color: var(--terracotta);
+            margin-bottom: 20px;
+        }
+        
+        .admin-content .step-icon-large {
+            color: var(--dark);
+        }
+
+        .step-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .step-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Navigation Buttons */
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .btn-wizard {
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-wizard:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        
+        .btn-wizard:disabled {
+            border-color: #cbd5e1;
+            color: #cbd5e1;
+            cursor: not-allowed;
+            background: #ffffff;
+        }
+
+        .btn-wizard-next {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-wizard-next:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .role-customer {
+            background: rgba(170, 114, 98, 0.15);
+            color: var(--primary-dark);
+        }
+
+        .role-admin {
+            background: rgba(16, 43, 55, 0.1);
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .step-dot {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            .wizard-container {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pdf-header">
+        <h1>Order Flow Wizard</h1>
+        <p>A step-by-step interactive journey</p>
+    </div>
+
+    <div class="wizard-container">
+        
+        <!-- Step Indicators -->
+        <div class="step-indicators">
+            <div class="step-progress" id="stepProgress" style="width: 0%;"></div>
+            
+            <div class="step-dot active" data-step="1" onclick="goToStep(1)">1</div>
+            <div class="step-dot" data-step="2" onclick="goToStep(2)">2</div>
+            <div class="step-dot" data-step="3" onclick="goToStep(3)">3</div>
+            <div class="step-dot admin-step" data-step="4" onclick="goToStep(4)">4</div>
+            <div class="step-dot admin-step" data-step="5" onclick="goToStep(5)">5</div>
+            <div class="step-dot" data-step="6" onclick="goToStep(6)">6</div>
+            <div class="step-dot" data-step="7" onclick="goToStep(7)">7</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-content active" id="step1">
+            <div class="role-badge role-customer">Customer Action</div>
+            <div class="step-icon-large"><i class="fas fa-user-plus"></i></div>
+            <div class="step-title">Registration & Login</div>
+            <p class="step-desc">The customer opens the app. New users register via a quick form (Name, Phone, Email). Returning users log in to instantly see their past history and saved addresses, ensuring a frictionless experience.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" id="step2">
+            <div class="role-badge role-customer">Customer Action</div>
+            <div class="step-icon-large"><i class="fas fa-hamburger"></i></div>
+            <div class="step-title">Menu & Ordering</div>
+            <p class="step-desc">Browsing our dynamic database-driven menu, the customer discovers crave-worthy meals, adds items to their cart, specifies quantities, and chooses between Delivery, Takeaway, or Dine-in.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" id="step3">
+            <div class="role-badge role-customer">Customer Action</div>
+            <div class="step-icon-large"><i class="fas fa-wallet"></i></div>
+            <div class="step-title">Payment & Receipt</div>
+            <p class="step-desc">The customer selects Cash, Card, or MoMo. An Order ID (e.g., FC-3825) is generated. The system securely saves the order to the MySQL database and provides a sleek digital invoice.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-content admin-content" id="step4">
+            <div class="role-badge role-admin">Admin Action</div>
+            <div class="step-icon-large"><i class="fas fa-fire"></i></div>
+            <div class="step-title">Kitchen Notified</div>
+            <p class="step-desc">The Admin Dashboard silently detects the new order in the database. A flashing notification appears on the Chef's screen, and the ticket is pinned to the Live Dispatch Board.</p>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-content admin-content" id="step5">
+            <div class="role-badge role-admin">Admin Action</div>
+            <div class="step-icon-large"><i class="fas fa-tasks"></i></div>
+            <div class="step-title">Status Advancements</div>
+            <p class="step-desc">As the Chef begins cooking, they update the ticket dropdown from "Kitchen Preparing" to "Ready for Delivery". This instantly writes back to the database, synchronizing the entire system.</p>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-content" id="step6">
+            <div class="role-badge role-customer">Customer Action</div>
+            <div class="step-icon-large"><i class="fas fa-route"></i></div>
+            <div class="step-title">Live Tracking</div>
+            <p class="step-desc">Meanwhile, the customer is viewing their Order Timeline on their phone. Because the Chef updated the DB, the customer's phone instantly turns the "Ready" step green via background polling!</p>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step-content admin-content" id="step7">
+            <div class="role-badge role-admin" style="background: rgba(39, 174, 96, 0.15); color: #27ae60;">Completion</div>
+            <div class="step-icon-large" style="color: #27ae60;"><i class="fas fa-check-circle"></i></div>
+            <div class="step-title">Order Complete</div>
+            <p class="step-desc">The food is handed over to the driver or customer. Admin marks the ticket "Completed". The ticket is archived, analytics are updated, and the customer enjoys their meal!</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="wizard-nav">
+            <button class="btn-wizard" id="btnPrev" onclick="prevStep()" disabled><i class="fas fa-arrow-left me-2"></i> Previous</button>
+            <button class="btn-wizard btn-wizard-next" id="btnNext" onclick="nextStep()">Next Step <i class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 7;
+
+        function updateWizard() {
+            // Update dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const stepNum = index + 1;
+                dot.classList.remove('active', 'completed');
+                if (stepNum === currentStep) {
+                    dot.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    dot.classList.add('completed');
+                    dot.innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    dot.innerHTML = stepNum;
+                }
+            });
+
+            // Update Progress Bar
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('stepProgress').style.width = progress + '%';
+
+            // Show current content
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('step' + currentStep).classList.add('active');
+
+            // Update Buttons
+            document.getElementById('btnPrev').disabled = (currentStep === 1);
+            
+            const nextBtn = document.getElementById('btnNext');
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = 'Finish <i class="fas fa-star ms-2"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right ms-2"></i>';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizard();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizard();
+            }
+        }
+
+        function goToStep(step) {
+            currentStep = step;
+            updateWizard();
+        }
+    </script>
+</body>
+</html>
