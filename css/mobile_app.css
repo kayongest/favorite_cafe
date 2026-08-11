@@ -263,6 +263,7 @@ body {
     z-index: 2;
 }
 
+/* Force all promo images to be identical */
 .promo-img {
     position: absolute;
     right: -10px;
@@ -274,11 +275,42 @@ body {
     min-height: 140px !important;
     max-width: 140px !important;
     max-height: 140px !important;
-    object-fit: cover;
+    object-fit: cover !important;
+    object-position: center center !important;
     border-radius: 50%;
     z-index: 1;
     display: block;
     opacity: 0.9;
+    pointer-events: none;
+    background: #215166;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0;
+    image-rendering: auto;
+}
+
+/* Ensure smooth transitions between images */
+.promo-content {
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+    position: relative;
+    z-index: 2;
+    min-height: 180px;
+}
+
+/* Wrapper to ensure consistent container */
+.promo-image-wrapper {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 1;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: #215166;
 }
 
 .dots {
