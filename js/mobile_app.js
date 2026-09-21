@@ -153,10 +153,22 @@ function initThemeMode() {
 }
 
 function logout() {
+    const token = localStorage.getItem('favcafe_token');
     localStorage.removeItem('favcafe_active_user');
     localStorage.removeItem('favcafe_token');
-    showToast('Signed out successfully.');
-    checkAuth();
+    localStorage.removeItem('favcafe_remembered_email');
+
+    if (token) {
+        fetch('api/auth.php?action=logout', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).catch(() => { });
+    }
+
+    showToast('👋 Signed out successfully. Redirecting to login...');
+    setTimeout(() => {
+        window.location.href = 'mobile_auth.html';
+    }, 1200);
 }
 window.logout = logout;
 
@@ -604,8 +616,8 @@ function switchTab(tabId, element) {
     }
 
     const titles = {
-        'home': 'Foodia',
-        'menu': 'Foodia Menu',
+        'home': 'Favorite Cafe',
+        'menu': 'Cafe Menu',
         'order': 'Shopping Cart',
         'history': 'Your Orders',
         'notification': 'Notification',
@@ -615,7 +627,7 @@ function switchTab(tabId, element) {
 
     const headerTitleText = document.getElementById('headerTitleText');
     if (headerTitleText) {
-        headerTitleText.innerText = titles[tabId] || 'Foodia';
+        headerTitleText.innerText = titles[tabId] || 'Favorite Cafe';
     }
 
     const globalBackBtn = document.getElementById('globalBackBtn');
