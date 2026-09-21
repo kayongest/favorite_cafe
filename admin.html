@@ -394,67 +394,94 @@
          </section>
 
          <!-- ============================================================
-               TAB 2: LIVE ORDERS DISPATCH BOARD
+               TAB 2: LIVE ORDERS DISPATCH BOARD (E-COMMERCE POS DESIGN)
                ============================================================ -->
          <section id="tab-orders" class="tab-section">
-            <div class="page-title-row">
+            <div class="small text-muted mb-1"><span class="text-primary font-weight-bold">Page 1</span> &rsaquo; <span class="text-muted">Orders</span> &rsaquo; <span class="text-dark fw-bold">Live Dispatch</span></div>
+            <div class="page-title-row mb-3">
                <div>
-                  <h3>Live Orders Dispatch Board</h3>
-                  <p>Filter, manage, approve and track active kitchen and delivery orders in real-time.</p>
+                  <h2 class="fw-bold text-dark mb-0">Orders</h2>
                </div>
                <div class="d-flex align-items-center gap-2">
-                  <button class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm" onclick="openCreateOrderModal()"
-                     style="background:var(--primary); border-color:var(--primary);">
-                     <i class="fas fa-plus me-1"></i> New Live Order
+                  <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 fw-bold" onclick="exportOrdersCsv()">
+                     <i class="fas fa-file-export me-1"></i> Export
                   </button>
-                  <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="refreshAdminOrders()">
-                     <i class="fas fa-sync-alt me-1"></i> Refresh Orders
+                  <button class="btn btn-sm btn-primary rounded-3 px-3 shadow-sm font-weight-bold" onclick="openCreateOrderModal()" style="background:#2563eb; border-color:#2563eb;">
+                     <i class="fas fa-plus me-1"></i> Add Order
                   </button>
                </div>
             </div>
 
-            <div class="admin-card p-0 overflow-hidden">
-               <div
-                  class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-                  <div class="order-filter-pills">
-                     <button class="filter-pill active" data-filter="all"
-                        onclick="filterLiveOrdersBoard('all', this)">All Orders</button>
-                     <button class="filter-pill" data-filter="pending"
-                        onclick="filterLiveOrdersBoard('pending', this)">Pending Approval</button>
-                     <button class="filter-pill" data-filter="preparing"
-                        onclick="filterLiveOrdersBoard('preparing', this)">Kitchen Preparing</button>
-                     <button class="filter-pill" data-filter="ready"
-                        onclick="filterLiveOrdersBoard('ready', this)">Ready for Dispatch</button>
-                     <button class="filter-pill" data-filter="completed"
-                        onclick="filterLiveOrdersBoard('completed', this)">Completed</button>
-                     <button class="filter-pill" data-filter="archived"
-                        onclick="filterLiveOrdersBoard('archived', this)">Disabled / Archived</button>
+            <!-- Status Tabs with Live Counters -->
+            <div class="d-flex border-bottom mb-3 overflow-auto text-nowrap orders-nav-tabs">
+               <button class="nav-link active font-weight-bold border-0 bg-transparent text-primary py-2 px-3" data-filter="all" onclick="filterLiveOrdersBoard('all', this)" id="tabCountAll">
+                  All <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntAll">0</span>
+               </button>
+               <button class="nav-link font-weight-bold border-0 bg-transparent text-muted py-2 px-3" data-filter="pending" onclick="filterLiveOrdersBoard('pending', this)" id="tabCountPending">
+                  Pending Payment <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntPending">0</span>
+               </button>
+               <button class="nav-link font-weight-bold border-0 bg-transparent text-muted py-2 px-3" data-filter="preparing" onclick="filterLiveOrdersBoard('preparing', this)" id="tabCountPreparing">
+                  Unfulfilled / Preparing <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntPreparing">0</span>
+               </button>
+               <button class="nav-link font-weight-bold border-0 bg-transparent text-muted py-2 px-3" data-filter="ready" onclick="filterLiveOrdersBoard('ready', this)" id="tabCountReady">
+                  Ready for Dispatch <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntReady">0</span>
+               </button>
+               <button class="nav-link font-weight-bold border-0 bg-transparent text-muted py-2 px-3" data-filter="completed" onclick="filterLiveOrdersBoard('completed', this)" id="tabCountCompleted">
+                  Completed <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntCompleted">0</span>
+               </button>
+               <button class="nav-link font-weight-bold border-0 bg-transparent text-muted py-2 px-3" data-filter="archived" onclick="filterLiveOrdersBoard('archived', this)" id="tabCountArchived">
+                  Disabled / Archived <span class="badge bg-light text-dark border ms-1 font-monospace" id="cntArchived">0</span>
+               </button>
+            </div>
+
+            <div class="admin-card p-0 border rounded-3 overflow-hidden shadow-sm">
+               <!-- Search and Filter Bar -->
+               <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div class="position-relative flex-grow-1" style="max-width: 320px;">
+                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                     <input type="text" id="liveOrdersSearchInput" class="form-control form-control-sm ps-5 rounded-3 bg-white" placeholder="Search orders..." onkeyup="onLiveOrdersSearchChange()" autocomplete="off">
                   </div>
 
-                  <div class="position-relative" style="min-width: 260px;">
-                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                     <input type="text" id="liveOrdersSearchInput"
-                        class="form-control form-control-sm ps-5 rounded-pill"
-                        placeholder="Search order code, customer, item..." onkeyup="onLiveOrdersSearchChange()"
-                        autocomplete="off" />
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                     <select class="form-select form-select-sm rounded-3 bg-white border-secondary" id="paymentStatusFilterSelect" style="min-width: 150px;" onchange="onLiveOrdersSearchChange()">
+                        <option value="all">Payment status: All</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                     </select>
+
+                     <select class="form-select form-select-sm rounded-3 bg-white border-secondary" id="fulfilmentStageFilterSelect" style="min-width: 170px;" onchange="onLiveOrdersSearchChange()">
+                        <option value="all">Fulfilment status: All</option>
+                        <option value="Received">1. Order Received</option>
+                        <option value="Confirmed">2. Confirmed</option>
+                        <option value="Preparing">3. Being Prepared</option>
+                        <option value="Ready">4. Ready</option>
+                        <option value="On the Way">5. On the Way</option>
+                        <option value="Delivered">6. Delivered</option>
+                        <option value="Closed">7. Closed</option>
+                     </select>
                   </div>
                </div>
 
                <div class="table-responsive">
-                  <table class="table table-hover align-middle mb-0">
-                     <thead class="table-dark text-nowrap">
-                        <tr>
-                           <th>ORDER CODE</th>
-                           <th>CUSTOMER DETAILS</th>
-                           <th style="min-width: 240px; max-width: 380px;">ITEMS SUMMARY</th>
-                           <th>SERVICE OPTION</th>
-                           <th>TOTAL (RWF)</th>
-                           <th>STATUS</th>
-                           <th class="text-end">ACTIONS</th>
+                  <table class="table table-hover align-middle mb-0 text-nowrap">
+                     <thead class="bg-light text-muted small border-bottom">
+                        <tr class="text-uppercase" style="font-size:0.75rem; letter-spacing:0.5px;">
+                           <th style="width:36px; padding-left:16px;">
+                              <input type="checkbox" class="form-check-input" id="selectAllOrdersCheckbox" onchange="toggleSelectAllOrders(this.checked)">
+                           </th>
+                           <th>ORDER <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>TOTAL <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>CUSTOMER <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>PAYMENT STATUS <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>FULFILMENT STATUS <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>DELIVERY TYPE <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th>DATE <i class="fas fa-sort text-muted ms-1"></i></th>
+                           <th class="text-end padding-right:16px;">ACTIONS</th>
                         </tr>
                      </thead>
                      <tbody id="fullOrdersDispatchTbody">
-                        <!-- Dynamic live orders board -->
+                        <!-- Dynamic live orders board rendered by JS -->
                      </tbody>
                   </table>
                </div>

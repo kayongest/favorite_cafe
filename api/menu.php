@@ -169,6 +169,34 @@ try {
 if ($action === 'get') {
     $stmt = $pdo->query("SELECT * FROM menu_items ORDER BY FIELD(LOWER(category), 'mains', 'coffee', 'tea', 'smoothies', 'shakes', 'juices', 'salads', 'sides'), id ASC");
     $items = $stmt->fetchAll();
+    if (!is_array($items) || count($items) === 0) {
+        $jsonFile = __DIR__ . '/menu.json';
+        if (file_exists($jsonFile)) {
+            $jsonItems = json_decode(file_get_contents($jsonFile), true);
+            if (is_array($jsonItems) && count($jsonItems) > 0) {
+                $insStmt = $pdo->prepare("INSERT INTO menu_items (id, title, category, price, old_price, image, rating, reviews_count, calories, prep_time, description, tags, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                foreach ($jsonItems as $item) {
+                    $insStmt->execute([
+                        $item['id'],
+                        $item['title'],
+                        $item['category'],
+                        $item['price'],
+                        $item['old_price'] ?? null,
+                        $item['image'],
+                        $item['rating'] ?? 5.0,
+                        $item['reviews_count'] ?? 50,
+                        $item['calories'] ?? 350,
+                        $item['prep_time'] ?? 15,
+                        $item['description'] ?? '',
+                        $item['tags'] ?? 'Popular',
+                        $item['is_available'] ?? 1
+                    ]);
+                }
+                $stmt = $pdo->query("SELECT * FROM menu_items ORDER BY FIELD(LOWER(category), 'mains', 'coffee', 'tea', 'smoothies', 'shakes', 'juices', 'salads', 'sides'), id ASC");
+                $items = $stmt->fetchAll();
+            }
+        }
+    }
     echo json_encode(['status' => 'success', 'items' => $items]);
     exit;
 

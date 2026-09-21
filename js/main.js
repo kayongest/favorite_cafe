@@ -151,34 +151,14 @@ function saveCartToStorage() {
     } catch (e) { }
 }
 
-// Initialize Orders from localStorage with initial demo fallback
+// Initialize Orders from localStorage with initial empty fallback
 function loadOrdersFromStorage() {
     try {
         var stored = localStorage.getItem('favcafe_orders');
         if (stored) {
             orders = JSON.parse(stored);
         } else {
-            // Default demo order for rich initial experience
-            orders = [
-                {
-                    id: 'MSH-8492',
-                    date: new Date(Date.now() - 45 * 60000).toISOString(),
-                    customerName: 'Eric Munyaneza',
-                    phone: '+250 788 123 456',
-                    address: '108 Kimironko St, Kigali',
-                    serviceType: 'delivery',
-                    paymentMethod: 'momo',
-                    itemsSummary: 'Smash Burger x2, Loaded Fries x1',
-                    total: 33.97,
-                    status: 'Out for Delivery',
-                    timeline: [
-                        { label: 'Order Placed', desc: 'Order received & confirmed', status: 'completed' },
-                        { label: 'Kitchen Preparing', desc: 'Chef preparing your meal', status: 'completed' },
-                        { label: 'Out for Delivery', desc: 'Rider is on the way', status: 'active' },
-                        { label: 'Delivered', desc: 'Enjoy your delicious meal!', status: 'pending' }
-                    ]
-                }
-            ];
+            orders = [];
             saveOrdersToStorage();
         }
     } catch (e) {
@@ -198,9 +178,17 @@ function updateCartBadge() {
     if (cartCountEl) cartCountEl.textContent = count;
 }
 
-/* CURRENCY FORMATTER FOR RWANDAN FRANCS */
+/* CURRENCY PARSER & FORMATTER FOR RWANDAN FRANCS */
+function parseRwfAmount(val) {
+    if (val === null || val === undefined) return 0;
+    if (typeof val === 'number') return val;
+    var cleaned = String(val).replace(/[^0-9.]/g, '');
+    return parseFloat(cleaned) || 0;
+}
+window.parseRwfAmount = parseRwfAmount;
+
 function formatRWF(val) {
-    var num = Math.round(parseFloat(val) || 0);
+    var num = Math.round(parseRwfAmount(val));
     return num.toLocaleString('en-US') + ' RWF';
 }
 
@@ -895,13 +883,17 @@ function handleOrderSubmission(e) {
         serviceType: activeServiceType,
         paymentMethod: activePaymentMethod,
         itemsSummary: itemsSummaryStr,
+        items: cart.map(function(i) { return { title: i.title, quantity: i.quantity, price: i.price }; }),
         total: subtotal,
-        status: 'Kitchen Preparing',
+        status: 'Order Received',
         timeline: [
-            { label: 'Order Placed', desc: 'Order received & confirmed', status: 'completed' },
-            { label: 'Kitchen Preparing', desc: 'Chefs are cooking your meal', status: 'active' },
-            { label: 'Out for Delivery', desc: 'Rider is on the way', status: 'pending' },
-            { label: 'Delivered', desc: 'Enjoy your meal!', status: 'pending' }
+            { label: '1. Order Received', desc: 'Order received & registered', status: 'active', icon: 'fa-receipt' },
+            { label: '2. Order Confirmed', desc: 'Confirmed by staff - preparing soon', status: 'pending', icon: 'fa-check-circle' },
+            { label: '3. Being Prepared', desc: 'Kitchen chef is preparing your meal', status: 'pending', icon: 'fa-utensils' },
+            { label: '4. Ready', desc: 'Order prepared & packed hot', status: 'pending', icon: 'fa-box' },
+            { label: '5. On the Way', desc: 'Driver dispatched / Ready for pickup', status: 'pending', icon: 'fa-truck' },
+            { label: '6. Delivered', desc: 'Order delivered / served', status: 'pending', icon: 'fa-house-user' },
+            { label: '7. Closed', desc: 'Order completed & feedback', status: 'pending', icon: 'fa-star' }
         ]
     };
 
@@ -1358,17 +1350,29 @@ function openReceiptModal(orderId) {
     if (typeEl) typeEl.textContent = (target.serviceType || 'Delivery').toUpperCase();
     if (payEl) payEl.textContent = (target.paymentMethod || 'Mobile Money').toUpperCase();
 
+    var totalVal = parseRwfAmount(target.total);
+
     if (tbody) {
-        var itemsArr = (target.itemsSummary || '').split(',');
-        tbody.innerHTML = itemsArr.map(function (itemStr) {
-            var parts = itemStr.trim().split('x');
-            var qty = parts[1] || '1';
-            var name = parts[0] || itemStr;
-            return `<tr><td>${qty}</td><td>${name}</td><td class="text-end">-</td></tr>`;
-        }).join('');
+        if (Array.isArray(target.items) && target.items.length > 0) {
+            tbody.innerHTML = target.items.map(function(item) {
+                var itemQty = item.quantity || 1;
+                var itemTitle = item.title || 'Item';
+                var itemPrice = parseRwfAmount(item.price);
+                var itemTotal = itemPrice > 0 ? formatRWF(itemPrice * itemQty) : '-';
+                return `<tr><td>${itemQty}</td><td>${itemTitle}</td><td class="text-end">${itemTotal}</td></tr>`;
+            }).join('');
+        } else {
+            var itemsArr = (target.itemsSummary || '').split(',');
+            tbody.innerHTML = itemsArr.map(function (itemStr) {
+                var parts = itemStr.trim().split('x');
+                var qty = parts[1] ? parts[1].trim() : '1';
+                var name = parts[0] ? parts[0].trim() : itemStr;
+                var amt = itemsArr.length === 1 && totalVal > 0 ? formatRWF(totalVal) : '-';
+                return `<tr><td>${qty}</td><td>${name}</td><td class="text-end">${amt}</td></tr>`;
+            }).join('');
+        }
     }
 
-    var totalVal = parseFloat(target.total) || 0;
     var taxVal = totalVal * 0.18;
     var subtotalVal = totalVal - taxVal;
 
@@ -1477,11 +1481,9 @@ function renderMyOrders() {
     container.innerHTML = html;
 }
 
-function openTimelineModal(orderId) {
-    closeMyOrdersModal();
-    loadOrdersFromStorage();
-    var target = orders.find(function (o) { return o.id === orderId; }) || orders[0];
+var currentTrackedOrderId = null;
 
+function renderTimelineModalContent(target) {
     if (!target) return;
 
     var codeEl = document.getElementById('timelineOrderCode');
@@ -1493,11 +1495,14 @@ function openTimelineModal(orderId) {
     if (badgeEl) {
         badgeEl.textContent = target.status;
         var badgeClass = 'bg-info text-dark';
-        if (target.status === 'Completed' || target.status === 'Delivered') {
+        var st = (target.status || '').toLowerCase();
+        if (st.includes('closed') || st.includes('completed') || st.includes('delivered') || st.includes('served')) {
             badgeClass = 'bg-success text-white';
-        } else if (target.status === 'Out for Delivery' || target.status === 'Ready for Dispatch' || target.status === 'Ready for Pickup') {
+        } else if (st.includes('on the way') || st.includes('out for delivery') || st.includes('ready')) {
+            badgeClass = 'bg-warning text-dark';
+        } else if (st.includes('confirmed') || st.includes('approved')) {
             badgeClass = 'bg-primary text-white';
-        } else if (target.status === 'Disabled / Archived') {
+        } else if (st.includes('disabled') || st.includes('archived')) {
             badgeClass = 'bg-secondary text-white';
         }
         badgeEl.className = 'status-badge badge rounded-pill px-3 py-1 fw-semibold ' + badgeClass;
@@ -1525,43 +1530,130 @@ function openTimelineModal(orderId) {
     }
 
     if (stepperEl) {
-        var timelineData = target.timeline;
-        if (!timelineData || timelineData.length === 0) {
-            var currentStatus = target.status || 'Kitchen Preparing';
-            var isPickup = target.serviceType === 'takeaway';
-            var isDinein = target.serviceType === 'dinein';
-
-            var step3Label = isPickup ? 'Ready for Pickup' : (isDinein ? 'Ready on Table' : 'Out for Delivery');
-            var step3Desc = isPickup ? 'Your order is hot & ready at counter' : (isDinein ? 'Food served to your table' : 'Rider is on the way to your address');
-            var step3Icon = isPickup ? 'fa-store' : (isDinein ? 'fa-chair' : 'fa-truck');
-
-            var isStep2Active = currentStatus === 'Kitchen Preparing';
-            var isStep3Done = currentStatus === 'Out for Delivery' || currentStatus === 'Ready for Pickup' || currentStatus === 'Completed' || currentStatus === 'Delivered';
-            var isStep3Active = currentStatus === 'Out for Delivery' || currentStatus === 'Ready for Pickup' || currentStatus === 'Ready for Dispatch';
-            var isStep4Done = currentStatus === 'Completed' || currentStatus === 'Delivered';
-
-            timelineData = [
-                { label: 'Order Placed', desc: 'Order received & confirmed live', status: 'completed', icon: 'fa-check' },
-                { label: 'Kitchen Preparing', desc: 'Chefs are preparing your meal', status: isStep4Done || isStep3Done ? 'completed' : (isStep2Active ? 'active' : 'completed'), icon: 'fa-utensils' },
-                { label: step3Label, desc: step3Desc, status: isStep4Done ? 'completed' : (isStep3Active ? 'active' : 'pending'), icon: step3Icon },
-                { label: isDinein ? 'Served & Enjoy' : 'Delivered', desc: isDinein ? 'Bon appétit!' : 'Enjoy your meal!', status: isStep4Done ? 'completed' : 'pending', icon: 'fa-check-double' }
-            ];
+        function getStageNumber(statusStr) {
+            if (!statusStr) return 1;
+            var s = statusStr.toLowerCase().trim();
+            if (s === 'closed' || s.includes('closed')) return 7;
+            if (s.includes('delivered') || s.includes('served') || s.includes('completed')) return 6;
+            if (s.includes('on the way') || s.includes('out for delivery') || s.includes('ready for pickup') || s.includes('ready for table') || s.includes('ready for delivery')) return 5;
+            if (s === 'ready' || s.includes('ready for dispatch')) return 4;
+            if (s.includes('being prepared') || s.includes('kitchen preparing') || s.includes('in preparation') || s.includes('preparing') || s.includes('prep')) return 3;
+            if (s.includes('confirmed') || s.includes('approved') || s === 'approved') return 2;
+            return 1;
         }
 
-        stepperEl.innerHTML = timelineData.map(function (step) {
-            var stepClass = step.status || 'pending';
-            var iconClass = step.icon || (stepClass === 'completed' ? 'fa-check' : (stepClass === 'active' ? 'fa-utensils' : 'fa-circle'));
+        var currentStageNum = getStageNumber(target.status);
+        var isPickup = target.serviceType === 'takeaway';
+        var isDinein = target.serviceType === 'dinein';
+
+        var step5Label = isPickup ? '5. Ready for Pickup' : (isDinein ? '5. Ready on Table' : '5. Out for Delivery');
+        var step5Desc = isPickup ? 'Your order is hot & ready at counter' : (isDinein ? 'Food served to your table' : 'Rider is on the way — Driver (+250 788 123 456)');
+        var step5Icon = isPickup ? 'fa-store' : (isDinein ? 'fa-chair' : 'fa-truck');
+
+        var stagesDef = [
+            { num: 1, label: '1. Order Placed', statusShown: 'Order Received', desc: 'Order received & registered in system', icon: 'fa-receipt' },
+            { num: 2, label: '2. Order Confirmed', statusShown: 'Confirmed – Preparing Soon', desc: 'Confirmed by cashier / staff', icon: 'fa-check-circle' },
+            { num: 3, label: '3. Preparing', statusShown: 'Being Prepared', desc: 'Kitchen chef is preparing your meal', icon: 'fa-utensils' },
+            { num: 4, label: '4. Ready', statusShown: 'Ready', desc: 'Order prepared & packed hot', icon: 'fa-box' },
+            { num: 5, label: step5Label, statusShown: isPickup ? 'Ready for Pickup' : (isDinein ? 'Ready on Table' : 'On the Way'), desc: step5Desc, icon: step5Icon },
+            { num: 6, label: isDinein ? '6. Served' : '6. Delivered', statusShown: isDinein ? 'Served' : 'Delivered', desc: isDinein ? 'Bon appétit!' : 'Delivered to your address — enjoy your meal!', icon: 'fa-house-user' },
+            { num: 7, label: '7. Closed', statusShown: 'Closed', desc: 'Order closed — electronic tax invoice & feedback', icon: 'fa-star' }
+        ];
+
+        var htmlSteps = stagesDef.map(function (stg) {
+            var stepClass = 'pending';
+            if (stg.num < currentStageNum) stepClass = 'completed';
+            else if (stg.num === currentStageNum) stepClass = 'active';
+
+            var iconClass = stg.icon || (stepClass === 'completed' ? 'fa-check' : (stepClass === 'active' ? 'fa-utensils' : 'fa-circle'));
+
+            var confirmDeliveryBtnHtml = '';
+            if (stg.num === 6 && currentStageNum === 6) {
+                confirmDeliveryBtnHtml = `
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3 py-1-5 font-weight-bold shadow-sm" onclick="customerConfirmReceipt('${target.id}')">
+                            <i class="fas fa-check-circle me-1"></i> Confirm Delivery Receipt
+                        </button>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="timeline-step ${stepClass}">
                     <div class="timeline-icon"><i class="fas ${iconClass}"></i></div>
                     <div class="timeline-content">
-                        <h6>${step.label}</h6>
-                        <p>${step.desc}</p>
+                        <h6>${stg.label} <small class="text-muted font-monospace">(${stg.statusShown})</small></h6>
+                        <p class="mb-1">${stg.desc}</p>
+                        ${confirmDeliveryBtnHtml}
                     </div>
                 </div>
             `;
         }).join('');
+
+        if (currentStageNum === 7) {
+            htmlSteps += `
+                <div class="mt-4 p-3 rounded-3 text-center shadow-sm" style="background:#e8f5e9; border:1px solid #a5d6a7;">
+                    <h6 class="fw-bold text-success mb-1"><i class="fas fa-heart me-1"></i>Order Closed &amp; Completed!</h6>
+                    <p class="small text-muted mb-2">Thank you for ordering with Favorite Cafe! Please rate your experience:</p>
+                    <div class="d-flex justify-content-center gap-2 text-warning fs-5">
+                        <i class="fas fa-star" onclick="if(typeof showToast==='function') showToast('Thank you for your 5-star feedback!', 'success', 'Feedback Saved')" style="cursor:pointer;" title="5 Stars"></i>
+                        <i class="fas fa-star" onclick="if(typeof showToast==='function') showToast('Thank you for your 5-star feedback!', 'success', 'Feedback Saved')" style="cursor:pointer;" title="5 Stars"></i>
+                        <i class="fas fa-star" onclick="if(typeof showToast==='function') showToast('Thank you for your 5-star feedback!', 'success', 'Feedback Saved')" style="cursor:pointer;" title="5 Stars"></i>
+                        <i class="fas fa-star" onclick="if(typeof showToast==='function') showToast('Thank you for your 5-star feedback!', 'success', 'Feedback Saved')" style="cursor:pointer;" title="5 Stars"></i>
+                        <i class="fas fa-star" onclick="if(typeof showToast==='function') showToast('Thank you for your 5-star feedback!', 'success', 'Feedback Saved')" style="cursor:pointer;" title="5 Stars"></i>
+                    </div>
+                </div>
+            `;
+        }
+
+        stepperEl.innerHTML = htmlSteps;
     }
+}
+
+function customerConfirmReceipt(orderId) {
+    var target = (orders || []).find(function (o) { return o.id === orderId; });
+    if (!target && orders && orders.length > 0) target = orders[0];
+    if (target) {
+        target.status = 'Closed';
+        saveOrdersToStorage();
+
+        try {
+            fetch('api/orders.php?action=update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: target.id, status: 'Closed' })
+            }).catch(function (e) { });
+        } catch (e) { }
+
+        // Broadcast live signal to Kitchen / Staff Admin
+        try {
+            var orderChannel = new BroadcastChannel('favcafe_orders_channel');
+            orderChannel.postMessage({ type: 'order_closed_by_customer', orderId: target.id, order: target });
+        } catch (e) { }
+
+        if (typeof logNotification === 'function') {
+            logNotification('alert', 'Kitchen Operations', '🔔 Order #' + target.id + ' receipt confirmed by customer! Order marked CLOSED with 5-star feedback prompt.', 'Order Completed & Closed');
+        }
+
+        if (typeof showToast === 'function') {
+            showToast('Order #' + target.id + ' receipt confirmed! Order is now closed.', 'success', 'Order Closed & Completed');
+        }
+
+        renderTimelineModalContent(target);
+        if (typeof renderMyOrders === 'function') renderMyOrders();
+    }
+}
+window.customerConfirmReceipt = customerConfirmReceipt;
+
+function openTimelineModal(orderId) {
+    closeMyOrdersModal();
+    loadOrdersFromStorage();
+    var target = orders.find(function (o) { return o.id === orderId; }) || orders[0];
+
+    if (!target) return;
+
+    currentTrackedOrderId = target.id;
+    renderTimelineModalContent(target);
 
     var modal = document.getElementById('timelineModal');
     if (modal) {
@@ -1571,6 +1663,7 @@ function openTimelineModal(orderId) {
 }
 
 function closeTimelineModal() {
+    currentTrackedOrderId = null;
     var modal = document.getElementById('timelineModal');
     if (modal) {
         modal.classList.remove('open');
@@ -1891,22 +1984,76 @@ function demoAdminLogin() {
     setTimeout(handleAdminLogin, 600);
 }
 
-function advanceOrderStatus(rowId, newStatus) {
+function getNextStageStatus(currentStatus) {
+    if (!currentStatus) return 'Confirmed – Preparing Soon';
+    var s = currentStatus.toLowerCase();
+    if (s.includes('received')) return 'Confirmed – Preparing Soon';
+    if (s.includes('confirmed')) return 'Being Prepared';
+    if (s.includes('being prepared') || s.includes('kitchen preparing') || s.includes('preparing')) return 'Ready';
+    if (s === 'ready' || s.includes('ready for dispatch')) return 'On the Way';
+    if (s.includes('on the way') || s.includes('out for delivery') || s.includes('ready for pickup') || s.includes('ready on table')) return 'Delivered';
+    if (s.includes('delivered') || s.includes('served')) return 'Closed';
+    return 'Closed';
+}
+
+function advanceOrderStatus(rowId, targetStatus) {
+    var orderMatch = (orders || []).find(function(o) { return o.id === rowId; });
+    var nextStatus = targetStatus || (orderMatch ? getNextStageStatus(orderMatch.status) : 'Confirmed – Preparing Soon');
+
+    if (orderMatch) {
+        orderMatch.status = nextStatus;
+        saveOrdersToStorage();
+    }
+
+    try {
+        fetch('api/orders.php?action=update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: rowId, status: nextStatus })
+        }).catch(function(e) {});
+    } catch (e) {}
+
     var row = document.getElementById(rowId);
-    if (!row) return;
-    var badge = row.querySelector('.status-badge');
-    var actionCell = row.cells[5];
-    if (badge) {
-        if (newStatus === 'Ready for Delivery' || newStatus === 'Ready for Table') {
-            badge.className = 'badge bg-info text-dark status-badge';
-            badge.textContent = newStatus;
-            actionCell.innerHTML = '<button class="btn btn-sm btn-outline-success" onclick="advanceOrderStatus(\'' + rowId + '\', \'Completed\')">Complete Order</button>';
-        } else if (newStatus === 'Completed') {
-            badge.className = 'badge bg-success status-badge';
-            badge.textContent = 'Completed';
-            actionCell.innerHTML = '<span class="text-muted small"><i class="fas fa-check-double me-1"></i>Done</span>';
+    if (row) {
+        var badge = row.querySelector('.status-badge');
+        var actionCell = row.cells ? row.cells[5] : null;
+        if (badge) {
+            badge.textContent = nextStatus;
+            var badgeClass = 'bg-secondary';
+            if (nextStatus.includes('Received')) badgeClass = 'bg-secondary text-white';
+            else if (nextStatus.includes('Confirmed')) badgeClass = 'bg-primary text-white';
+            else if (nextStatus.includes('Being Prepared') || nextStatus.includes('Kitchen')) badgeClass = 'bg-info text-dark';
+            else if (nextStatus.includes('Ready')) badgeClass = 'bg-warning text-dark';
+            else if (nextStatus.includes('On the Way')) badgeClass = 'bg-dark text-white';
+            else if (nextStatus.includes('Delivered')) badgeClass = 'bg-success text-white';
+            else if (nextStatus.includes('Closed')) badgeClass = 'bg-light text-dark border';
+
+            badge.className = 'badge status-badge ' + badgeClass;
+        }
+
+        if (actionCell) {
+            var nxt = getNextStageStatus(nextStatus);
+            if (nextStatus === 'Closed' || nextStatus === 'Completed') {
+                actionCell.innerHTML = '<span class="text-muted small"><i class="fas fa-check-double me-1 text-success"></i>Closed</span>';
+            } else {
+                var btnLabel = 'Advance Stage';
+                if (nxt === 'Confirmed – Preparing Soon') btnLabel = 'Confirm Order';
+                else if (nxt === 'Being Prepared') btnLabel = 'Start Preparing';
+                else if (nxt === 'Ready') btnLabel = 'Mark Ready';
+                else if (nxt === 'On the Way') btnLabel = 'Send Out (On the Way)';
+                else if (nxt === 'Delivered') btnLabel = 'Mark Delivered';
+                else if (nxt === 'Closed') btnLabel = 'Close Order';
+
+                actionCell.innerHTML = '<button type="button" class="btn btn-sm btn-outline-primary" onclick="advanceOrderStatus(\'' + rowId + '\', \'' + nxt + '\')">' + btnLabel + '</button>';
+            }
         }
     }
+
+    if (typeof showToast === 'function') {
+        showToast('Order #' + rowId + ' status updated to: ' + nextStatus, 'info', '7-Stage Order Workflow');
+    }
+
+    if (typeof renderMyOrders === 'function') renderMyOrders();
 }
 
 function refreshAdminOrders() {
@@ -2147,7 +2294,7 @@ async function loadDynamicCustomerMenu(isManualRefresh) {
         var res = await fetch('api/menu.php?action=get&t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
             var data = await res.json();
-            if (data && data.status === 'success' && Array.isArray(data.items)) {
+            if (data && data.status === 'success' && Array.isArray(data.items) && data.items.length > 0) {
                 menuItems = data.items;
                 isDbSource = true;
                 localStorage.setItem('favcafe_menu', JSON.stringify(menuItems));
@@ -2216,7 +2363,21 @@ function renderCustomerMenuItems(menuItems) {
     if (!menuGrid || !Array.isArray(menuItems)) return;
 
     var available = menuItems.filter(function (i) { return parseInt(i.is_available) === 1 || i.is_available === true; });
-    if (available.length === 0) return;
+    if (available.length === 0) {
+        menuGrid.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="px-4 py-5 rounded-4 shadow-sm" style="background:var(--cream2); border:1px solid rgba(170,114,98,0.2);">
+                    <i class="fas fa-utensils fa-3x mb-3" style="color:var(--primary);"></i>
+                    <h5 class="fw-bold mb-2">No Menu Items Available</h5>
+                    <p class="text-muted mb-3">There are no dishes matching this selection at the moment.</p>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="loadDynamicCustomerMenu(true)">
+                        <i class="fas fa-sync-alt me-2"></i>Refresh Menu
+                    </button>
+                </div>
+            </div>
+        `;
+        return;
+    }
 
     var html = '';
     available.forEach(function (item, idx) {
@@ -2481,7 +2642,7 @@ var _prevCustomerOrderStatusMap = {};
 
 function syncCustomerOrdersWithServer() {
     try {
-        fetch('api/orders.php?action=get')
+        fetch('api/orders.php?action=get&t=' + Date.now(), { cache: 'no-store' })
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success' && Array.isArray(data.orders)) {
@@ -2499,6 +2660,11 @@ function syncCustomerOrdersWithServer() {
                                 if (typeof renderMyOrders === 'function') renderMyOrders();
                             }
                             _prevCustomerOrderStatusMap[serverOrd.id] = serverOrd.status;
+
+                            // Live update the customer's open Track Modal if tracking this order
+                            if (currentTrackedOrderId && (currentTrackedOrderId === serverOrd.id || currentTrackedOrderId === localMatch.id)) {
+                                renderTimelineModalContent(localMatch);
+                            }
                         }
                     });
                 }
@@ -2508,6 +2674,19 @@ function syncCustomerOrdersWithServer() {
 
 // 1-second auto-sync for customer phone notifications
 setInterval(syncCustomerOrdersWithServer, 1000);
+
+try {
+    var custOrderChannel = new BroadcastChannel('favcafe_orders_channel');
+    custOrderChannel.onmessage = function (event) {
+        syncCustomerOrdersWithServer();
+    };
+} catch (e) { }
+
+window.addEventListener('storage', function (e) {
+    if (e.key === 'favcafe_orders' || e.key === 'favcafe_orders_signal') {
+        syncCustomerOrdersWithServer();
+    }
+});
 
 // Close hamburger menu on outside click
 document.addEventListener('click', function(event) {

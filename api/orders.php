@@ -49,8 +49,9 @@ if ($pdo === null) {
         $serviceType = trim($data['serviceType'] ?? 'delivery');
         $itemsSummary = trim($data['itemsSummary'] ?? 'Custom Order');
         $total = floatval($data['total'] ?? 0);
-        $status = trim($data['status'] ?? 'Kitchen Preparing');
+        $status = trim($data['status'] ?? 'Order Received');
         $paymentMethod = trim($data['paymentMethod'] ?? 'Cash');
+        $paymentStatus = trim($data['paymentStatus'] ?? $data['payment_status'] ?? 'Paid');
         $acceptedBy = trim($data['acceptedBy'] ?? 'Staff Taker');
         $preparedBy = trim($data['preparedBy'] ?? 'Head Chef');
         $servedBy = trim($data['servedBy'] ?? 'Floor Waiter');
@@ -67,6 +68,8 @@ if ($pdo === null) {
             'total' => $total,
             'status' => $status,
             'paymentMethod' => $paymentMethod,
+            'paymentStatus' => $paymentStatus,
+            'payment_status' => $paymentStatus,
             'acceptedBy' => $acceptedBy,
             'preparedBy' => $preparedBy,
             'servedBy' => $servedBy,
@@ -108,6 +111,13 @@ if ($pdo === null) {
         if (isset($data['total'])) $orders[$foundIndex]['total'] = floatval($data['total']);
         if (isset($data['status'])) $orders[$foundIndex]['status'] = trim($data['status']);
         if (isset($data['paymentMethod'])) $orders[$foundIndex]['paymentMethod'] = trim($data['paymentMethod']);
+        if (isset($data['paymentStatus'])) {
+            $orders[$foundIndex]['paymentStatus'] = trim($data['paymentStatus']);
+            $orders[$foundIndex]['payment_status'] = trim($data['paymentStatus']);
+        } else if (isset($data['payment_status'])) {
+            $orders[$foundIndex]['paymentStatus'] = trim($data['payment_status']);
+            $orders[$foundIndex]['payment_status'] = trim($data['payment_status']);
+        }
         if (isset($data['acceptedBy'])) $orders[$foundIndex]['acceptedBy'] = trim($data['acceptedBy']);
         if (isset($data['preparedBy'])) $orders[$foundIndex]['preparedBy'] = trim($data['preparedBy']);
         if (isset($data['servedBy'])) $orders[$foundIndex]['servedBy'] = trim($data['servedBy']);
@@ -156,6 +166,12 @@ if ($pdo === null) {
         echo json_encode(['status' => 'success', 'message' => 'Order archived successfully', 'source' => 'file_db']);
         exit;
     }
+
+    if ($action === 'clear_all' || $action === 'clear') {
+        saveJsonOrders($jsonPath, []);
+        echo json_encode(['status' => 'success', 'message' => 'All orders cleared successfully', 'source' => 'file_db']);
+        exit;
+    }
 }
 
 // ------------------------------------------------------------
@@ -172,8 +188,9 @@ try {
       `service_type` varchar(50) DEFAULT 'delivery',
       `items_summary` text NOT NULL,
       `total` decimal(10,2) NOT NULL DEFAULT 0.00,
-      `status` varchar(50) DEFAULT 'Kitchen Preparing',
+      `status` varchar(50) DEFAULT 'Order Received',
       `payment_method` varchar(50) DEFAULT 'Cash',
+      `payment_status` varchar(50) DEFAULT 'Paid',
       `accepted_by` varchar(100) DEFAULT 'Staff Taker',
       `prepared_by` varchar(100) DEFAULT 'Head Chef',
       `served_by` varchar(100) DEFAULT 'Floor Waiter',
@@ -184,6 +201,7 @@ try {
     $pdo->exec($tableSql);
 
     // Auto-migrate missing columns if table existed
+    try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `payment_status` varchar(50) DEFAULT 'Paid'"); } catch (PDOException $ex) {}
     try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `accepted_by` varchar(100) DEFAULT 'Staff Taker'"); } catch (PDOException $ex) {}
     try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `prepared_by` varchar(100) DEFAULT 'Head Chef'"); } catch (PDOException $ex) {}
     try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `served_by` varchar(100) DEFAULT 'Floor Waiter'"); } catch (PDOException $ex) {}
@@ -194,7 +212,7 @@ try {
     if ($count == 0) {
         $initialOrders = getJsonOrders($jsonPath);
         if (!empty($initialOrders)) {
-            $stmt = $pdo->prepare("INSERT INTO orders (id, date, customer_name, phone, address, service_type, items_summary, total, status, payment_method, accepted_by, prepared_by, served_by, is_disabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO orders (id, date, customer_name, phone, address, service_type, items_summary, total, status, payment_method, payment_status, accepted_by, prepared_by, served_by, is_disabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             foreach ($initialOrders as $o) {
                 $stmt->execute([
                     $o['id'],
@@ -205,8 +223,9 @@ try {
                     $o['serviceType'] ?? 'delivery',
                     $o['itemsSummary'],
                     $o['total'] ?? 0,
-                    $o['status'] ?? 'Kitchen Preparing',
+                    $o['status'] ?? 'Order Received',
                     $o['paymentMethod'] ?? 'Cash',
+                    $o['paymentStatus'] ?? $o['payment_status'] ?? 'Paid',
                     $o['acceptedBy'] ?? 'Staff Taker',
                     $o['preparedBy'] ?? 'Head Chef',
                     $o['servedBy'] ?? 'Floor Waiter',
@@ -219,7 +238,7 @@ try {
 
 if ($action === 'get') {
     try {
-        $stmt = $pdo->query("SELECT id, date, customer_name as customerName, phone, address, service_type as serviceType, items_summary as itemsSummary, total, status, payment_method as paymentMethod, accepted_by as acceptedBy, prepared_by as preparedBy, served_by as servedBy, is_disabled as isDisabled FROM orders ORDER BY date DESC");
+        $stmt = $pdo->query("SELECT id, date, customer_name as customerName, phone, address, service_type as serviceType, items_summary as itemsSummary, total, status, payment_method as paymentMethod, payment_status as paymentStatus, accepted_by as acceptedBy, prepared_by as preparedBy, served_by as servedBy, is_disabled as isDisabled FROM orders ORDER BY date DESC");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as &$r) {
             $r['isDisabled'] = (bool)$r['isDisabled'];
@@ -238,8 +257,9 @@ if ($action === 'create') {
     $serviceType = trim($data['serviceType'] ?? 'delivery');
     $itemsSummary = trim($data['itemsSummary'] ?? 'Custom Order');
     $total = floatval($data['total'] ?? 0);
-    $status = trim($data['status'] ?? 'Kitchen Preparing');
+    $status = trim($data['status'] ?? 'Order Received');
     $paymentMethod = trim($data['paymentMethod'] ?? 'Cash');
+    $paymentStatus = trim($data['paymentStatus'] ?? $data['payment_status'] ?? 'Paid');
     $acceptedBy = trim($data['acceptedBy'] ?? 'Staff Taker');
     $preparedBy = trim($data['preparedBy'] ?? 'Head Chef');
     $servedBy = trim($data['servedBy'] ?? 'Floor Waiter');
@@ -248,8 +268,8 @@ if ($action === 'create') {
     $now = date('Y-m-d H:i:s');
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO orders (id, date, customer_name, phone, address, service_type, items_summary, total, status, payment_method, accepted_by, prepared_by, served_by, is_disabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
-        $stmt->execute([$newId, $now, $customerName, $phone, $address, $serviceType, $itemsSummary, $total, $status, $paymentMethod, $acceptedBy, $preparedBy, $servedBy]);
+        $stmt = $pdo->prepare("INSERT INTO orders (id, date, customer_name, phone, address, service_type, items_summary, total, status, payment_method, payment_status, accepted_by, prepared_by, served_by, is_disabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+        $stmt->execute([$newId, $now, $customerName, $phone, $address, $serviceType, $itemsSummary, $total, $status, $paymentMethod, $paymentStatus, $acceptedBy, $preparedBy, $servedBy]);
 
         $newOrder = [
             'id' => $newId,
@@ -262,6 +282,7 @@ if ($action === 'create') {
             'total' => $total,
             'status' => $status,
             'paymentMethod' => $paymentMethod,
+            'paymentStatus' => $paymentStatus,
             'acceptedBy' => $acceptedBy,
             'preparedBy' => $preparedBy,
             'servedBy' => $servedBy,
@@ -284,7 +305,7 @@ if ($action === 'update') {
 
     try {
         // Fetch existing order so we only overwrite provided fields
-        $stmt = $pdo->prepare("SELECT id, customer_name, phone, address, service_type, items_summary, total, status, payment_method, accepted_by, prepared_by, served_by, is_disabled FROM orders WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, customer_name, phone, address, service_type, items_summary, total, status, payment_method, payment_status, accepted_by, prepared_by, served_by, is_disabled FROM orders WHERE id = ?");
         $stmt->execute([$id]);
         $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -301,12 +322,13 @@ if ($action === 'update') {
         $total = isset($data['total']) ? floatval($data['total']) : floatval($existing['total']);
         $status = isset($data['status']) ? trim($data['status']) : $existing['status'];
         $paymentMethod = isset($data['paymentMethod']) ? trim($data['paymentMethod']) : $existing['payment_method'];
+        $paymentStatus = isset($data['paymentStatus']) ? trim($data['paymentStatus']) : (isset($data['payment_status']) ? trim($data['payment_status']) : ($existing['payment_status'] ?? 'Paid'));
         $acceptedBy = isset($data['acceptedBy']) ? trim($data['acceptedBy']) : $existing['accepted_by'];
         $preparedBy = isset($data['preparedBy']) ? trim($data['preparedBy']) : $existing['prepared_by'];
         $servedBy = isset($data['servedBy']) ? trim($data['servedBy']) : $existing['served_by'];
         $isDisabled = isset($data['isDisabled']) ? (!empty($data['isDisabled']) ? 1 : 0) : (!empty($existing['is_disabled']) ? 1 : 0);
 
-        $updateStmt = $pdo->prepare("UPDATE orders SET customer_name = ?, phone = ?, address = ?, service_type = ?, items_summary = ?, total = ?, status = ?, payment_method = ?, accepted_by = ?, prepared_by = ?, served_by = ?, is_disabled = ? WHERE id = ?");
+        $updateStmt = $pdo->prepare("UPDATE orders SET customer_name = ?, phone = ?, address = ?, service_type = ?, items_summary = ?, total = ?, status = ?, payment_method = ?, payment_status = ?, accepted_by = ?, prepared_by = ?, served_by = ?, is_disabled = ? WHERE id = ?");
         $updateStmt->execute([
             $customerName,
             $phone,
@@ -316,6 +338,7 @@ if ($action === 'update') {
             $total,
             $status,
             $paymentMethod,
+            $paymentStatus,
             $acceptedBy,
             $preparedBy,
             $servedBy,
@@ -341,6 +364,17 @@ if ($action === 'disable' || $action === 'archive' || $action === 'delete') {
         $stmt = $pdo->prepare("UPDATE orders SET is_disabled = 1, status = 'Disabled / Archived' WHERE id = ?");
         $stmt->execute([$id]);
         echo json_encode(['status' => 'success', 'message' => 'Order archived/disabled for reporting', 'source' => 'mysql']);
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+
+if ($action === 'clear_all' || $action === 'clear') {
+    try {
+        $pdo->exec("TRUNCATE TABLE orders");
+        saveJsonOrders($jsonPath, []);
+        echo json_encode(['status' => 'success', 'message' => 'All orders cleared successfully', 'source' => 'mysql']);
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
