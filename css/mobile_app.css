@@ -55,11 +55,23 @@ body {
 .text-coral { color: var(--accent-coral) !important; }
 .text-muted-custom { color: var(--text-muted) !important; }
 .text-light-blue { color: var(--text-light-blue) !important; }
-.bg-card { background-color: var(--card-dark) !important; }
-.bg-dark-navy { background-color: var(--bg-dark) !important; }
+.text-center { text-align: center !important; }
 .fw-bold { font-weight: 700 !important; }
 .fw-600 { font-weight: 600 !important; }
 .rounded-xl { border-radius: 18px !important; }
+
+.sidebar-footer-box {
+    text-align: center !important;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1.5rem 1rem;
+    border-top: 1px solid var(--border-dark);
+}
+
+.sidebar-footer-box div {
+    text-align: center !important;
+    width: 100%;
+}
 
 /* Sticky Header Bar */
 .app-header {
