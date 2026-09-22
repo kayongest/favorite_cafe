@@ -119,11 +119,7 @@ function renderUserContacts() {
 
     // User Avatar Image Sync
     const avatarSrc = currentUser.avatar || 'img/chefs/1.jpg';
-    const profileUserAvatar = document.getElementById('profileUserAvatar');
-    if (profileUserAvatar) profileUserAvatar.src = avatarSrc;
-
-    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
-    if (sidebarUserAvatar) sidebarUserAvatar.src = avatarSrc;
+    updateAllAvatarImages(avatarSrc);
 
     // Mobile Phone
     const phoneRow = document.getElementById('contactRowPhone');
@@ -169,6 +165,15 @@ function renderUserContacts() {
     renderCustomContactsList();
 }
 
+function updateAllAvatarImages(src) {
+    if (!src) return;
+    const avatars = document.querySelectorAll('#profileUserAvatar, #sidebarUserAvatar, .sidebar-avatar-img, .profile-avatar-img');
+    avatars.forEach(img => {
+        img.src = src;
+    });
+}
+window.updateAllAvatarImages = updateAllAvatarImages;
+
 // PROFILE PICTURE (AVATAR) UPLOAD CONTROLLERS
 function triggerAvatarUpload() {
     const fileInput = document.getElementById('profileAvatarFileInput');
@@ -185,10 +190,7 @@ async function handleAvatarFileSelect(input) {
     const reader = new FileReader();
     reader.onload = (e) => {
         const localDataUrl = e.target.result;
-        const profileUserAvatar = document.getElementById('profileUserAvatar');
-        if (profileUserAvatar) profileUserAvatar.src = localDataUrl;
-        const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
-        if (sidebarUserAvatar) sidebarUserAvatar.src = localDataUrl;
+        updateAllAvatarImages(localDataUrl);
     };
     reader.readAsDataURL(file);
 
@@ -218,6 +220,7 @@ async function handleAvatarFileSelect(input) {
         currentUser.avatar = avatarUrl;
 
         localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+        updateAllAvatarImages(avatarUrl);
 
         // Sync with MySQL DB
         await fetch('api/auth.php?action=update_profile', {
