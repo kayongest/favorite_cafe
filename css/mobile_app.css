@@ -687,58 +687,67 @@ body {
     box-shadow: 0 2px 8px rgba(0, 210, 211, 0.15);
 }
 
-.cart-promo-row .input-group,
-.cart-loyalty-box .input-group {
-    border-radius: 14px;
-    overflow: hidden;
+.cart-input-pill-container {
+    display: flex;
+    align-items: center;
+    background: rgba(22, 29, 49, 0.85);
     border: 1px solid var(--border-dark);
+    border-radius: 25px;
+    padding: 3px 4px 3px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cart-input-pill-container:focus-within {
+    border-color: rgba(0, 210, 211, 0.4);
+    box-shadow: 0 0 10px rgba(0, 210, 211, 0.15);
 }
 
 .cart-promo-input,
 .custom-loyalty-input {
-    background-color: rgba(22, 29, 49, 0.8) !important;
+    flex: 1;
+    background: transparent !important;
     border: none !important;
+    outline: none !important;
     color: var(--text-white) !important;
     font-size: 0.85rem;
-    padding: 10px 14px !important;
+    padding: 6px 0 !important;
+    box-shadow: none !important;
 }
 
 .cart-promo-input::placeholder,
 .custom-loyalty-input::placeholder {
     color: var(--text-muted) !important;
-    opacity: 0.7;
-}
-
-.custom-loyalty-input:focus,
-.cart-promo-input:focus {
-    box-shadow: none !important;
+    opacity: 0.6;
 }
 
 .btn-cyan-action {
-    background: linear-gradient(135deg, rgba(0, 210, 211, 0.25), rgba(0, 210, 211, 0.1)) !important;
+    background: linear-gradient(135deg, rgba(0, 210, 211, 0.22), rgba(0, 210, 211, 0.08)) !important;
     color: var(--accent-cyan) !important;
-    border: 1px solid var(--accent-cyan) !important;
-    font-weight: 800 !important;
-    font-size: 0.78rem !important;
-    letter-spacing: 0.5px !important;
-    text-transform: uppercase;
+    border: 1.5px solid var(--accent-cyan) !important;
+    border-radius: 20px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    padding: 5px 18px !important;
+    letter-spacing: 0.2px !important;
+    text-transform: none !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 210, 211, 0.2);
+    box-shadow: 0 0 10px rgba(0, 210, 211, 0.25);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer;
 }
 
 .btn-cyan-action:hover {
     background: linear-gradient(135deg, rgba(0, 210, 211, 0.4), rgba(0, 210, 211, 0.2)) !important;
     color: #ffffff !important;
     border-color: #00ecee !important;
-    box-shadow: 0 4px 14px rgba(0, 210, 211, 0.4);
+    box-shadow: 0 0 14px rgba(0, 210, 211, 0.4);
     transform: translateY(-1px);
 }
 
 .btn-cyan-action:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
 
 .cart-loyalty-box {
@@ -1600,10 +1609,15 @@ body.light-theme .cart-loyalty-box .text-white {
     color: #1e293b !important;
 }
 
+body.light-theme .cart-input-pill-container {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+}
+
 body.light-theme .cart-promo-input,
 body.light-theme .custom-loyalty-input {
-    background-color: #ffffff !important;
-    border-color: #cbd5e1 !important;
+    background-color: transparent !important;
+    border: none !important;
     color: #0f172a !important;
 }
 
@@ -1611,4 +1625,10 @@ body.light-theme .loyalty-pill-btn {
     background: #ffffff;
     border-color: #cbd5e1;
     color: #64748b;
+}
+
+body.light-theme .btn-cyan-action {
+    background: rgba(0, 210, 211, 0.12) !important;
+    color: #008b8c !important;
+    border-color: #00a8a9 !important;
 }
