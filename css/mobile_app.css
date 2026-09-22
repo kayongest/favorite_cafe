@@ -715,23 +715,25 @@ body {
 }
 
 .btn-cyan-action {
-    background: linear-gradient(135deg, #00d2d3 0%, #00a8a9 100%) !important;
-    color: #0b111e !important;
+    background: linear-gradient(135deg, rgba(0, 210, 211, 0.25), rgba(0, 210, 211, 0.1)) !important;
+    color: var(--accent-cyan) !important;
+    border: 1px solid var(--accent-cyan) !important;
     font-weight: 800 !important;
-    border: none !important;
     font-size: 0.78rem !important;
     letter-spacing: 0.5px !important;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(0, 210, 211, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 210, 211, 0.2);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .btn-cyan-action:hover {
-    background: linear-gradient(135deg, #00ecee 0%, #00d2d3 100%) !important;
-    box-shadow: 0 5px 15px rgba(0, 210, 211, 0.4);
+    background: linear-gradient(135deg, rgba(0, 210, 211, 0.4), rgba(0, 210, 211, 0.2)) !important;
+    color: #ffffff !important;
+    border-color: #00ecee !important;
+    box-shadow: 0 4px 14px rgba(0, 210, 211, 0.4);
     transform: translateY(-1px);
 }
 
