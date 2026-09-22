@@ -111,25 +111,111 @@
                 <!-- Dynamic Cart Items -->
             </div>
 
-            <!-- Summary Card -->
-            <div class="checkout-summary-card" id="cartSummary" style="display:none;">
-                <div class="promo-apply-row">
-                    <a href="javascript:void(0);" class="promo-link" onclick="showToast('🎟️ 2 Promo codes applied!')">Apply Promotion Code</a>
-                    <span class="promo-badge">2 Promos</span>
+            <!-- Cart Extras & Summary Footer Container -->
+            <div id="cartSummary" style="display:none;">
+                <!-- 1. ADD EXTRAS SECTION -->
+                <div class="cart-extras-section">
+                    <div class="cart-extras-header" onclick="toggleCartExtrasCollapse()" style="cursor:pointer;">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-plus-circle text-cyan"></i>
+                            <span class="fw-bold">ADD EXTRAS:</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-muted-custom" id="cartExtrasChevron" style="transition: transform 0.3s ease;"></i>
+                    </div>
+                    <div class="cart-extras-grid mt-2" id="cartExtrasGrid">
+                       <div class="extra-pill-btn" onclick="addExtraToCart('Avocado', 500, 'img/menu/1.jpg')">
+                          <span>Avocado <small>(500)</small></span>
+                          <i class="fas fa-plus"></i>
+                       </div>
+                       <div class="extra-pill-btn" onclick="addExtraToCart('Kachumbari', 0, 'img/menu/2.jpg')">
+                          <span>Kachumbari <span class="free-text">(FREE)</span></span>
+                          <i class="fas fa-plus"></i>
+                       </div>
+                       <div class="extra-pill-btn" onclick="addExtraToCart('Mayonnaise', 0, 'img/menu/3.jpg')">
+                          <span>Mayonnaise <span class="free-text">(FREE)</span></span>
+                          <i class="fas fa-plus"></i>
+                       </div>
+                       <div class="extra-pill-btn" onclick="addExtraToCart('Chili Sauce', 0, 'img/menu/4.jpg')">
+                          <span>Chili Sauce <span class="free-text">(FREE)</span></span>
+                          <i class="fas fa-plus"></i>
+                       </div>
+                    </div>
                 </div>
-                <div class="summary-line">
-                    <span>Subtotal</span>
-                    <span id="cartSubtotal">16,500 RWF</span>
+
+                <!-- 2. CART DRAWER FOOTER SECTION -->
+                <div class="cart-drawer-footer">
+                    <!-- Collapsible Footer Header -->
+                    <div class="cart-footer-header" onclick="toggleCartFooterCollapse()" style="cursor:pointer;">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-receipt text-cyan"></i>
+                            <span class="fw-bold text-white">Summary & Discounts</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="loyalty-pts-badge" id="loyaltyBadgeText">2,500 Pts</span>
+                            <i class="fas fa-chevron-up text-muted-custom" id="cartFooterChevron" style="transition: transform 0.3s ease;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Footer Body -->
+                    <div class="cart-footer-collapsible-body" id="cartFooterCollapsibleBody">
+                        <!-- Promo Code Row -->
+                        <div class="cart-promo-row mt-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control cart-promo-input" id="cartPromoInput" placeholder="Promo code (e.g. FAV20)">
+                                <button class="btn btn-cyan-action px-3" type="button" onclick="applyPromoCode()">Apply</button>
+                            </div>
+                        </div>
+
+                        <!-- Loyalty Points Redemption Box -->
+                        <div class="cart-loyalty-box mt-3" id="cartLoyaltyBox">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="text-white text-sm fw-bold">
+                                    <i class="fas fa-star text-warning me-1"></i>Redeem Loyalty Points
+                                </div>
+                                <small class="text-muted-custom">Available: <span class="text-cyan fw-bold" id="userPointsVal">2,500</span> Pts</small>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" class="loyalty-pill-btn" onclick="quickSelectLoyaltyPoints(500)">500 Pts</button>
+                                <button type="button" class="loyalty-pill-btn" onclick="quickSelectLoyaltyPoints(1000)">1,000 Pts</button>
+                                <button type="button" class="loyalty-pill-btn active" onclick="quickSelectLoyaltyPoints('all')">Use All</button>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <input type="number" class="form-control form-control-sm custom-loyalty-input" id="customLoyaltyInput" placeholder="Enter custom pts">
+                                <button type="button" class="btn btn-sm btn-cyan-action" onclick="applyCustomLoyaltyPoints()">Redeem</button>
+                            </div>
+                            <div id="loyaltyAppliedNotice" class="text-cyan text-xs mt-2" style="display:none;"></div>
+                        </div>
+
+                        <!-- Summary Breakdown -->
+                        <div class="summary-line mt-3">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">0 RWF</span>
+                        </div>
+                        <div class="summary-line" id="deliveryFeeRow">
+                            <span>Delivery Fee</span>
+                            <span id="cartDeliveryFee">1,000 RWF</span>
+                        </div>
+                        <div class="summary-line" id="promoDiscountRow" style="display:none;">
+                            <span>Promo Discount</span>
+                            <span id="cartPromoDiscount" class="text-success">-0 RWF</span>
+                        </div>
+                        <div class="summary-line" id="loyaltyDiscountRow" style="display:none;">
+                            <span>Loyalty Discount</span>
+                            <span id="cartLoyaltyDiscount" class="text-cyan">-0 RWF</span>
+                        </div>
+                    </div>
+
+                    <!-- Pinned Footer Action Bar -->
+                    <div class="cart-footer-action-bar mt-3 pt-3 border-top border-dark-subtle">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-light-blue fw-bold">Total Amount</span>
+                            <span id="cartTotal" class="total-amount-cyan fw-bold" style="font-size:1.3rem;">0 RWF</span>
+                        </div>
+                        <button class="btn-cyan-confirm" onclick="checkout()">CONFIRM ORDER</button>
+                    </div>
                 </div>
-                <div class="summary-line">
-                    <span>TAX (2%)</span>
-                    <span id="cartTax">-330 RWF</span>
-                </div>
-                <div class="summary-line total-line">
-                    <span>Total</span>
-                    <span id="cartTotal" class="text-cyan">16,170 RWF</span>
-                </div>
-                <button class="btn-cyan-confirm" onclick="checkout()">CONFIRM</button>
             </div>
 
             <div id="emptyCart" class="text-center py-5" style="display:none;">

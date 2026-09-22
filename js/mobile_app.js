@@ -699,6 +699,11 @@ function executeMenuSearch(val) {
 window.executeMenuSearch = executeMenuSearch;
 
 // CART & CHECKOUT (SCREEN 3)
+let userLoyaltyPoints = 2500;
+let appliedLoyaltyPoints = 0;
+let promoDiscountAmount = 0;
+let appliedPromoCode = '';
+
 function loadCart() {
     const stored = localStorage.getItem('favcafe_cart');
     if (stored) {
@@ -713,10 +718,6 @@ function loadCart() {
         ];
     }
 
-    const totalItems = cart.reduce((sum, item) => sum + parseInt(item.qty), 0);
-    const badge = document.getElementById('cartBadge');
-    if (badge) badge.innerText = totalItems;
-
     renderCartItems();
 }
 
@@ -727,6 +728,22 @@ function renderCartItems() {
 
     if (!container) return;
     container.innerHTML = '';
+
+    // Sanitize cart items safely to prevent NaN/undefined issues
+    cart = (cart || []).map(item => {
+        const itemQty = parseInt(item.qty !== undefined ? item.qty : (item.quantity !== undefined ? item.quantity : 1)) || 1;
+        const itemPrice = parseFloat(item.price || 0) || 0;
+        return {
+            ...item,
+            qty: itemQty,
+            quantity: itemQty,
+            price: itemPrice
+        };
+    });
+
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    const badge = document.getElementById('cartBadge');
+    if (badge) badge.innerText = totalItems;
 
     if (cart.length === 0) {
         if (summary) summary.style.display = 'none';
@@ -739,14 +756,14 @@ function renderCartItems() {
 
     let subtotal = 0;
 
-    cart.forEach(item => {
-        const itemTotal = parseFloat(item.price) * parseInt(item.qty);
+    cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
         subtotal += itemTotal;
         const img = item.image || 'img/menu/1.jpg';
 
         container.innerHTML += `
             <div class="cart-list-item">
-                <button type="button" class="cart-remove-btn" onclick="updateCartQty(${item.id}, -${item.qty})">&times;</button>
+                <button type="button" class="cart-remove-btn" onclick="changeCartQty(${index}, -${item.qty})">&times;</button>
                 <img src="${img}" onerror="this.src='img/menu/1.jpg'" class="cart-item-img" alt="${item.title}">
                 <div class="cart-item-info">
                     <div class="cart-item-name">${item.title}</div>
@@ -756,38 +773,85 @@ function renderCartItems() {
                     </div>
                 </div>
                 <div class="cart-qty-picker">
-                    <button type="button" class="cart-qty-btn" onclick="updateCartQty(${item.id}, -1)">-</button>
+                    <button type="button" class="cart-qty-btn" onclick="changeCartQty(${index}, -1)">-</button>
                     <span class="cart-qty-val">${item.qty}</span>
-                    <button type="button" class="cart-qty-btn" onclick="updateCartQty(${item.id}, 1)">+</button>
+                    <button type="button" class="cart-qty-btn" onclick="changeCartQty(${index}, 1)">+</button>
                 </div>
             </div>
         `;
     });
 
-    const tax = subtotal * 0.02; // 2% tax
-    const finalTotal = subtotal - tax;
+    const deliveryFee = subtotal > 0 ? 1000 : 0;
+    let effectiveLoyaltyDiscount = Math.min(appliedLoyaltyPoints, subtotal + deliveryFee - promoDiscountAmount);
+    if (effectiveLoyaltyDiscount < 0) effectiveLoyaltyDiscount = 0;
+
+    const finalTotal = Math.max(0, subtotal + deliveryFee - promoDiscountAmount - effectiveLoyaltyDiscount);
 
     const subtotalEl = document.getElementById('cartSubtotal');
-    const taxEl = document.getElementById('cartTax');
+    const deliveryEl = document.getElementById('cartDeliveryFee');
+    const promoRow = document.getElementById('promoDiscountRow');
+    const promoEl = document.getElementById('cartPromoDiscount');
+    const loyaltyRow = document.getElementById('loyaltyDiscountRow');
+    const loyaltyEl = document.getElementById('cartLoyaltyDiscount');
+    const loyaltyNotice = document.getElementById('loyaltyAppliedNotice');
     const totalEl = document.getElementById('cartTotal');
 
     if (subtotalEl) subtotalEl.innerText = formatRWF(subtotal);
-    if (taxEl) taxEl.innerText = `-${formatRWF(tax)}`;
+    if (deliveryEl) deliveryEl.innerText = formatRWF(deliveryFee);
+
+    if (promoRow && promoEl) {
+        if (promoDiscountAmount > 0) {
+            promoRow.style.display = 'flex';
+            promoEl.innerText = `-${formatRWF(promoDiscountAmount)}`;
+        } else {
+            promoRow.style.display = 'none';
+        }
+    }
+
+    if (loyaltyRow && loyaltyEl) {
+        if (effectiveLoyaltyDiscount > 0) {
+            loyaltyRow.style.display = 'flex';
+            loyaltyEl.innerText = `-${formatRWF(effectiveLoyaltyDiscount)}`;
+            if (loyaltyNotice) {
+                loyaltyNotice.style.display = 'block';
+                loyaltyNotice.innerHTML = `<i class="fas fa-check-circle me-1"></i>Redeemed ${effectiveLoyaltyDiscount.toLocaleString()} pts (-${formatRWF(effectiveLoyaltyDiscount)}) <a href="javascript:void(0);" onclick="removeLoyaltyDiscount()" class="text-danger ms-2">Remove</a>`;
+            }
+        } else {
+            loyaltyRow.style.display = 'none';
+            if (loyaltyNotice) loyaltyNotice.style.display = 'none';
+        }
+    }
+
     if (totalEl) totalEl.innerText = formatRWF(finalTotal);
 }
 
+function changeCartQty(index, delta) {
+    if (cart[index]) {
+        let currentQty = parseInt(cart[index].qty !== undefined ? cart[index].qty : cart[index].quantity) || 1;
+        currentQty += delta;
+        if (currentQty <= 0) {
+            cart.splice(index, 1);
+        } else {
+            cart[index].qty = currentQty;
+            cart[index].quantity = currentQty;
+        }
+        localStorage.setItem('favcafe_cart', JSON.stringify(cart));
+        loadCart();
+    }
+}
+window.changeCartQty = changeCartQty;
+
 function updateCartQty(id, delta) {
+    let index = -1;
     for (let i = 0; i < cart.length; i++) {
         if (cart[i].id == id) {
-            cart[i].qty = parseInt(cart[i].qty) + delta;
-            if (cart[i].qty < 1) {
-                cart.splice(i, 1);
-            }
+            index = i;
             break;
         }
     }
-    localStorage.setItem('favcafe_cart', JSON.stringify(cart));
-    loadCart();
+    if (index !== -1) {
+        changeCartQty(index, delta);
+    }
 }
 window.updateCartQty = updateCartQty;
 
@@ -800,13 +864,15 @@ function addToCart(e, item) {
         subtitle: item.subtitle || item.category || 'Specialty',
         price: parseFloat(item.price) || 5000,
         image: item.image || 'img/menu/1.jpg',
-        qty: 1
+        qty: 1,
+        quantity: 1
     };
 
     let found = false;
     for (let i = 0; i < cart.length; i++) {
         if (cart[i].id === cartItem.id) {
-            cart[i].qty += 1;
+            cart[i].qty = (parseInt(cart[i].qty) || 1) + 1;
+            cart[i].quantity = cart[i].qty;
             found = true;
             break;
         }
@@ -818,6 +884,118 @@ function addToCart(e, item) {
     showToast(`✅ Added ${cartItem.title} to cart!`);
 }
 window.addToCart = addToCart;
+
+function addExtraToCart(name, price, img) {
+    const extraPrice = parseFloat(price || 0);
+    const existingIndex = cart.findIndex(item => item.title.toLowerCase() === name.toLowerCase());
+
+    if (existingIndex > -1) {
+        cart[existingIndex].qty = (parseInt(cart[existingIndex].qty) || 1) + 1;
+        cart[existingIndex].quantity = cart[existingIndex].qty;
+    } else {
+        const extraItem = {
+            id: 'extra_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+            title: name,
+            subtitle: 'Extra / Side',
+            price: extraPrice,
+            image: img || 'img/menu/1.jpg',
+            qty: 1,
+            quantity: 1
+        };
+        cart.push(extraItem);
+    }
+    localStorage.setItem('favcafe_cart', JSON.stringify(cart));
+    loadCart();
+    showToast(`✅ Added ${name} extra to cart!`);
+}
+window.addExtraToCart = addExtraToCart;
+
+function toggleCartExtrasCollapse() {
+    const grid = document.getElementById('cartExtrasGrid');
+    const chevron = document.getElementById('cartExtrasChevron');
+    if (!grid) return;
+    grid.classList.toggle('collapsed');
+    if (chevron) {
+        if (grid.classList.contains('collapsed')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+window.toggleCartExtrasCollapse = toggleCartExtrasCollapse;
+
+function toggleCartFooterCollapse() {
+    const body = document.getElementById('cartFooterCollapsibleBody');
+    const chevron = document.getElementById('cartFooterChevron');
+    if (!body) return;
+    body.classList.toggle('collapsed');
+    if (chevron) {
+        if (body.classList.contains('collapsed')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+window.toggleCartFooterCollapse = toggleCartFooterCollapse;
+
+function quickSelectLoyaltyPoints(pts) {
+    if (pts === 'all') {
+        pts = userLoyaltyPoints;
+    }
+    applyLoyaltyPoints(pts);
+}
+window.quickSelectLoyaltyPoints = quickSelectLoyaltyPoints;
+
+function applyCustomLoyaltyPoints() {
+    const input = document.getElementById('customLoyaltyInput');
+    if (!input) return;
+    const pts = parseInt(input.value) || 0;
+    applyLoyaltyPoints(pts);
+}
+window.applyCustomLoyaltyPoints = applyCustomLoyaltyPoints;
+
+function applyLoyaltyPoints(pts) {
+    if (pts <= 0) {
+        appliedLoyaltyPoints = 0;
+        showToast('Loyalty discount reset', 'info');
+    } else if (pts > userLoyaltyPoints) {
+        showToast(`⚠️ You only have ${userLoyaltyPoints.toLocaleString()} points available.`, 'warning');
+        appliedLoyaltyPoints = userLoyaltyPoints;
+    } else {
+        appliedLoyaltyPoints = pts;
+        showToast(`🎉 Applied ${pts.toLocaleString()} Loyalty Points (-${formatRWF(pts)})!`, 'success');
+    }
+    renderCartItems();
+}
+
+function removeLoyaltyDiscount() {
+    appliedLoyaltyPoints = 0;
+    const input = document.getElementById('customLoyaltyInput');
+    if (input) input.value = '';
+    showToast('Removed loyalty points discount', 'info');
+    renderCartItems();
+}
+window.removeLoyaltyDiscount = removeLoyaltyDiscount;
+
+function applyPromoCode() {
+    const input = document.getElementById('cartPromoInput');
+    const code = input ? input.value.trim().toUpperCase() : '';
+    if (!code) {
+        showToast('Please enter a promo code', 'warning');
+        return;
+    }
+    if (code === 'FAV20' || code === 'DISCOUNT20' || code === 'PROMO') {
+        promoDiscountAmount = 2000;
+        appliedPromoCode = code;
+        showToast(`🎟️ Promo Code '${code}' applied (-2,000 RWF)!`, 'success');
+    } else {
+        showToast('Invalid promo code. Try "FAV20"', 'warning');
+    }
+    renderCartItems();
+}
+window.applyPromoCode = applyPromoCode;
 
 function checkout() {
     showToast('💳 Order Confirmed! Thank you for ordering.', 'success');

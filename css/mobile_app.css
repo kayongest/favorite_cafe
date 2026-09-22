@@ -568,6 +568,176 @@ body {
     margin-top: 1rem;
 }
 
+/* ADD EXTRAS SECTION */
+.cart-extras-section {
+    background-color: var(--card-dark);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin: 0 1.25rem 1rem;
+    border: 1px solid var(--border-dark);
+}
+
+.cart-extras-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--text-white);
+    user-select: none;
+}
+
+.cart-extras-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+    opacity: 1;
+}
+
+.cart-extras-grid.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-top: 0 !important;
+    pointer-events: none;
+}
+
+.extra-pill-btn {
+    background: rgba(22, 29, 49, 0.7);
+    border: 1px solid var(--border-dark);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-white);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.extra-pill-btn:hover {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 210, 211, 0.1);
+}
+
+.extra-pill-btn small {
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.extra-pill-btn .free-text {
+    color: #2ed573;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.extra-pill-btn i {
+    color: var(--accent-cyan);
+    font-size: 0.8rem;
+}
+
+/* CART DRAWER FOOTER & LOYALTY BOX */
+.cart-drawer-footer {
+    background-color: var(--card-dark);
+    border-top: 1px solid var(--border-dark);
+    border-radius: 20px 20px 0 0;
+    padding: 16px 1.25rem 1.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cart-footer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.cart-footer-collapsible-body {
+    max-height: 800px;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.cart-footer-collapsible-body.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loyalty-pts-badge {
+    background: rgba(0, 210, 211, 0.15);
+    color: var(--accent-cyan);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 210, 211, 0.3);
+}
+
+.cart-promo-input {
+    background-color: rgba(22, 29, 49, 0.8) !important;
+    border: 1px solid var(--border-dark) !important;
+    color: var(--text-white) !important;
+    font-size: 0.85rem;
+    border-radius: 12px 0 0 12px !important;
+}
+
+.btn-cyan-action {
+    background-color: var(--accent-cyan);
+    color: #0b111e;
+    font-weight: 700;
+    border: none;
+    font-size: 0.82rem;
+    border-radius: 0 12px 12px 0;
+}
+
+.btn-cyan-action:hover {
+    background-color: #00b3b4;
+    color: #0b111e;
+}
+
+.cart-loyalty-box {
+    background: rgba(15, 20, 36, 0.6);
+    border: 1px dashed rgba(0, 210, 211, 0.3);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.loyalty-pill-btn {
+    flex: 1;
+    background: rgba(22, 29, 49, 0.8);
+    border: 1px solid var(--border-dark);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.loyalty-pill-btn:hover, .loyalty-pill-btn.active {
+    background: rgba(0, 210, 211, 0.2);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.custom-loyalty-input {
+    background-color: rgba(22, 29, 49, 0.8) !important;
+    border: 1px solid var(--border-dark) !important;
+    color: var(--text-white) !important;
+    font-size: 0.82rem;
+    border-radius: 10px !important;
+}
+
+.total-amount-cyan {
+    color: var(--accent-cyan);
+}
+
 /* Your Orders Screen & Filter Pills */
 .status-filter-pills {
     display: flex;
@@ -1356,4 +1526,44 @@ body.light-theme .btn-secondary-custom {
 
 body.light-theme .avatar-edit-badge {
     border-color: #ffffff !important;
+}
+
+/* Light theme overrides for cart extras & drawer footer */
+body.light-theme .cart-extras-section,
+body.light-theme .cart-drawer-footer {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+}
+
+body.light-theme .cart-extras-header span,
+body.light-theme .cart-footer-header span {
+    color: #1e293b !important;
+}
+
+body.light-theme .extra-pill-btn {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+body.light-theme .cart-loyalty-box {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+body.light-theme .cart-loyalty-box .text-white {
+    color: #1e293b !important;
+}
+
+body.light-theme .cart-promo-input,
+body.light-theme .custom-loyalty-input {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+body.light-theme .loyalty-pill-btn {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #64748b;
 }
