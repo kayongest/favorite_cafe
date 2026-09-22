@@ -638,33 +638,41 @@ body {
     font-size: 0.8rem;
 }
 
-/* CART DRAWER FOOTER & LOYALTY BOX */
+/* CART DRAWER FOOTER & LOYALTY BOX STYLING */
 .cart-drawer-footer {
     background-color: var(--card-dark);
     border-top: 1px solid var(--border-dark);
     border-radius: 20px 20px 0 0;
     padding: 16px 1.25rem 1.5rem;
     margin-top: 1rem;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -6px 25px rgba(0, 0, 0, 0.4);
 }
 
 .cart-footer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 6px 4px;
+    border-radius: 12px;
     user-select: none;
+    transition: background 0.2s ease;
+}
+
+.cart-footer-header:hover {
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .cart-footer-collapsible-body {
     max-height: 800px;
     overflow: hidden;
-    transition: max-height 0.35s ease, opacity 0.3s ease;
+    transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
     opacity: 1;
 }
 
 .cart-footer-collapsible-body.collapsed {
     max-height: 0 !important;
     opacity: 0;
+    margin-top: 0 !important;
     pointer-events: none;
 }
 
@@ -675,67 +683,92 @@ body {
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 12px;
-    border: 1px solid rgba(0, 210, 211, 0.3);
+    border: 1px solid rgba(0, 210, 211, 0.35);
+    box-shadow: 0 2px 8px rgba(0, 210, 211, 0.15);
 }
 
-.cart-promo-input {
+.cart-promo-row .input-group,
+.cart-loyalty-box .input-group {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border-dark);
+}
+
+.cart-promo-input,
+.custom-loyalty-input {
     background-color: rgba(22, 29, 49, 0.8) !important;
-    border: 1px solid var(--border-dark) !important;
+    border: none !important;
     color: var(--text-white) !important;
     font-size: 0.85rem;
-    border-radius: 12px 0 0 12px !important;
+    padding: 10px 14px !important;
+}
+
+.cart-promo-input::placeholder,
+.custom-loyalty-input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+}
+
+.custom-loyalty-input:focus,
+.cart-promo-input:focus {
+    box-shadow: none !important;
 }
 
 .btn-cyan-action {
-    background-color: var(--accent-cyan);
-    color: #0b111e;
-    font-weight: 700;
-    border: none;
+    background: linear-gradient(135deg, var(--accent-cyan), #00b3b4) !important;
+    color: #0b111e !important;
+    font-weight: 700 !important;
+    border: none !important;
     font-size: 0.82rem;
-    border-radius: 0 12px 12px 0;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease !important;
 }
 
 .btn-cyan-action:hover {
-    background-color: #00b3b4;
-    color: #0b111e;
+    background: linear-gradient(135deg, #00ecee, var(--accent-cyan)) !important;
+    box-shadow: 0 4px 12px rgba(0, 210, 211, 0.3);
 }
 
 .cart-loyalty-box {
-    background: rgba(15, 20, 36, 0.6);
-    border: 1px dashed rgba(0, 210, 211, 0.3);
-    border-radius: 14px;
-    padding: 12px 14px;
+    background: rgba(15, 20, 36, 0.75);
+    border: 1px dashed rgba(0, 210, 211, 0.35);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .loyalty-pill-btn {
     flex: 1;
-    background: rgba(22, 29, 49, 0.8);
+    background: rgba(22, 29, 49, 0.9);
     border: 1px solid var(--border-dark);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-muted);
     font-size: 0.78rem;
-    font-weight: 600;
-    padding: 6px 4px;
+    font-weight: 700;
+    padding: 7px 6px;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-align: center;
 }
 
-.loyalty-pill-btn:hover, .loyalty-pill-btn.active {
-    background: rgba(0, 210, 211, 0.2);
+.loyalty-pill-btn:hover {
     border-color: var(--accent-cyan);
     color: var(--accent-cyan);
+    background: rgba(0, 210, 211, 0.1);
 }
 
-.custom-loyalty-input {
-    background-color: rgba(22, 29, 49, 0.8) !important;
-    border: 1px solid var(--border-dark) !important;
-    color: var(--text-white) !important;
-    font-size: 0.82rem;
-    border-radius: 10px !important;
+.loyalty-pill-btn.active {
+    background: linear-gradient(135deg, rgba(0, 210, 211, 0.25), rgba(0, 210, 211, 0.1));
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 2px 8px rgba(0, 210, 211, 0.2);
 }
 
 .total-amount-cyan {
     color: var(--accent-cyan);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
 
 /* Your Orders Screen & Filter Pills */
