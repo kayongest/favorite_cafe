@@ -59,6 +59,11 @@ if ($pdo) {
         if (!$cols) {
             $pdo->exec("ALTER TABLE `users` ADD COLUMN `address` text DEFAULT NULL AFTER `phone` ");
         }
+
+        $colsAv = $pdo->query("SHOW COLUMNS FROM `users` LIKE 'avatar'")->fetch();
+        if (!$colsAv) {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `avatar` text DEFAULT NULL AFTER `address` ");
+        }
     } catch (PDOException $eCol) {
         // Ignore schema check errors
     }

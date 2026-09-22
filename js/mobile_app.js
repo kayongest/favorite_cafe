@@ -117,6 +117,14 @@ function renderUserContacts() {
     const sidebarUserName = document.getElementById('sidebarUserName');
     if (sidebarUserName) sidebarUserName.innerText = name;
 
+    // User Avatar Image Sync
+    const avatarSrc = currentUser.avatar || 'img/chefs/1.jpg';
+    const profileUserAvatar = document.getElementById('profileUserAvatar');
+    if (profileUserAvatar) profileUserAvatar.src = avatarSrc;
+
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+    if (sidebarUserAvatar) sidebarUserAvatar.src = avatarSrc;
+
     // Mobile Phone
     const phoneRow = document.getElementById('contactRowPhone');
     const profilePhoneVal = document.getElementById('profilePhoneVal');
@@ -160,6 +168,77 @@ function renderUserContacts() {
     // Render Custom Extra Contacts
     renderCustomContactsList();
 }
+
+// PROFILE PICTURE (AVATAR) UPLOAD CONTROLLERS
+function triggerAvatarUpload() {
+    const fileInput = document.getElementById('profileAvatarFileInput');
+    if (fileInput) fileInput.click();
+}
+window.triggerAvatarUpload = triggerAvatarUpload;
+
+async function handleAvatarFileSelect(input) {
+    if (!input || !input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    // Local instant preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const localDataUrl = e.target.result;
+        const profileUserAvatar = document.getElementById('profileUserAvatar');
+        if (profileUserAvatar) profileUserAvatar.src = localDataUrl;
+        const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+        if (sidebarUserAvatar) sidebarUserAvatar.src = localDataUrl;
+    };
+    reader.readAsDataURL(file);
+
+    // Upload via API
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const uploadRes = await fetch('api/upload.php', {
+            method: 'POST',
+            body: formData
+        });
+        const uploadData = await uploadRes.json();
+
+        let avatarUrl = '';
+        if (uploadData.status === 'success' && uploadData.image_path) {
+            avatarUrl = uploadData.image_path;
+        } else {
+            avatarUrl = await new Promise((res) => {
+                const r = new FileReader();
+                r.onload = (ev) => res(ev.target.result);
+                r.readAsDataURL(file);
+            });
+        }
+
+        if (!currentUser) currentUser = {};
+        currentUser.avatar = avatarUrl;
+
+        localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+
+        // Sync with MySQL DB
+        await fetch('api/auth.php?action=update_profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'update_profile',
+                id: currentUser.id || 0,
+                current_email: currentUser.email || '',
+                full_name: currentUser.name || currentUser.full_name || '',
+                avatar: avatarUrl
+            })
+        });
+
+        showToast('📸 Profile picture updated successfully!');
+    } catch (err) {
+        console.warn('Avatar upload API warning:', err);
+        showToast('📸 Profile picture updated locally!');
+    }
+}
+window.handleAvatarFileSelect = handleAvatarFileSelect;
 
 function renderCustomContactsList() {
     const listContainer = document.getElementById('customContactsList');

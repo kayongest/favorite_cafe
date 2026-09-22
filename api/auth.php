@@ -103,6 +103,7 @@ if ($action === 'register') {
             'email' => $user['email'],
             'phone' => $user['phone'],
             'address' => isset($user['address']) ? $user['address'] : '',
+            'avatar' => isset($user['avatar']) ? $user['avatar'] : '',
             'role' => $user['role']
         ]
     ]);
@@ -113,10 +114,10 @@ if ($action === 'register') {
     $email = isset($data['email']) ? strtolower(trim($data['email'])) : '';
 
     if ($userId > 0) {
-        $stmt = $pdo->prepare("SELECT id, full_name, email, phone, address, role FROM users WHERE id = ? LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id, full_name, email, phone, address, avatar, role FROM users WHERE id = ? LIMIT 1");
         $stmt->execute([$userId]);
     } else if (!empty($email)) {
-        $stmt = $pdo->prepare("SELECT id, full_name, email, phone, address, role FROM users WHERE email = ? LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id, full_name, email, phone, address, avatar, role FROM users WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
     } else {
         echo json_encode(['valid' => false, 'status' => 'error', 'message' => 'User identifier required']);
@@ -134,6 +135,7 @@ if ($action === 'register') {
                 'email' => $user['email'],
                 'phone' => $user['phone'],
                 'address' => isset($user['address']) ? $user['address'] : '',
+                'avatar' => isset($user['avatar']) ? $user['avatar'] : '',
                 'role' => $user['role']
             ]
         ]);
@@ -150,6 +152,7 @@ if ($action === 'register') {
     $email = isset($data['email']) ? strtolower(trim($data['email'])) : null;
     $phone = isset($data['phone']) ? trim($data['phone']) : null;
     $address = isset($data['address']) ? trim($data['address']) : null;
+    $avatar = isset($data['avatar']) ? trim($data['avatar']) : null;
 
     if ($userId <= 0 && !empty($currentEmail)) {
         $stmtFind = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
@@ -184,6 +187,7 @@ if ($action === 'register') {
         if ($email !== null) { $fields[] = "`email` = ?"; $params[] = $email; }
         if ($phone !== null) { $fields[] = "`phone` = ?"; $params[] = $phone; }
         if ($address !== null) { $fields[] = "`address` = ?"; $params[] = $address; }
+        if ($avatar !== null) { $fields[] = "`avatar` = ?"; $params[] = $avatar; }
 
         if (!empty($fields)) {
             $params[] = $userId;
@@ -192,31 +196,33 @@ if ($action === 'register') {
             $upStmt->execute($params);
         }
 
-        $fetchStmt = $pdo->prepare("SELECT id, full_name, email, phone, address, role FROM users WHERE id = ? LIMIT 1");
+        $fetchStmt = $pdo->prepare("SELECT id, full_name, email, phone, address, avatar, role FROM users WHERE id = ? LIMIT 1");
         $fetchStmt->execute([$userId]);
         $updatedUser = $fetchStmt->fetch();
 
         echo json_encode([
             'status' => 'success',
-            'message' => 'Contacts updated successfully!',
+            'message' => 'Profile updated successfully!',
             'user' => [
                 'id' => $updatedUser['id'],
                 'full_name' => $updatedUser['full_name'],
                 'email' => $updatedUser['email'],
                 'phone' => $updatedUser['phone'],
                 'address' => isset($updatedUser['address']) ? $updatedUser['address'] : '',
+                'avatar' => isset($updatedUser['avatar']) ? $updatedUser['avatar'] : '',
                 'role' => $updatedUser['role']
             ]
         ]);
     } else {
         echo json_encode([
             'status' => 'success',
-            'message' => 'Contacts updated locally!',
+            'message' => 'Profile updated locally!',
             'user' => [
                 'full_name' => $fullName ?? 'Customer',
                 'email' => $email ?? '',
                 'phone' => $phone ?? '',
-                'address' => $address ?? ''
+                'address' => $address ?? '',
+                'avatar' => $avatar ?? ''
             ]
         ]);
     }

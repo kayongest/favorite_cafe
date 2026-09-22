@@ -215,9 +215,12 @@
         <div id="view-profile" class="tab-view" style="padding-top: 0.5rem;">
             <!-- Profile Hero -->
             <div class="profile-hero-card">
-                <div class="profile-avatar-container">
+                <div class="profile-avatar-container" onclick="triggerAvatarUpload()" style="cursor: pointer; position: relative;" title="Click to change profile picture">
                     <img src="img/chefs/1.jpg" onerror="this.src='img/menu/1.jpg'" class="profile-avatar-img" id="profileUserAvatar" alt="User Avatar">
+                    <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
                 </div>
+                <!-- Hidden Avatar File Input -->
+                <input type="file" id="profileAvatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(this)">
                 <h3 class="profile-name" id="profileTabName">James Hawkins</h3>
                 <div class="profile-badge-gold" id="profileMemberTier">GOLD MEMBER</div>
             </div>

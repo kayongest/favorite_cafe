@@ -1329,3 +1329,31 @@ body.light-theme .btn-secondary-custom {
     background: #e2e8f0 !important;
     color: #334155 !important;
 }
+
+/* Avatar Edit Camera Badge */
+.avatar-edit-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: var(--accent-cyan);
+    color: #ffffff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border: 2px solid var(--bg-dark);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.profile-avatar-container:hover .avatar-edit-badge {
+    transform: scale(1.15);
+    background: var(--accent-cyan-dark);
+}
+
+body.light-theme .avatar-edit-badge {
+    border-color: #ffffff !important;
+}
