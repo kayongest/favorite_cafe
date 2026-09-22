@@ -3775,6 +3775,17 @@ footer {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+  opacity: 1;
+}
+
+.cart-extras-grid.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  margin-top: 0 !important;
+  pointer-events: none;
 }
 
 .extra-pill-btn {
@@ -3812,9 +3823,23 @@ footer {
 }
 
 .cart-drawer-footer {
-  padding: 20px 24px;
+  padding: 16px 24px 20px 24px;
   background: #ffffff;
   border-top: 1px solid #f3ece4;
+}
+
+.cart-footer-collapsible-body {
+  max-height: 800px;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.cart-footer-collapsible-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+  margin-bottom: 0 !important;
 }
 
 .cart-promo-row {

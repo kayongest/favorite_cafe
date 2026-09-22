@@ -1255,10 +1255,13 @@
             <!-- Dynamic Cart Items rendered here -->
          </div>
 
-         <!-- ADD EXTRAS SECTION -->
+         <!-- ADD EXTRAS SECTION (Collapsible) -->
          <div class="cart-extras-section">
-            <div class="cart-extras-header">ADD EXTRAS:</div>
-            <div class="cart-extras-grid">
+            <div class="cart-extras-header d-flex justify-content-between align-items-center" onclick="toggleDesktopCartExtrasCollapse()" style="cursor:pointer; user-select:none;">
+               <span><i class="fas fa-plus-circle me-1 text-danger"></i>ADD EXTRAS:</span>
+               <i class="fas fa-chevron-down text-muted" id="desktopCartExtrasChevron" style="transition: transform 0.3s ease;"></i>
+            </div>
+            <div class="cart-extras-grid mt-2" id="desktopCartExtrasGrid">
                <div class="extra-pill-btn" onclick="addExtraToCart('Avocado', 500, 'img/menu/1.jpg')">
                   <span>Avocado <small>(500)</small></span>
                   <i class="fas fa-plus"></i>
@@ -1282,59 +1285,76 @@
             </div>
          </div>
 
+         <!-- CART DRAWER FOOTER (Collapsible Summary & Loyalty) -->
          <div class="cart-drawer-footer">
-            <!-- PROMO CODE ROW -->
-            <div class="cart-promo-row mb-3">
-               <input type="text" id="cartPromoInput" class="form-control cart-promo-input" placeholder="Promo code">
-               <button type="button" class="btn cart-promo-btn" onclick="applyPromoCode()">Apply</button>
+            <!-- Header toggle bar for collapsing breakdown -->
+            <div class="cart-footer-toggle-bar d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" onclick="toggleDesktopCartFooterCollapse()" style="cursor:pointer; user-select:none;">
+               <div class="d-flex align-items-center gap-2">
+                  <i class="fas fa-receipt text-danger"></i>
+                  <strong class="small text-dark">Order Summary & Loyalty</strong>
+               </div>
+               <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-warning text-dark font-monospace" style="font-size:0.75rem;">2,500 Pts</span>
+                  <i class="fas fa-chevron-up text-muted" id="desktopCartFooterChevron" style="transition: transform 0.3s ease;"></i>
+               </div>
             </div>
 
-            <!-- CUSTOMER LOYALTY POINTS REDEMPTION BANNER IN CART -->
-            <div id="cartLoyaltyBox" class="p-2 mb-3 rounded-3 border" style="background:#fffbeb; border-color:#fef3c7 !important;">
-               <div class="d-flex justify-content-between align-items-center mb-1">
-                  <strong class="text-dark small"><i class="fas fa-star text-warning me-1"></i>Loyalty Points: <span id="cartLoyaltyPointsBadge" class="badge bg-warning text-dark font-monospace">2,500 Pts</span></strong>
-                  <span class="small text-success font-weight-bold" id="cartLoyaltyRwfVal">2,500 RWF</span>
+            <!-- Collapsible Body -->
+            <div class="cart-footer-collapsible-body" id="desktopCartFooterBody">
+               <!-- PROMO CODE ROW -->
+               <div class="cart-promo-row mb-3">
+                  <input type="text" id="cartPromoInput" class="form-control cart-promo-input" placeholder="Promo code">
+                  <button type="button" class="btn cart-promo-btn" onclick="applyPromoCode()">Apply</button>
+               </div>
+
+               <!-- CUSTOMER LOYALTY POINTS REDEMPTION BANNER IN CART -->
+               <div id="cartLoyaltyBox" class="p-2 mb-3 rounded-3 border" style="background: rgb(255, 251, 235); border-color: rgb(254, 243, 199) !important; display: block;">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                     <strong class="text-dark small"><i class="fas fa-star text-warning me-1"></i>Loyalty Points: <span id="cartLoyaltyPointsBadge" class="badge bg-warning text-dark font-monospace">2,500 Pts</span></strong>
+                     <span class="small text-success font-weight-bold" id="cartLoyaltyRwfVal">2,500 RWF</span>
+                  </div>
+                  
+                  <div class="mt-2" id="cartLoyaltyInputRow" style="display: block;">
+                     <div class="input-group input-group-sm mb-1">
+                        <input type="number" id="cartLoyaltyCustomInput" class="form-control font-monospace" placeholder="Points e.g. 500" min="1" step="50">
+                        <button type="button" class="btn btn-warning font-weight-bold" onclick="applyCustomLoyaltyPoints('cart')">Apply</button>
+                     </div>
+                     <div class="d-flex gap-1">
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(500, 'cart')">500 Pts</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(1000, 'cart')">1,000 Pts</button>
+                        <button type="button" class="btn btn-xs btn-outline-dark py-0 font-weight-bold flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints('max', 'cart')">Max Pts</button>
+                     </div>
+                  </div>
+
+                  <div id="cartLoyaltyActiveBadge" class="mt-2 text-center" style="display:none;">
+                     <div class="badge bg-success bg-opacity-10 text-success w-100 p-2 font-monospace mb-1 d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-check-circle me-1"></i><span id="cartAppliedPointsText">0 Pts</span> Discount</span>
+                        <strong id="cartAppliedDiscountText">-0 RWF</strong>
+                     </div>
+                     <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" style="font-size:0.75rem;" onclick="removeLoyaltyDiscount()">
+                        <i class="fas fa-times me-1"></i> Remove Points Discount
+                     </button>
+                  </div>
+               </div>
+
+               <div class="cart-summary-line">
+                  <span>Subtotal</span>
+                  <strong id="cartSubtotal">0 RWF</strong>
+               </div>
+               <div class="cart-summary-line">
+                  <span>Delivery Fee</span>
+                  <span id="cartDeliveryFee" style="color:#27ae60; font-weight:700;">FREE</span>
                </div>
                
-               <div class="mt-2" id="cartLoyaltyInputRow">
-                  <div class="input-group input-group-sm mb-1">
-                     <input type="number" id="cartLoyaltyCustomInput" class="form-control font-monospace" placeholder="Points e.g. 500" min="1" step="50" />
-                     <button type="button" class="btn btn-warning font-weight-bold" onclick="applyCustomLoyaltyPoints('cart')">Apply</button>
-                  </div>
-                  <div class="d-flex gap-1">
-                     <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(500, 'cart')">500 Pts</button>
-                     <button type="button" class="btn btn-xs btn-outline-secondary py-0 text-dark flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints(1000, 'cart')">1,000 Pts</button>
-                     <button type="button" class="btn btn-xs btn-outline-dark py-0 font-weight-bold flex-grow-1" style="font-size:0.75rem;" onclick="quickSelectLoyaltyPoints('max', 'cart')">Max Pts</button>
-                  </div>
-               </div>
-
-               <div id="cartLoyaltyActiveBadge" class="mt-2 text-center" style="display:none;">
-                  <div class="badge bg-success bg-opacity-10 text-success w-100 p-2 font-monospace mb-1 d-flex justify-content-between align-items-center">
-                     <span><i class="fas fa-check-circle me-1"></i><span id="cartAppliedPointsText">0 Pts</span> Discount</span>
-                     <strong id="cartAppliedDiscountText">-0 RWF</strong>
-                  </div>
-                  <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" style="font-size:0.75rem;" onclick="removeLoyaltyDiscount()">
-                     <i class="fas fa-times me-1"></i> Remove Points Discount
-                  </button>
-               </div>
+               <div class="cart-summary-divider"></div>
             </div>
 
-            <div class="cart-summary-line">
-               <span>Subtotal</span>
-               <strong id="cartSubtotal">RWF 0</strong>
-            </div>
-            <div class="cart-summary-line">
-               <span>Delivery Fee</span>
-               <span id="cartDeliveryFee" style="color:#27ae60; font-weight:700;">FREE</span>
-            </div>
-            
-            <div class="cart-summary-divider"></div>
-
-            <div class="cart-summary-total">
+            <!-- Pinned Total Amount & Proceed Button -->
+            <div class="cart-summary-total d-flex justify-content-between align-items-center mb-2">
                <span>Total</span>
-               <span id="cartTotal" class="cart-total-amount">RWF 0</span>
+               <span id="cartTotal" class="cart-total-amount">0 RWF</span>
             </div>
-            <button type="button" class="btn-proceed-checkout" onclick="openCheckoutModal()">
+            <button type="button" class="btn-proceed-checkout w-100" onclick="openCheckoutModal()">
                Proceed to Checkout
             </button>
          </div>

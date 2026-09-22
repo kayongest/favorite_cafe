@@ -192,7 +192,51 @@ function formatRWF(val) {
     return num.toLocaleString('en-US') + ' RWF';
 }
 
+function sanitizeCart() {
+    if (!Array.isArray(cart)) cart = [];
+    cart.forEach(function (item) {
+        var q = parseInt(item.quantity !== undefined ? item.quantity : (item.qty !== undefined ? item.qty : 1)) || 1;
+        var p = parseRwfAmount(item.price);
+        item.quantity = q;
+        item.qty = q;
+        item.price = p;
+    });
+    return cart;
+}
+window.sanitizeCart = sanitizeCart;
+
+function toggleDesktopCartExtrasCollapse() {
+    var grid = document.getElementById('desktopCartExtrasGrid');
+    var chevron = document.getElementById('desktopCartExtrasChevron');
+    if (!grid) return;
+    grid.classList.toggle('collapsed');
+    if (chevron) {
+        if (grid.classList.contains('collapsed')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+window.toggleDesktopCartExtrasCollapse = toggleDesktopCartExtrasCollapse;
+
+function toggleDesktopCartFooterCollapse() {
+    var body = document.getElementById('desktopCartFooterBody');
+    var chevron = document.getElementById('desktopCartFooterChevron');
+    if (!body) return;
+    body.classList.toggle('collapsed');
+    if (chevron) {
+        if (body.classList.contains('collapsed')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+window.toggleDesktopCartFooterCollapse = toggleDesktopCartFooterCollapse;
+
 function renderCart() {
+    sanitizeCart();
     var container = document.getElementById('cartItemsList');
     var subtotalEl = document.getElementById('cartSubtotal');
     var totalEl = document.getElementById('cartTotal');
@@ -200,7 +244,7 @@ function renderCart() {
 
     if (!container) return;
 
-    var totalCount = cart.reduce(function (acc, i) { return acc + (i.quantity || 1); }, 0);
+    var totalCount = cart.reduce(function (acc, i) { return acc + i.quantity; }, 0);
     if (countEl) countEl.textContent = totalCount + (totalCount === 1 ? ' item' : ' items');
 
     if (cart.length === 0) {
@@ -211,8 +255,8 @@ function renderCart() {
                 <p class="small text-muted mb-4">Select items from our menu or add quick extras below!</p>
             </div>
         `;
-        if (subtotalEl) subtotalEl.textContent = 'RWF 0';
-        if (totalEl) totalEl.textContent = 'RWF 0';
+        if (subtotalEl) subtotalEl.textContent = '0 RWF';
+        if (totalEl) totalEl.textContent = '0 RWF';
         updateCartBadge();
         return;
     }
@@ -790,6 +834,7 @@ function removeLoyaltyDiscount() {
 }
 
 function recalculateCartAndCheckoutTotals() {
+    sanitizeCart();
     var subtotal = cart.reduce(function (acc, i) { return acc + i.price * i.quantity; }, 0) - (appliedDiscount || 0);
     var finalTotal = subtotal - (activeLoyaltyDiscount || 0);
     if (finalTotal < 0) finalTotal = 0;
