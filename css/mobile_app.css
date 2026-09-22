@@ -715,18 +715,28 @@ body {
 }
 
 .btn-cyan-action {
-    background: linear-gradient(135deg, var(--accent-cyan), #00b3b4) !important;
+    background: linear-gradient(135deg, #00d2d3 0%, #00a8a9 100%) !important;
     color: #0b111e !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     border: none !important;
-    font-size: 0.82rem;
-    letter-spacing: 0.3px;
-    transition: all 0.2s ease !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 210, 211, 0.25);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .btn-cyan-action:hover {
-    background: linear-gradient(135deg, #00ecee, var(--accent-cyan)) !important;
-    box-shadow: 0 4px 12px rgba(0, 210, 211, 0.3);
+    background: linear-gradient(135deg, #00ecee 0%, #00d2d3 100%) !important;
+    box-shadow: 0 5px 15px rgba(0, 210, 211, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-cyan-action:active {
+    transform: scale(0.97);
 }
 
 .cart-loyalty-box {
