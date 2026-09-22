@@ -1135,3 +1135,197 @@ body.light-theme .cart-qty-picker {
 body.light-theme .cart-qty-val {
     color: #161d31 !important;
 }
+
+/* =========================================
+   Modal & Contact CRUD Styles
+   ========================================= */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 14, 26, 0.75);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.custom-modal-overlay.active {
+    display: flex;
+}
+
+.custom-modal-dialog {
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    position: relative;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.custom-modal-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+    color: var(--accent-coral);
+}
+
+.form-label-custom {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control-custom {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text-white);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.form-control-custom:focus {
+    border-color: var(--accent-cyan);
+    background: rgba(56, 182, 255, 0.05);
+}
+
+.btn-cyan-confirm {
+    background: var(--accent-cyan);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-cyan-confirm:hover {
+    background: var(--accent-cyan-dark);
+}
+
+.btn-secondary-custom {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-light-blue);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary-custom:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-white);
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.btn-clear-field {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    opacity: 0.6;
+}
+
+.btn-clear-field:hover {
+    color: var(--accent-coral);
+    background: rgba(255, 94, 87, 0.1);
+    opacity: 1;
+}
+
+.btn-add-contact-sm {
+    background: rgba(56, 182, 255, 0.12);
+    color: var(--accent-cyan);
+    border: 1px dashed var(--accent-cyan);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-contact-sm:hover {
+    background: var(--accent-cyan);
+    color: #fff;
+}
+
+.border-top-dark {
+    border-top: 1px solid var(--border-dark);
+}
+
+body.light-theme .custom-modal-dialog {
+    background: #ffffff !important;
+    color: #161d31 !important;
+    border-color: #e2e8f0 !important;
+}
+
+body.light-theme .custom-modal-header {
+    border-bottom-color: #e2e8f0 !important;
+}
+
+body.light-theme .custom-modal-header h3 {
+    color: #161d31 !important;
+}
+
+body.light-theme .form-control-custom {
+    background: #f8fafc !important;
+    color: #161d31 !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-theme .btn-secondary-custom {
+    background: #e2e8f0 !important;
+    color: #334155 !important;
+}

@@ -33,6 +33,7 @@ try {
           `full_name` varchar(100) NOT NULL,
           `email` varchar(100) NOT NULL UNIQUE,
           `phone` varchar(20) DEFAULT NULL UNIQUE,
+          `address` text DEFAULT NULL,
           `password_hash` varchar(255) NOT NULL,
           `role` enum('customer','staff','admin') DEFAULT 'customer',
           `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -49,6 +50,17 @@ try {
     } catch (PDOException $e2) {
         $pdo = null;
         $dbError = $e2->getMessage();
+    }
+}
+
+if ($pdo) {
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM `users` LIKE 'address'")->fetch();
+        if (!$cols) {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `address` text DEFAULT NULL AFTER `phone` ");
+        }
+    } catch (PDOException $eCol) {
+        // Ignore schema check errors
     }
 }
 ?>

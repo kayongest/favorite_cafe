@@ -57,6 +57,7 @@ async function validateSession() {
             userObj.name = data.user.full_name;
             userObj.email = data.user.email;
             userObj.phone = data.user.phone || '';
+            userObj.address = data.user.address || userObj.address || '';
             localStorage.setItem('favcafe_active_user', JSON.stringify(userObj));
             return true;
         }
@@ -85,12 +86,17 @@ function checkAuth() {
         try {
             currentUser = JSON.parse(userStr);
         } catch (e) {
-            currentUser = { name: 'James Hawkins', email: 'jameshawkins@mail.com', phone: '+12 345 678 92' };
+            currentUser = { name: 'James Hawkins', email: 'jameshawkins@mail.com', phone: '+12 345 678 92', address: 'Franklin Avenue, Corner St.London, 24125151' };
         }
     } else {
-        currentUser = { name: 'James Hawkins', email: 'jameshawkins@mail.com', phone: '+12 345 678 92' };
+        currentUser = { name: 'James Hawkins', email: 'jameshawkins@mail.com', phone: '+12 345 678 92', address: 'Franklin Avenue, Corner St.London, 24125151' };
     }
 
+    renderUserContacts();
+}
+
+function renderUserContacts() {
+    if (!currentUser) return;
     const name = currentUser.name || currentUser.full_name || 'James Hawkins';
     const firstName = name.split(' ')[0] || 'James';
 
@@ -108,15 +114,255 @@ function checkAuth() {
     const profileTabName = document.getElementById('profileTabName');
     if (profileTabName) profileTabName.innerText = name;
 
-    const profileEmailVal = document.getElementById('profileEmailVal');
-    if (profileEmailVal) profileEmailVal.innerText = currentUser.email || 'jameshawkins@mail.com';
-
-    const profilePhoneVal = document.getElementById('profilePhoneVal');
-    if (profilePhoneVal) profilePhoneVal.innerText = currentUser.phone || '+12 345 678 92';
-
     const sidebarUserName = document.getElementById('sidebarUserName');
     if (sidebarUserName) sidebarUserName.innerText = name;
+
+    // Mobile Phone
+    const phoneRow = document.getElementById('contactRowPhone');
+    const profilePhoneVal = document.getElementById('profilePhoneVal');
+    if (profilePhoneVal) {
+        if (currentUser.phone && currentUser.phone.trim() !== '') {
+            profilePhoneVal.innerText = currentUser.phone;
+            if (phoneRow) phoneRow.style.display = 'flex';
+        } else {
+            profilePhoneVal.innerText = 'Not set';
+            if (phoneRow) phoneRow.style.display = 'flex';
+        }
+    }
+
+    // Email Address
+    const emailRow = document.getElementById('contactRowEmail');
+    const profileEmailVal = document.getElementById('profileEmailVal');
+    if (profileEmailVal) {
+        if (currentUser.email && currentUser.email.trim() !== '') {
+            profileEmailVal.innerText = currentUser.email;
+            if (emailRow) emailRow.style.display = 'flex';
+        } else {
+            profileEmailVal.innerText = 'Not set';
+            if (emailRow) emailRow.style.display = 'flex';
+        }
+    }
+
+    // Physical / Delivery Address
+    const addressRow = document.getElementById('contactRowAddress');
+    const profileAddressVal = document.getElementById('profileAddressVal');
+    if (profileAddressVal) {
+        const addrText = currentUser.address || currentUser.delivery_address || 'Franklin Avenue, Corner St.London, 24125151';
+        if (addrText && addrText.trim() !== '') {
+            profileAddressVal.innerText = addrText;
+            if (addressRow) addressRow.style.display = 'flex';
+        } else {
+            profileAddressVal.innerText = 'Not set';
+            if (addressRow) addressRow.style.display = 'flex';
+        }
+    }
+
+    // Render Custom Extra Contacts
+    renderCustomContactsList();
 }
+
+function renderCustomContactsList() {
+    const listContainer = document.getElementById('customContactsList');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+
+    const contacts = currentUser.custom_contacts || [];
+    contacts.forEach((c, idx) => {
+        const row = document.createElement('div');
+        row.className = 'contact-row-item';
+        row.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin-top: 10px;';
+        row.innerHTML = `
+            <div class="d-flex align-items-center flex-grow-1">
+                <div class="contact-icon-circle me-3"><i class="${c.icon || 'fas fa-address-book'}"></i></div>
+                <div>
+                    <div class="contact-info-label">${escapeHtml(c.label || 'Contact')}</div>
+                    <div class="contact-info-val">${escapeHtml(c.val || c.value || '')}</div>
+                </div>
+            </div>
+            <button type="button" class="btn-clear-field" onclick="deleteCustomContact(${idx})" title="Delete"><i class="fas fa-trash-alt"></i></button>
+        `;
+        listContainer.appendChild(row);
+    });
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// PROFILE CONTACTS EDIT MODAL CONTROLLERS
+function openMobileAuthModal(modalType) {
+    if (modalType === 'profile_edit' || modalType === 'contacts_edit') {
+        const nameInput = document.getElementById('editProfileName');
+        const phoneInput = document.getElementById('editProfilePhone');
+        const emailInput = document.getElementById('editProfileEmail');
+        const addressInput = document.getElementById('editProfileAddress');
+
+        if (currentUser) {
+            if (nameInput) nameInput.value = currentUser.name || currentUser.full_name || '';
+            if (phoneInput) phoneInput.value = currentUser.phone || '';
+            if (emailInput) emailInput.value = currentUser.email || '';
+            if (addressInput) addressInput.value = currentUser.address || currentUser.delivery_address || '';
+        }
+
+        populateModalCustomContacts();
+
+        const modal = document.getElementById('profileEditModal');
+        if (modal) modal.classList.add('active');
+    }
+}
+window.openMobileAuthModal = openMobileAuthModal;
+
+function closeMobileAuthModal(modalType) {
+    if (modalType === 'profile_edit' || modalType === 'contacts_edit') {
+        const modal = document.getElementById('profileEditModal');
+        if (modal) modal.classList.remove('active');
+    }
+}
+window.closeMobileAuthModal = closeMobileAuthModal;
+
+function populateModalCustomContacts() {
+    const container = document.getElementById('modalCustomContactsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const contacts = (currentUser && currentUser.custom_contacts) ? currentUser.custom_contacts : [];
+    contacts.forEach((c) => {
+        addCustomContactInput(c.label, c.val || c.value);
+    });
+}
+
+function addCustomContactInput(label = '', value = '') {
+    const container = document.getElementById('modalCustomContactsContainer');
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.className = 'd-flex gap-2 align-items-center mb-2 custom-contact-row';
+    div.style.cssText = 'display: flex; gap: 8px; margin-bottom: 8px; align-items: center;';
+    div.innerHTML = `
+        <input type="text" class="form-control-custom custom-contact-label" placeholder="Label (e.g. Work)" value="${escapeHtml(label)}" style="flex: 1;">
+        <input type="text" class="form-control-custom custom-contact-value" placeholder="Value (e.g. 078...)" value="${escapeHtml(value)}" style="flex: 1.5;">
+        <button type="button" class="btn-clear-field" onclick="this.parentElement.remove()" style="opacity:1;"><i class="fas fa-times text-coral"></i></button>
+    `;
+    container.appendChild(div);
+}
+window.addCustomContactInput = addCustomContactInput;
+
+async function saveMobileProfileContacts() {
+    const nameInput = document.getElementById('editProfileName');
+    const phoneInput = document.getElementById('editProfilePhone');
+    const emailInput = document.getElementById('editProfileEmail');
+    const addressInput = document.getElementById('editProfileAddress');
+
+    const newName = nameInput ? nameInput.value.trim() : (currentUser.name || '');
+    const newPhone = phoneInput ? phoneInput.value.trim() : (currentUser.phone || '');
+    const newEmail = emailInput ? emailInput.value.trim() : (currentUser.email || '');
+    const newAddress = addressInput ? addressInput.value.trim() : (currentUser.address || '');
+
+    // Collect extra custom contacts
+    const customRows = document.querySelectorAll('#modalCustomContactsContainer .custom-contact-row');
+    const customContacts = [];
+    customRows.forEach(row => {
+        const lblInput = row.querySelector('.custom-contact-label');
+        const valInput = row.querySelector('.custom-contact-value');
+        const lbl = lblInput ? lblInput.value.trim() : '';
+        const val = valInput ? valInput.value.trim() : '';
+        if (lbl && val) {
+            customContacts.push({ label: lbl, val: val, icon: 'fas fa-address-book' });
+        }
+    });
+
+    if (!currentUser) currentUser = {};
+
+    const prevEmail = currentUser.email || '';
+
+    currentUser.name = newName;
+    currentUser.full_name = newName;
+    currentUser.phone = newPhone;
+    currentUser.email = newEmail;
+    currentUser.address = newAddress;
+    currentUser.custom_contacts = customContacts;
+
+    // Save to localStorage immediately
+    localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+
+    // Send to API update endpoint if possible
+    try {
+        const payload = {
+            action: 'update_profile',
+            id: currentUser.id || 0,
+            current_email: prevEmail,
+            full_name: newName,
+            phone: newPhone,
+            email: newEmail,
+            address: newAddress
+        };
+
+        const res = await fetch('api/auth.php?action=update_profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const resData = await res.json();
+        if (resData.status === 'success' && resData.user) {
+            currentUser.id = resData.user.id || currentUser.id;
+            localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+        } else if (resData.status === 'error') {
+            showToast('⚠️ ' + resData.message);
+            return;
+        }
+    } catch (e) {
+        console.warn('API update failed, saved locally:', e);
+    }
+
+    renderUserContacts();
+    closeMobileAuthModal('profile_edit');
+    showToast('✅ Contacts updated successfully!');
+}
+window.saveMobileProfileContacts = saveMobileProfileContacts;
+
+async function deleteContactField(fieldKey) {
+    if (!currentUser) return;
+    const labelMap = { phone: 'Mobile Phone', email: 'Email Address', address: 'Address' };
+    const label = labelMap[fieldKey] || fieldKey;
+
+    if (!confirm(`Are you sure you want to clear your ${label}?`)) return;
+
+    if (fieldKey === 'phone') currentUser.phone = '';
+    if (fieldKey === 'email') currentUser.email = '';
+    if (fieldKey === 'address') currentUser.address = '';
+
+    localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+
+    try {
+        await fetch('api/auth.php?action=update_profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'update_profile',
+                id: currentUser.id || 0,
+                current_email: currentUser.email || '',
+                full_name: currentUser.name || currentUser.full_name || '',
+                phone: currentUser.phone,
+                email: currentUser.email,
+                address: currentUser.address
+            })
+        });
+    } catch (e) { }
+
+    renderUserContacts();
+    showToast(`🗑️ ${label} cleared`);
+}
+window.deleteContactField = deleteContactField;
+
+function deleteCustomContact(index) {
+    if (!currentUser || !currentUser.custom_contacts) return;
+    currentUser.custom_contacts.splice(index, 1);
+    localStorage.setItem('favcafe_active_user', JSON.stringify(currentUser));
+    renderUserContacts();
+    showToast('🗑️ Contact deleted');
+}
+window.deleteCustomContact = deleteCustomContact;
 
 function toggleDarkMode() {
     document.body.classList.toggle('light-theme');
