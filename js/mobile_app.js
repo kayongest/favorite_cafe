@@ -547,18 +547,29 @@ async function loadMenu() {
         return;
     }
 
-    // Default reference menu items matching screens
+    // Default reference menu items matching exact database items
     menuItems = [
-        { id: 1, title: 'Chicken Briyani Haji Mahmud', category: 'Foods', price: 4.0, subtitle: 'Coffe, Milk', image: 'img/menu/1.jpg' },
-        { id: 2, title: 'Deluxe Super Burger Spicy', category: 'Burgers', price: 7.2, subtitle: 'Coffe, Milk', image: 'img/menu/7.jpg' },
-        { id: 3, title: 'Coffee Mocha / White Mocha', category: 'Drink', price: 5.0, subtitle: 'Coffe, Milk', image: 'img/menu/4.jpg' },
-        { id: 4, title: 'Chicken Wings Spicy', category: 'Meat', price: 5.0, subtitle: 'Spicy Sauce', image: 'img/menu/2.jpg' },
-        { id: 5, title: 'Vanilla Sweet Cream Cold', category: 'Drink', price: 5.0, subtitle: 'Cold Brew', image: 'img/menu/3.jpg' },
-        { id: 6, title: 'Mily Cream Ice Coffee', category: 'Drink', price: 5.0, subtitle: 'Fresh Milk', image: 'img/menu/5.jpg' },
-        { id: 7, title: 'Salmon Steak Special', category: 'Fish', price: 12.0, subtitle: 'Grilled Lemon', image: 'img/menu/6.jpg' },
-        { id: 8, title: 'French Fries Deluxe', category: 'Snack', price: 3.5, subtitle: 'Crispy Potato', image: 'img/menu/1.jpg' }
+        { id: 1, title: 'Special Favorie omelette', category: 'sides', price: 4500, image: 'img/menu/dish_1786018299_6931.png' },
+        { id: 2, title: 'Chicken Strips and Chips', category: 'burgers', price: 9000, image: 'img/menu/dish_1790004782_1426.png' },
+        { id: 3, title: 'Crispy Fried Chicken', category: 'mains', price: 6000, image: 'img/menu/dish_1786025102_4409.png' },
+        { id: 4, title: 'Chicken and Rice', category: 'mains', price: 9000, image: 'img/menu/dish_1786019674_6493.png' },
+        { id: 5, title: 'Jollof Rice and Chicken', category: 'mains', price: 10000, image: 'img/menu/dish_1786022829_6795.jpg' },
+        { id: 6, title: 'Chef Salad', category: 'salads', price: 4000, image: 'img/menu/dish_1786021881_4037.png' },
+        { id: 7, title: 'Chicken Pizza', category: 'pizza', price: 6000, image: 'img/menu/dish_1786021943_7435.jpg' },
+        { id: 8, title: 'Burger and chips', category: 'burgers', price: 6000, image: 'img/menu/dish_1786028631_2822.jpg' },
+        { id: 9, title: 'Espresso', category: 'black-coffee', price: 1500, image: 'img/menu/dish_1786021975_8115.jpg' },
+        { id: 10, title: 'Americano', category: 'black-coffee', price: 2000, image: 'img/menu/dish_1786022008_6335.jpg' },
+        { id: 13, title: 'Capuccino', category: 'coffee-with-milk', price: 2500, image: 'img/menu/dish_1786022071_9250.png' },
+        { id: 68, title: 'Igisafuriya', category: 'mains', price: 25000, image: 'img/menu/dish_1786028567_9416.png' }
     ];
 }
+
+// RWF CURRENCY FORMATTER
+function formatRWF(amount) {
+    const val = parseFloat(amount || 0);
+    return `${Math.round(val).toLocaleString()} RWF`;
+}
+window.formatRWF = formatRWF;
 
 // RENDER HOME CATEGORIES (SCREEN 4)
 function renderHomeCategories() {
@@ -570,7 +581,6 @@ function renderHomeCategories() {
 
     container.innerHTML = '';
     
-    // Default 7 category cards from image 2
     const catsToRender = categories.length >= 4 ? categories : presetCategories;
     catsToRender.forEach((cat, idx) => {
         const conf = getCategoryIconConfig(cat);
@@ -643,8 +653,8 @@ function renderMenuGrid(itemsToRender = null) {
 function createMenuCard(item) {
     const img = item.image && item.image !== 'undefined' ? item.image : 'img/menu/1.jpg';
     const priceVal = parseFloat(item.price || 0);
-    const priceStr = priceVal > 0 ? `$${priceVal.toFixed(1)}` : '$5.0';
-    const subStr = item.subtitle || item.category || 'Coffe, Milk';
+    const priceStr = formatRWF(priceVal);
+    const subStr = item.subtitle || item.category || 'Favorite Specialty';
 
     const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
 
@@ -697,9 +707,9 @@ function loadCart() {
 
     if (!cart || cart.length === 0) {
         cart = [
-            { id: 1, title: 'Chicken Briyani Haji Mahmud', subtitle: 'Coffe, Milk', price: 4.0, qty: 3, image: 'img/menu/1.jpg' },
-            { id: 2, title: 'Deluxe Super Burger Spicy', subtitle: 'Coffe, Milk', price: 7.2, qty: 3, image: 'img/menu/7.jpg' },
-            { id: 3, title: 'Coffee Mocha / White Mocha', subtitle: 'Coffe, Milk', price: 12.0, qty: 3, image: 'img/menu/4.jpg' }
+            { id: 2, title: 'Chicken Strips and Chips', subtitle: 'Burgers & Chips', price: 9000, qty: 1, image: 'img/menu/dish_1790004782_1426.png' },
+            { id: 7, title: 'Chicken Pizza', subtitle: 'Freshly Baked Pizza', price: 6000, qty: 1, image: 'img/menu/dish_1786021943_7435.jpg' },
+            { id: 9, title: 'Espresso', subtitle: 'Black Coffee', price: 1500, qty: 1, image: 'img/menu/dish_1786021975_8115.jpg' }
         ];
     }
 
@@ -740,10 +750,9 @@ function renderCartItems() {
                 <img src="${img}" onerror="this.src='img/menu/1.jpg'" class="cart-item-img" alt="${item.title}">
                 <div class="cart-item-info">
                     <div class="cart-item-name">${item.title}</div>
-                    <div class="cart-item-sub">${item.subtitle || 'Coffe, Milk'}</div>
+                    <div class="cart-item-sub">${item.subtitle || 'Specialty Item'}</div>
                     <div class="cart-item-price-row">
-                        <span class="cart-item-price">$${parseFloat(item.price).toFixed(1)}</span>
-                        <span class="cart-item-old-price">$0.9</span>
+                        <span class="cart-item-price">${formatRWF(item.price)}</span>
                     </div>
                 </div>
                 <div class="cart-qty-picker">
@@ -762,9 +771,9 @@ function renderCartItems() {
     const taxEl = document.getElementById('cartTax');
     const totalEl = document.getElementById('cartTotal');
 
-    if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
-    if (taxEl) taxEl.innerText = `-$${tax.toFixed(2)}`;
-    if (totalEl) totalEl.innerText = `$${finalTotal.toFixed(2)}`;
+    if (subtotalEl) subtotalEl.innerText = formatRWF(subtotal);
+    if (taxEl) taxEl.innerText = `-${formatRWF(tax)}`;
+    if (totalEl) totalEl.innerText = formatRWF(finalTotal);
 }
 
 function updateCartQty(id, delta) {
@@ -788,8 +797,8 @@ function addToCart(e, item) {
     const cartItem = {
         id: item.id,
         title: item.title || 'Food Item',
-        subtitle: item.subtitle || item.category || 'Coffe, Milk',
-        price: parseFloat(item.price) || 5.0,
+        subtitle: item.subtitle || item.category || 'Specialty',
+        price: parseFloat(item.price) || 5000,
         image: item.image || 'img/menu/1.jpg',
         qty: 1
     };
@@ -832,25 +841,25 @@ function loadMobileOrderHistory() {
 
     const sampleOrders = [
         {
-            id: '0012345',
+            id: 'FC-1234',
             statusCategory: 'delivery',
             statusLabel: 'ON DELIVERY',
             statusDotColor: '#ff5e57',
             actionText: 'Track Location',
             items: [
-                { title: 'Coffee Mocha / White Mocha', price: 5.0, qty: 2, img: 'img/menu/4.jpg' },
-                { title: 'Chicken Wings Spicy', price: 5.0, qty: 2, img: 'img/menu/2.jpg' }
+                { title: 'Espresso', price: 1500, qty: 1, img: 'img/menu/dish_1786021975_8115.jpg' },
+                { title: 'Chicken Pizza', price: 6000, qty: 1, img: 'img/menu/dish_1786021943_7435.jpg' }
             ]
         },
         {
-            id: '0012345',
+            id: 'FC-6129',
             statusCategory: 'done',
             statusLabel: 'DONE',
             statusDotColor: '#2ed573',
             actionText: 'View Details',
             items: [
-                { title: 'Vanilla Sweet Cream Cold', price: 5.0, qty: 2, img: 'img/menu/3.jpg' },
-                { title: 'Mily Cream Ice Coffee', price: 5.0, qty: 2, img: 'img/menu/5.jpg' }
+                { title: 'Chicken Strips and Chips', price: 9000, qty: 1, img: 'img/menu/dish_1790004782_1426.png' },
+                { title: 'Burger and chips', price: 6000, qty: 1, img: 'img/menu/dish_1786028631_2822.jpg' }
             ]
         }
     ];
@@ -869,7 +878,7 @@ function loadMobileOrderHistory() {
                     <img src="${item.img}" onerror="this.src='img/menu/1.jpg'" class="order-item-thumb" alt="${item.title}">
                     <div class="order-item-detail">
                         <div class="order-item-title">${item.title}</div>
-                        <div class="order-item-price">$${item.price.toFixed(1)} <span style="text-decoration:line-through; font-size:0.7rem; color:var(--text-muted);">$0.9</span></div>
+                        <div class="order-item-price">${formatRWF(item.price)}</div>
                     </div>
                     <div class="order-item-qty">${item.qty}x</div>
                 </div>
